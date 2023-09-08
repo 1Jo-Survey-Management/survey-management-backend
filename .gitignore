@@ -4,6 +4,10 @@
 ### properties ###
 *.properties
 
+### idea ###
+.idea
+.idea/*
+
 ### Eclipse ###
 .metadata
 bin/
