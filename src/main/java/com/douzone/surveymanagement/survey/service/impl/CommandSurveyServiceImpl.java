@@ -1,8 +1,9 @@
 package com.douzone.surveymanagement.survey.service.impl;
 
+import com.douzone.surveymanagement.survey.dto.request.SurveyCreateDto;
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoCreateDto;
-import com.douzone.surveymanagement.survey.mapper.SurveyMapper;
-import com.douzone.surveymanagement.survey.service.SurveyService;
+import com.douzone.surveymanagement.survey.mapper.CommandSurveyMapper;
+import com.douzone.surveymanagement.survey.service.CommandSurveyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,9 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class SurveyServiceImpl implements SurveyService {
+public class CommandSurveyServiceImpl implements CommandSurveyService {
 
-    private final SurveyMapper surveyMapper;
+    private final CommandSurveyMapper commandSurveyMapper;
 
     /**
      * {@inheritDoc}
@@ -26,7 +27,12 @@ public class SurveyServiceImpl implements SurveyService {
     @Transactional
     @Override
     public void insertSurveyInfo(SurveyInfoCreateDto surveyInfoCreateDto) {
-        surveyMapper.insertSurveyInfo(surveyInfoCreateDto);
+        commandSurveyMapper.insertSurveyInfo(surveyInfoCreateDto);
+    }
+
+    @Override
+    public void insertSurvey(SurveyCreateDto surveyCreateDto) {
+
     }
 }
 

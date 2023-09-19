@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @since : 1.0
  **/
 @Mapper
-public interface SurveyMapper {
+public interface CommandSurveyMapper {
 
     void insertSurveyInfo(SurveyInfoCreateDto surveyInfoCreateDto);
 }
