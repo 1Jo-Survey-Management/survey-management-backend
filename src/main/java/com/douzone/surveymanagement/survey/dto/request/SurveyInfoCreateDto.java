@@ -14,7 +14,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class SurveyCreateDto {
+public class SurveyInfoCreateDto {
     private long userNo;
     private int surveyStatusNo;
     private int openStatusNo;

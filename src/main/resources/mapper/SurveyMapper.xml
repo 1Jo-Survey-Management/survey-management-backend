@@ -7,7 +7,7 @@
 
     <insert
             id="insertSurveyInfo"
-            parameterType="com.douzone.surveymanagement.survey.dto.request.SurveyCreateDto">
+            parameterType="com.douzone.surveymanagement.survey.dto.request.SurveyInfoCreateDto">
         INSERT INTO survey (user_no,
                             survey_status_no,
                             open_status_no,
