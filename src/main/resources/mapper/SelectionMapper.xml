@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.douzone.surveymanagement.selection.mapper.SelectionMapper">
+
+
+    <insert id="insertSelection"
+            parameterType="com.douzone.surveymanagement.selection.dto.reqeust.SelectionCreateDto">
+        INSERT INTO selection (
+            `survey_question_no`,
+            `survey_question_move_no`,
+            `selection_value`,
+            `is_movable`
+        )
+        VALUES (
+                   #{surveyQuestionNo},
+                   #{surveyQuestionMoveNo},
+                   #{selectionValue},
+                   #{isMovable}
+               );
+
+    </insert>
+
+
+
+
+
+</mapper>
