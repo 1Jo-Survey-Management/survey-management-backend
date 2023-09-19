@@ -1,8 +1,15 @@
 package com.douzone.surveymanagement.survey.dto.request;
 
+import com.douzone.surveymanagement.survey.annotation.FutureDateTime;
+import com.douzone.surveymanagement.surveytag.dto.request.SurveyTagCreateDto;
 import java.time.LocalDateTime;
+import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,8 +45,15 @@ public class SurveyInfoCreateDto {
     @NotNull(message = "설문의 이미지는 null일 수 없습니다.")
     private String surveyImage;
 
+    @FutureDateTime
     private LocalDateTime surveyPostAt;
 
     @NotNull(message = "설문의 마감일은 null일 수 없습니다.")
     private LocalDateTime surveyClosingAt;
+
+    @NotNull(message = "설문 태그는 null일 수 없습니다.")
+    @NotEmpty(message = "설문의 태그는 최소 한개는 선택되어야 합니다.")
+    @Size(max = 2, message = "설문 태그는 최대 2개까지 지정 가능합니다.")
+    @Valid
+    List<SurveyTagCreateDto> surveyTagCreateDtoList;
 }

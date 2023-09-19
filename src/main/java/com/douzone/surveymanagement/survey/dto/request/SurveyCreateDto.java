@@ -19,12 +19,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public class SurveyCreateDto {
 
-    @NotNull
+    @NotNull(message = "설문에 대한 정보는 null일 수 없습니다.")
     @Valid
     private SurveyInfoCreateDto surveyInfoCreateDto;
 
-    @NotNull
-    @NotEmpty
+    @NotNull(message = "설문에 대한 문항은 null일 수 없습니다.")
+    @NotEmpty(message = "설문에 대해 최소 한개 이상의 문항이 있어야 합니다.")
     @Valid
     private List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList;
 
