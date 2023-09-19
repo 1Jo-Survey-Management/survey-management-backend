@@ -5,7 +5,9 @@
 
 <mapper namespace="com.douzone.surveymanagement.survey.mapper.SurveyMapper">
 
-    <insert id="insertSurveyInfo" parameterType="com.douzone.surveymanagement.survey.dto.request.SurveyCreateDto">
+    <insert
+            id="insertSurveyInfo"
+            parameterType="com.douzone.surveymanagement.survey.dto.request.SurveyCreateDto">
         INSERT INTO survey (user_no,
                             survey_status_no,
                             open_status_no,

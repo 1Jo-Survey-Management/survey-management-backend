@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.douzone.surveymanagement.surveyquestion.mapper.SurveyQuestionMapper">
+
+    <insert
+            id="insertSurveyQuestion"
+            parameterType="com.douzone.surveymanagement.surveyquestion.dto.request.SurveyQuestionCreateDto">
+
+        INSERT INTO survey_question (
+            `survey_no`,
+            `question_type_no`,
+            `survey_question_title`,
+            `survey_question_description`,
+            `is_required`
+        )
+        VALUES (
+                   #{surveyNo},
+                   #{questionTypeNo},
+                   #{surveyQuestionTitle},
+                   #{surveyQuestionDescription},
+                   #{isRequired}
+               );
+
+    </insert>
+
+
+
+
+</mapper>
