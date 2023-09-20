@@ -1,105 +1,114 @@
 package com.douzone.surveymanagement.common.security;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-
 import java.util.List;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
-@EnableWebSecurity(debug = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
+
+    @Autowired
+    private Environment env;
 
     @Bean
-    @Override
-    public UserDetailsService userDetailsService() {
-        return new CustomUserDetailsService();
+    public ClientRegistrationRepository clientRegistrationRepository() {
+        return new InMemoryClientRegistrationRepository(naverClientRegistration());
     }
+
+    private ClientRegistration naverClientRegistration() {
+        String clientId = env.getProperty("spring.security.oauth2.client.registration.naver.client-id");
+        String clientSecret = env.getProperty("spring.security.oauth2.client.registration.naver.client-secret");
+        String redirectUri = env.getProperty("spring.security.oauth2.client.registration.naver.redirect-uri");
+        String scope = env.getProperty("spring.security.oauth2.client.registration.naver.scope");
+
+
+        return ClientRegistration.withRegistrationId("naver")
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.BASIC)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .redirectUriTemplate(redirectUri) // redirectUri 필드 설정
+                .scope(scope)
+                .authorizationUri("https://nid.naver.com/oauth2.0/authorize")
+                .tokenUri("https://nid.naver.com/oauth2.0/token")
+                .userInfoUri("https://openapi.naver.com/v1/nid/me")
+                .userNameAttributeName("id")
+                .clientName("Naver")
+                .build();
+    }
+
     @Bean
-    AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
-
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf().disable(); // 외부 POST 요청을 받아야하니 csrf는 꺼준다.
+        http.cors();
         http
-                .authorizeRequests()
-                .antMatchers("/public/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .permitAll()
-                .and()
-                .oauth2Login()
-                .loginPage("/login")
-                .userInfoEndpoint()
-                .userAuthoritiesMapper()
-                .and()
-                .defaultSuccessURL("/dashboard")
-                .and()
-                .logout()
-                .permitAll();
+                .authorizeHttpRequests((authz) ->
+                        authz
+                                .antMatchers("/", "/**")
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated()
+                )
+                .httpBasic(withDefaults());
+        return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowCredentials(true);
+        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setExposedHeaders(List.of("*"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 
 
 //    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http.httpBasic().disable();
 //        http.csrf().disable(); // 외부 POST 요청을 받아야하니 csrf는 꺼준다.
-//        http.cors();
-//        http.authorizeHttpRequests((authz) ->
-//                {
-//                    authz
-//                            .antMatchers("/", "/**").permitAll()
-//                            .anyRequest().authenticated();
+//        http.cors(); // ⭐ CORS를 커스텀하려면 이렇게
+//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 //
-//                }
-//        );
-//
-//
-//        http.oauth2Login()
-//                .loginPage("/login/log")
-//                .authorizationEndpoint()
-//                .baseUri("/oauth2.0/authorize") // 사용자 정의 인증 요청 URL 설정
-//                .and()
-//                .redirectionEndpoint()
-//                .baseUri("/login/oauth2/code/*") // 사용자 정의 리다이렉트 URL 설정
-//                .and()
-//                .defaultSuccessUrl("/login/check");
-////                .successHandler(null)
-////                .failureHandler(null);
+//        http.authorizeHttpRequests()
+//                .requestMatchers("/**").permitAll()
+//                .anyRequest().authenticated();
 //
 //        return http.build();
 //    }
 
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration config = new CorsConfiguration();
-//
-//        config.setAllowCredentials(true);
-//        config.setAllowedOrigins(List.of("http://localhost:3000"));
-//        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-//        config.setAllowedHeaders(List.of("*"));
-//        config.setExposedHeaders(List.of("*"));
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", config);
-//        return source;
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http
+//                .authorizeRequests(authorizeRequests ->
+//                        authorizeRequests
+//                                .antMatchers("/", "/login/**")
+//                                .permitAll()
+//                                .anyRequest()
+//                                .authenticated()
+//                )
+//                .oauth2Login(withDefaults());
 //    }
 
 }
