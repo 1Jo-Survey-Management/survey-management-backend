@@ -43,5 +43,6 @@ public class SurveyQuestionCreateDto {
     boolean isRequired;
 
 //    @Valid
-//    private List<SelectionCreateDto> selectionCreateDtoList;
+    @JsonProperty("selections")
+    private List<SelectionCreateDto> selectionCreateDtoList;
 }
