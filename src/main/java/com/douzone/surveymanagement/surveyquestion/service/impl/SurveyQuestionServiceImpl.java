@@ -1,5 +1,6 @@
 package com.douzone.surveymanagement.surveyquestion.service.impl;
 
+import com.douzone.surveymanagement.selection.service.SelectionService;
 import com.douzone.surveymanagement.surveyquestion.dto.request.SurveyQuestionCreateDto;
 import com.douzone.surveymanagement.surveyquestion.mapper.SurveyQuestionMapper;
 import com.douzone.surveymanagement.surveyquestion.service.SurveyQuestionService;
@@ -20,12 +21,20 @@ public class SurveyQuestionServiceImpl implements SurveyQuestionService {
 
     private final SurveyQuestionMapper surveyQuestionMapper;
 
+    private final SelectionService selectionService;
+
     /**
      * {@inheritDoc}
      */
     @Transactional
     @Override
     public void insertSurveyQuestion(SurveyQuestionCreateDto surveyQuestionCreateDto) {
-        surveyQuestionMapper.insertSurveyQuestion(surveyQuestionCreateDto);
+//
+//        surveyQuestionMapper.insertSurveyQuestion(surveyQuestionCreateDto);
+//
+//        surveyQuestionCreateDto.getSelectionCreateDtoList().forEach(
+//            selectionService::insertSelection
+//        );
+
     }
 }

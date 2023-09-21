@@ -14,8 +14,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class SurveyTagCreateDto {
 
-    @NotNull(message = "설문 번호는 null일 수 없습니다.")
-    private long surveyNo;
+//    @NotNull(message = "설문 번호는 null일 수 없습니다.")
+//    private long surveyNo;
 
     @NotNull(message = "태그 번호는 null일 수 없습니다.")
     private int tagNo;
