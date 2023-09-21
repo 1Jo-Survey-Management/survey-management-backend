@@ -8,6 +8,8 @@ public class SurveyManagementBackendApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SurveyManagementBackendApplication.class, args);
+
+		System.out.println("hello");
 	}
 
 }
