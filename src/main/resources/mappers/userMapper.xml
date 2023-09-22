@@ -17,9 +17,7 @@
         WHERE user_no = #{userNo}
     </select>
 
-
-
-    <update id="modifyUserNickNameByUserNo" parameterType="com.douzone.surveymanagement.user.dto.request.UserModifyDTO">
+    <update id="updateUserNickNameByUserNo" parameterType="com.douzone.surveymanagement.user.dto.request.UserModifyDTO">
         update user
         set
         user_nickname = #{userNickName}
@@ -33,5 +31,7 @@
         WHERE user_no = #{userNo};
     </update>
 
-
+    <delete id="deletePreviousUserImage" parameterType="long">
+        UPDATE user SET user_image = NULL WHERE user_no = #{userNo};
+    </delete>
 </mapper>

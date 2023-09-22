@@ -1,18 +1,18 @@
 package com.douzone.surveymanagement.user.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+/**
+ * 유저 닉네임 수정 DTO 클래스입니다.
+ *
+ * @version 1.0
+ */
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
 public class UserModifyDTO {
-    private Long userNo;
+    private long userNo;
 
     private String userNickName;
-
-    private String userImage;
 }

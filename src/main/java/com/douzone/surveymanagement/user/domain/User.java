@@ -19,9 +19,9 @@ import java.time.LocalDateTime;
 public class User {
     private final Long userNo;
     private final String userNickName;
-    private Date userBirth;
-    private String userGender;
-    private String userEmail;
-    private String userImage;
-    private LocalDateTime createdAt;
+    private final Date userBirth;
+    private final String userGender;
+    private final String userEmail;
+    private final String userImage;
+    private final LocalDateTime createdAt;
 }

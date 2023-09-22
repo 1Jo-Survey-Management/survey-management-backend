@@ -1,4 +1,4 @@
-package com.douzone.surveymanagement.common.advice;
+package com.douzone.surveymanagement.common.advisor;
 
 import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.common.response.ErrorResponse;

@@ -1,15 +1,17 @@
 package com.douzone.surveymanagement.user.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+/**
+ * 이미지 정보 수정 DTO 클래스입니다.
+ *
+ * @version 1.0
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
+@Getter
 public class ImageModifyDTO {
-    private Long userNo;
+    private long userNo;
     private String userImage;
 }
