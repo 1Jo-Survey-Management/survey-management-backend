@@ -24,10 +24,10 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Transactional
-    public OptionalInt  loginCheck(String userEmail){
-        OptionalInt flag = OptionalInt.of(0);
+    public int loginCheck(String userEmail){
+        int flag = 0;
 
-        flag = OptionalInt.of(userMapper.findUserByUserEmail(userEmail));
+        flag = userMapper.findUserByUserEmail(userEmail);
 
         return flag;
     }

@@ -1,22 +1,17 @@
 package com.douzone.surveymanagement.user.util;
-
-import com.douzone.surveymanagement.user.dto.OAuth2UserInfo;
+//
 import com.douzone.surveymanagement.user.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
-import java.security.AuthProvider;
 
 @RequiredArgsConstructor
 @Service
-public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+public class CustmOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserServiceImpl userService;
 
@@ -26,15 +21,17 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuth2UserService oAuth2UserService = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = oAuth2UserService.loadUser(oAuth2UserRequest);
 
-        System.out.println("액세스 토큰토큰 : "+oAuth2UserRequest.getAccessToken().getTokenValue());
+        System.out.println("(CustomOAuth2UserService)액세스 토큰토큰 : "+oAuth2UserRequest.getAccessToken().getTokenValue());
 
-        System.out.println(oAuth2User.getName());
+        System.out.println("(CustomOAuth2UserService)"+oAuth2User.getName());
+
+
 
 
 
 
 //        return processOAuth2User(oAuth2UserRequest, oAuth2User);
-        return null;
+        return oAuth2User;
     }
 
 //
