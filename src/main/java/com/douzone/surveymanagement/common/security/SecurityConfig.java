@@ -1,13 +1,12 @@
 package com.douzone.surveymanagement.common.security;
 
 //import com.douzone.surveymanagement.user.util.CustmOAuth2UserService;
-import com.douzone.surveymanagement.user.filter.CustomOAuth2Filter;
-import lombok.RequiredArgsConstructor;
+import com.douzone.surveymanagement.user.service.CustomAuthenticationProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.config.BeanIds;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,11 +23,24 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity(debug = true)
-@RequiredArgsConstructor
+
 public class SecurityConfig {
 
 //    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 //    private final CustmOAuth2UserService custmOAuth2UserService;
+private final AuthenticationConfiguration authenticationConfiguration;
+private final CustomAuthenticationProvider customAuthenticationProvider;
+
+
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, CustomAuthenticationProvider customAuthenticationProvider){
+        this.authenticationConfiguration = authenticationConfiguration;
+        this.customAuthenticationProvider = customAuthenticationProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager () throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -42,20 +54,21 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http    .authorizeHttpRequests(authorize -> authorize
-                      .antMatchers("/**").permitAll()
+                      .antMatchers("/login/**").permitAll()
                         .anyRequest().authenticated());
 
-        http        .addFilterBefore(customOAuth2Filter(),
-                        UsernamePasswordAuthenticationFilter.class);
+//        http        .addFilterBefore(customOAuth2Filter(),
+//                        UsernamePasswordAuthenticationFilter.class);
+
 
 //        http    .oauth2Login(oauth2 -> oauth2
 //                        .authorizationEndpoint().baseUri("/oauth2.0/authorize")
 //                        .and()
 //                        .redirectionEndpoint().baseUri("/login/oauth2/code/naver")
 //                        .and()
-//////                                .userInfoEndpoint().userService(custmOAuth2UserService)
-//////                                .and()
-////                                .successHandler(oAuth2AuthenticationSuccessHandler));
+//                               .userInfoEndpoint().userService(custmOAuth2UserService)
+//                               .and()
+//                                .successHandler(oAuth2AuthenticationSuccessHandler));
 //                        .defaultSuccessUrl("http://localhost:3000/survey/main",true));
 //
 //        http    .logout(oauth2 -> oauth2
@@ -65,28 +78,27 @@ public class SecurityConfig {
 //                        .invalidateHttpSession(true)
 //                        .deleteCookies("JSESSIONID")
 //                        .permitAll());
-        http    .csrf() // CSRF 설정
-                        .disable(); // CSRF 보호를 비활성화
+
 
         return http.build();
     }
 
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(customAuthenticationProvider);
+    }
+
     //Bean을 AUTHENTICATION_MANAGER에 매칭
 
-    @Bean
-    public CustomOAuth2Filter customOAuth2Filter() throws Exception {
-        String NoToken = "http://localhost:3000/?flag=false";
-        CustomOAuth2Filter filter = new CustomOAuth2Filter("/login/**",NoToken); // "/oauth/login"은 OAuth 2.0 토큰을 받을 엔드포인트 URL입니다.
-        filter.setAuthenticationManager(authenticationManager());
-        return filter;
-    }
+//    @Bean
+//    public CustomOAuth2Filter customOAuth2Filter() throws Exception {
+//        String NoToken = "http://localhost:3000";
+//        CustomOAuth2Filter filter = new CustomOAuth2Filter("/login/**",NoToken); // "/login/**"은 OAuth 2.0 토큰을 받을 엔드포인트 URL입니다.
+//        filter.setAuthenticationManager(authenticationManager());
+//        return filter;
+//    }
 
-    private final AuthenticationConfiguration authenticationConfiguration;
 
-    @Bean
-    public AuthenticationManager authenticationManager () throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
 
     /**
      * 프로토콜: http, 호스트: localhost, 포트: 3000번에 대해서

@@ -1,40 +1,40 @@
-package com.douzone.surveymanagement.user.util;
+//package com.douzone.surveymanagement.user.util;
 //
-import com.douzone.surveymanagement.user.service.impl.UserServiceImpl;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.stereotype.Service;
-
-@RequiredArgsConstructor
-@Service
-public class CustmOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
-
-    private final UserServiceImpl userService;
-
-    //
-    @Override
-    public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
-        OAuth2UserService oAuth2UserService = new DefaultOAuth2UserService();
-        OAuth2User oAuth2User = oAuth2UserService.loadUser(oAuth2UserRequest);
-
-        System.out.println("(CustomOAuth2UserService)액세스 토큰토큰 : "+oAuth2UserRequest.getAccessToken().getTokenValue());
-
-        System.out.println("(CustomOAuth2UserService)"+oAuth2User.getName());
-
-
-
-
-
-
-//        return processOAuth2User(oAuth2UserRequest, oAuth2User);
-        return oAuth2User;
-    }
-
+//import com.douzone.surveymanagement.user.service.impl.UserServiceImpl;
+//import lombok.RequiredArgsConstructor;
+//import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+//import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+//import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+//import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+//import org.springframework.security.oauth2.core.user.OAuth2User;
+//import org.springframework.stereotype.Service;
 //
+//@RequiredArgsConstructor
+//@Service
+//public class CustmOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+//
+//    private final UserServiceImpl userService;
+//
+//    //
+//    @Override
+//    public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
+//        OAuth2UserService oAuth2UserService = new DefaultOAuth2UserService();
+//        OAuth2User oAuth2User = oAuth2UserService.loadUser(oAuth2UserRequest);
+//
+//        System.out.println("(CustomOAuth2UserService)액세스 토큰토큰 : "+oAuth2UserRequest.getAccessToken().getTokenValue());
+//
+//        System.out.println("(CustomOAuth2UserService)"+oAuth2User.getName());
+//
+//
+//
+//
+//
+//
+////        return processOAuth2User(oAuth2UserRequest, oAuth2User);
+//        return oAuth2User;
+//    }
+
+
 //    protected OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
 //
 //        OAuth2UserInfo oAuth2UserInfo = (OAuth2UserInfo) oAuth2User.getAttributes();
@@ -78,4 +78,4 @@ public class CustmOAuth2UserService implements OAuth2UserService<OAuth2UserReque
 //    private User updateUser(User user, OAuth2UserInfo oAuth2UserInfo) {
 //        return userRepository.save(user.update(oAuth2UserInfo));
 //    }
-}
+//}

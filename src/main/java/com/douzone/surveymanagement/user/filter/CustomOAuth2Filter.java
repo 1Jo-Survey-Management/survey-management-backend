@@ -1,7 +1,10 @@
 package com.douzone.surveymanagement.user.filter;
+import com.douzone.surveymanagement.user.util.CustomAuthenticationToken;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -29,23 +32,37 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
         // OAuth 2.0 토큰을 추출하는 로직을 여기에 작성합니다.
         String accessToken = extractAccessTokenFromRequest(request);
 
-
+        System.out.println(request.getHeader("Authorization"));
 
         System.out.println("추출한 토큰 : " + accessToken);
 
         if (accessToken == null) {
             // Access Token이 없을 경우 리다이렉트\
+
+//            response.sendRedirect(loginRedirectUrl);
             System.out.println("토큰 없을때 리다이렉트 경로 : " + loginRedirectUrl);
-            response.sendRedirect(loginRedirectUrl);
             return null;
         }
 
+        // access token을 사용하여 AuthenticationToken 생성
+        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(accessToken, null);
+
+        System.out.println("sdfsdf");
 
         // 추출한 토큰을 사용하여 사용자 인증을 수행합니다.
-        Authentication authentication = new UsernamePasswordAuthenticationToken(accessToken, null);
+            Authentication authentication = getAuthenticationManager().authenticate(authRequest);
+
+        if (authentication==null) {
+            System.out.println("authentication null");
+        }
 
         System.out.println("authentication : " + authentication);
-        return getAuthenticationManager().authenticate(authentication);
+
+//        successfulAuthentication(request,response,null,authentication);
+
+        System.out.println("리턴 값 : " + authentication);
+
+        return authentication;
     }
 
     @Override
@@ -61,7 +78,7 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
         System.out.println("access Token 성공 : " + accessToken);
 
         // 다음 필터로 이동합니다.
-        chain.doFilter(request, response);
+//        chain.doFilter(request, response);
     }
 
     @Override

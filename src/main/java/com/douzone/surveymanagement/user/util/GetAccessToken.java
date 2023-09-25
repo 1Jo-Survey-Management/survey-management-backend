@@ -60,7 +60,7 @@ public class GetAccessToken {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             // JSON 문자열을 Map으로 변환
-            Map<String, String> responseMap = objectMapper.readValue(jsonResponse, new TypeReference<Map<String, String>>() {
+            Map<String, String> responseMap = objectMapper.readValue(jsonResponse, new TypeReference<>() {
             });
             return responseMap;
         } catch (IOException e) {
