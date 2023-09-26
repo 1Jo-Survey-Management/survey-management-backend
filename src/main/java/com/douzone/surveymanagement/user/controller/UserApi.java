@@ -4,12 +4,16 @@ import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.common.response.ErrorResponse;
 import com.douzone.surveymanagement.user.dto.request.UserDTO;
 import com.douzone.surveymanagement.user.dto.request.UserModifyDTO;
+import com.douzone.surveymanagement.user.exception.DuplicateUsernameException;
 import com.douzone.surveymanagement.user.service.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.Valid;
 
 /**
  * 유저 API 컨트롤러 클래스입니다.
@@ -18,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
  *
  * @version 1.0
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -33,18 +38,20 @@ public class UserApi {
      * @return 응답 엔터티
      */
     @PutMapping("/{userNo}/nickname")
-    public ResponseEntity<CommonResponse> userNickNameModify(
-            @PathVariable("userNo") Long userNo, @RequestBody UserModifyDTO userModifyDTO) {
-        boolean updated = userServiceImpl.updateUserNickName(userModifyDTO);
+    public ResponseEntity<CommonResponse> userNickNameUpdate(
+            @PathVariable("userNo") long userNo, @Valid @RequestBody UserModifyDTO userModifyDTO) {
 
-        if (updated) {
+        try {
+            userServiceImpl.updateUserNickName(userModifyDTO);
+
             return ResponseEntity
                     .ok()
-                    .body(CommonResponse.successOf("Modify userNickName successfully"));
-        } else {
+                    .body(CommonResponse.<String>successOf("NickName updated successfully"));
+        } catch (DuplicateUsernameException e) {
+            String errorMessage = "Duplicate username: " + e.getMessage();
             return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(CommonResponse.error(ErrorResponse.of("Modify Fail")));
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(CommonResponse.<String>error(ErrorResponse.of(errorMessage)));
         }
     }
 
@@ -56,7 +63,7 @@ public class UserApi {
      * @return 업데이트 결과
      */
     @PutMapping("/{userNo}/image")
-    public ResponseEntity<CommonResponse> updateUserNickname(
+    public ResponseEntity<CommonResponse> updateUserImage(
             @PathVariable long userNo,
             @RequestParam("file") MultipartFile file) {
 
@@ -88,6 +95,23 @@ public class UserApi {
         }
 
         return ResponseEntity.ok(userDTO);
+    }
+
+    /**
+     * 유저 정보 조회 엔드포인트
+     *
+     * @param userModifyDTO 유저 수정 DTO
+     * @return 응답 엔터티
+     */
+    @PostMapping("/check-duplicate-nickname")
+    public ResponseEntity<String> getUserByUserNickname(@RequestBody UserModifyDTO userModifyDTO) {
+        boolean isDuplicate = userServiceImpl.duplicateUsername(userModifyDTO);
+
+        if(isDuplicate) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Nickname is not available");
+        }
+
+        return ResponseEntity.ok("Nickname is available");
     }
 }
 

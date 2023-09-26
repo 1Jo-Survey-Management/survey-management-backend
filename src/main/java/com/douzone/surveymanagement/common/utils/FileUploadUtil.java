@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
  **/
 public class FileUploadUtil {
 
-    private static final String FILE_PATH = System.getProperty("user.home") + "/survey-management/image";
+    private static final String FILE_PATH = System.getProperty("user.home") + "/Documents/GitHub/survey-management-frontend/public/images";
 
     public static String uploadFile(MultipartFile file) throws IOException {
 
