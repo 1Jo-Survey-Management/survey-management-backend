@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
@@ -79,12 +80,15 @@ public class LoginController {
 
 
 
-    @GetMapping("/go")
+    @PostMapping("/go")
     public ResponseEntity<?> loginGo(HttpServletRequest request, HttpServletResponse response){
 
 
 
         System.out.println("로그인 요청");
+
+
+
 
         return ResponseEntity.ok("success");
     }
@@ -235,6 +239,8 @@ public class LoginController {
 //            postRedirector.sendTokenToReact(jwtToken);
 
             System.out.println("유저 확인됨!");
+
+            //아예 리턴 url에 토큰을 던져버리는 것도 ..
             return "redirect:http://localhost:3000/survey/main";
         }else{
             // 회원 가입 실시. 첫 로그인 프로필 등록

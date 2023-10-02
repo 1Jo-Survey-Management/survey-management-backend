@@ -10,13 +10,13 @@ import java.util.Date;
 @Getter
 @Setter
 public class UserInfo {
-//    private long user_no;
-//    private String user_nickname;
-//    private String user_gender;
+    private long userNo;
+    private String userNickname;
+    private String userGender;
     private String userEmail;
-//    private Date user_birth;
-//    private String user_image;
-//    private Date created_at;
+    private Date userBirth;
+    private String userImage;
+    private Date createdAt;
     private String accessToken;
 
 }

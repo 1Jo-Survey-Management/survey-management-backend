@@ -1,28 +1,18 @@
 package com.douzone.surveymanagement.user.util;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-public class CustomAuthenticationToken extends AbstractAuthenticationToken {
-    private final String accessToken;
+public class CustomAuthenticationToken extends UsernamePasswordAuthenticationToken {
+    private final String customToken;
 
-    public CustomAuthenticationToken(String accessToken) {
-        super(null);
-        this.accessToken = accessToken;
-        setAuthenticated(false); // 인증되지 않은 상태로 초기화
+    public CustomAuthenticationToken(String customToken) {
+        super(null, null);
+        this.customToken = customToken;
     }
 
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    @Override
-    public Object getCredentials() {
-        return null;
-    }
-
-    @Override
-    public Object getPrincipal() {
-        return null;
+    public String getCustomToken() {
+        return customToken;
     }
 }
+
 
 

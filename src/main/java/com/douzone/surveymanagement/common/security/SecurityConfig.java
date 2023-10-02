@@ -1,11 +1,13 @@
 package com.douzone.surveymanagement.common.security;
 
 //import com.douzone.surveymanagement.user.util.CustmOAuth2UserService;
+import com.douzone.surveymanagement.user.filter.CustomOAuth2Filter;
 import com.douzone.surveymanagement.user.service.CustomAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -42,8 +44,13 @@ private final CustomAuthenticationProvider customAuthenticationProvider;
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+//    @Bean
+//    public AuthenticationProvider customAuthenticationProvider() {
+//        return new CustomAuthenticationProvider();
+//    }
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http,AuthenticationManagerBuilder auth) throws Exception {
         http
                 .cors()
                 .and()
@@ -56,6 +63,8 @@ private final CustomAuthenticationProvider customAuthenticationProvider;
         http    .authorizeHttpRequests(authorize -> authorize
                       .antMatchers("/login/**").permitAll()
                         .anyRequest().authenticated());
+
+//        auth    .authenticationProvider(customAuthenticationProvider());
 
 //        http        .addFilterBefore(customOAuth2Filter(),
 //                        UsernamePasswordAuthenticationFilter.class);
@@ -90,13 +99,14 @@ private final CustomAuthenticationProvider customAuthenticationProvider;
 
     //Bean을 AUTHENTICATION_MANAGER에 매칭
 
-//    @Bean
-//    public CustomOAuth2Filter customOAuth2Filter() throws Exception {
-//        String NoToken = "http://localhost:3000";
-//        CustomOAuth2Filter filter = new CustomOAuth2Filter("/login/**",NoToken); // "/login/**"은 OAuth 2.0 토큰을 받을 엔드포인트 URL입니다.
-//        filter.setAuthenticationManager(authenticationManager());
-//        return filter;
-//    }
+    @Bean
+    public CustomOAuth2Filter customOAuth2Filter() throws Exception {
+        String NoToken = "http://localhost:3000";
+        CustomOAuth2Filter filter = new CustomOAuth2Filter("/login/**",NoToken); // "/login/**"은 OAuth 2.0 토큰을 받을 엔드포인트 URL입니다.
+        System.out.println("(SecurityConfig) filter : " + filter);
+        filter.setAuthenticationManager(authenticationManager());
+        return filter;
+    }
 
 
 

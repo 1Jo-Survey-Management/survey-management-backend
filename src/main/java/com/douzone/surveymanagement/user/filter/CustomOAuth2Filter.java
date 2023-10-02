@@ -1,4 +1,5 @@
 package com.douzone.surveymanagement.user.filter;
+import com.douzone.surveymanagement.user.util.CustomAuthentication;
 import com.douzone.surveymanagement.user.util.CustomAuthenticationToken;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,12 +28,13 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+    public CustomAuthentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
-        // OAuth 2.0 토큰을 추출하는 로직을 여기에 작성합니다.
-        String accessToken = extractAccessTokenFromRequest(request);
 
         System.out.println(request.getHeader("Authorization"));
+
+        // OAuth 2.0 토큰을 추출하는 로직을 여기에 작성합니다.
+        String accessToken = extractAccessTokenFromRequest(request);
 
         System.out.println("추출한 토큰 : " + accessToken);
 
@@ -44,13 +46,16 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
             return null;
         }
 
-        // access token을 사용하여 AuthenticationToken 생성
-        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(accessToken, null);
+        // access token을 사용하여 AuthenticationToken 생성, 원래는 UsernamePasswordAuthenticationToken를 사용해야 하나, 이번
+        // 로그인은 아이디, 비밀번호 로그인이 아니라 토큰을 이용한 인증이기 때문에 위 클래스를 커스텀하여 만듦
+//        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(accessToken, null);
+        CustomAuthenticationToken authRequest = new CustomAuthenticationToken(accessToken);
 
-        System.out.println("sdfsdf");
+        System.out.println("authRequest : " + authRequest);
 
         // 추출한 토큰을 사용하여 사용자 인증을 수행합니다.
-            Authentication authentication = getAuthenticationManager().authenticate(authRequest);
+        // Default Authentication을 커스텀 한 것으로 사용
+        CustomAuthentication authentication = (CustomAuthentication) getAuthenticationManager().authenticate(authRequest);
 
         if (authentication==null) {
             System.out.println("authentication null");
@@ -78,7 +83,7 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
         System.out.println("access Token 성공 : " + accessToken);
 
         // 다음 필터로 이동합니다.
-//        chain.doFilter(request, response);
+        chain.doFilter(request, response);
     }
 
     @Override

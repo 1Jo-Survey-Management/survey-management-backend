@@ -11,7 +11,7 @@
     </select>
 
     <select id="findUserByUserAccessToken" parameterType="String" resultType="com.douzone.surveymanagement.user.dto.UserInfo">
-        SELECT access_token
+        SELECT *
         FROM user
         WHERE access_token = #{accessToken}
     </select>
