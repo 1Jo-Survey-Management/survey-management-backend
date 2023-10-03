@@ -45,116 +45,20 @@ public class LoginController {
 
     private final ClientRegistrationRepository clientRegistrationRepository;
     private final UserServiceImpl userService;
-//    private final JwtTokenProvider jwtTokenProvider;
-//private  final RestTemplate restTemplate = new RestTemplate();
-//
-//
-//
-//    private HttpSession session;
 
-//    @GetMapping("login/oauth2/code/{registrationId}")
-//    public String oauth2Login(HttpServletRequest request, HttpServletResponse response) {
-////        OAuth2AccessToken accessToken = ; // OAuth 로그인으로 얻은 Access Token
-////        session.setAttribute("access_token", accessToken.getTokenValue());
-//
-//        // 세션 ID와 Access Token을 연결하고 저장할 수도 있습니다.
-////         session.setAttribute("access_token_" + session.getId(), accessToken.getTokenValue());
-//
-//        // 다른 작업 수행 및 리다이렉션
-//        // ...
-//
-//        System.out.println("여기 지나감 ");
-//        return "";
-//    }
-
-//    // 네이버 로그인으로부터 Access Token을 얻는 코드
-//    public OAuth2AccessToken getNaverAccessToken(Authentication authentication) {
-//        if (authentication instanceof OAuth2Authentication) {
-//            OAuth2Authentication oauth2Authentication = (OAuth2Authentication) authentication;
-//            OAuth2User oauth2User = (OAuth2User) oauth2Authentication.getPrincipal();
-//            OAuth2AccessToken accessToken = oauth2User.getAttribute("access_token");
-//            return accessToken;
-//        }
-//        return null;
-//    }
-
-
-
+    /**
+     * 특정 API 요청 테스트
+     * @param request
+     * @param response
+     * @return 접근 성공 여부
+     */
     @PostMapping("/go")
     public ResponseEntity<?> loginGo(HttpServletRequest request, HttpServletResponse response){
 
-
-
-        System.out.println("로그인 요청");
-
-
-
+        System.out.println("로그인 후 API 요청");
 
         return ResponseEntity.ok("success");
     }
-
-
-//        @Value("${naver.client-id}")
-//        private String clientId;
-//
-//        @Value("${naver.redirect-uri}")
-//        private String redirectUri;
-
-//    @GetMapping("oauth2/code/naver1")
-//    public ResponseEntity<?> naverCallback1(@RequestParam(name = "access_token", required = false) String accessToken, @RequestParam(name = "state", required = false) String state) {
-//        if (accessToken != null) {
-//            // access_token을 받아서 필요한 작업을 수행합니다.
-////            return "callback";
-//            System.out.println("access Token 있음");
-//            return ResponseEntity.ok("success");
-//
-//
-//        }
-//        else {
-//            String authorizationUri = "https://nid.naver.com/oauth2.0/authorize";
-//            String stateParam = "YOUR_STATE"; // CSRF 공격 방지를 위한 랜덤한 문자열
-//
-//
-//
-//            String redirectUrl = authorizationUri + "?client_id=" + "ukwEecKhMrJzOdjwpJfB" +
-//                    "&response_type=token&redirect_uri=" + "http://localhost:8080/login/oauth2/code/naver" +
-//                    "&state=" + stateParam;
-//
-//            System.out.println(redirectUrl);
-//
-//            return ResponseEntity.ok("success");
-//        }
-
-//        else {
-//            String authorizationUri = "https://nid.naver.com/oauth2.0/authorize";
-//            String stateParam = "YOUR_STATE"; // CSRF 공격 방지를 위한 랜덤한 문자열
-//
-//            URI authorizationUrl = URI.create(authorizationUri + "?client_id=" + "ukwEecKhMrJzOdjwpJfB" +
-//                    "&response_type=token&redirect_uri=" + "http://localhost:8080/login/oauth2/code/naver" +
-//                    "&state=" + stateParam);
-//
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//            System.out.println("headers : " + headers);
-//
-//            RequestEntity<Void> requestEntity = new RequestEntity<>(headers, HttpMethod.GET, authorizationUrl);
-//
-//            ResponseEntity<Void> responseEntity = restTemplate.exchange(requestEntity, Void.class);
-//
-//            System.out.println("responseEntity : " + responseEntity);
-//
-//            // responseEntity에서 리디렉션 URL을 추출하여 사용자를 네이버 로그인 페이지로 리디렉션합니다.
-//            HttpHeaders responseHeaders = responseEntity.getHeaders();
-//            String redirectUrl = responseHeaders.getFirst(HttpHeaders.LOCATION);
-//
-//            System.out.println("redirectUrl : "+redirectUrl);
-//
-//            return ResponseEntity.ok(redirectUrl);
-//        }
-//    }
-
-
 
     /**
      * 네이버 로그인 서비스 요청후 CallBack url 리다이렉트 받아서 토큰 처리 메서드
@@ -187,7 +91,12 @@ public class LoginController {
 
         Map<String, String> params = GetAccessToken.getToken(tokenUrl);
 
-        String AccessCode = params.get("access_token");
+        String accessToken = params.get("access_token");
+        String expiresIn = params.get("expires_in");
+        String refreshToken = params.get("refresh_token");
+
+        System.out.println("(LoginController) expires in : " + expiresIn);
+        System.out.println("(LoginController) refreshToken : " + refreshToken);
 
         RestTemplate restTemplate = new RestTemplate();
         /**
@@ -195,7 +104,7 @@ public class LoginController {
          */
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer " + AccessCode);
+        headers.set("Authorization", "Bearer " + accessToken);
 
         System.out.println("headers : " + headers);
 
@@ -226,29 +135,24 @@ public class LoginController {
 
         int flag = userService.loginCheck(userEmail);
 
+
+        //회원이 존재 할 때
         if(flag!=DEFAULT_FALSE_FLAG){
-            // 회원 정보에 회원 확인 됨.
-            // 토큰 생성 첫 프로필 모달 없는 페이지로 전달
-
-//            String jwtToken = jwtTokenProvider.generateToken(userEmail);
-
-//            System.out.println(jwtToken);
-
-//            PostRedirector postRedirector = new PostRedirector();
-
-//            postRedirector.sendTokenToReact(jwtToken);
 
             System.out.println("유저 확인됨!");
 
             //아예 리턴 url에 토큰을 던져버리는 것도 ..
-            return "redirect:http://localhost:3000/survey/main";
-        }else{
+            return "redirect:http://localhost:3000/survey/main?accessToken=abc";
+
+        }
+        //회원이 존재 하지 않을때
+        else{
             // 회원 가입 실시. 첫 로그인 프로필 등록
             // 토큰 생성 첫 프로필 모달 있는 페이지로 전달
             System.out.println("유저 없음!");
         }
 
-         return "";
+         return "redirect:http://localhost:3000?accessToken=abc";
 
     }
 
