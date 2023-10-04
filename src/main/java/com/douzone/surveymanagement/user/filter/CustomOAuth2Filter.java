@@ -22,7 +22,7 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
 
 
     public CustomOAuth2Filter(String defaultFilterProcessesUrl, String loginRedirectUrl) {
-        super(new AntPathRequestMatcher(defaultFilterProcessesUrl, "POST"));
+        super(new AntPathRequestMatcher(defaultFilterProcessesUrl));
         this.defaultFilterProcessesUrl = defaultFilterProcessesUrl;
         this.loginRedirectUrl = loginRedirectUrl;
     }
@@ -35,8 +35,19 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
 
         // OAuth 2.0 토큰을 추출하는 로직을 여기에 작성합니다.
         String accessToken = extractAccessTokenFromRequest(request);
+        String userNoHeader = request.getHeader("userNo");
+        Long userNo = null;
+
+        if (userNoHeader != null) {
+            try {
+                userNo = Long.parseLong(userNoHeader);
+            } catch (NumberFormatException e) {
+                e.getStackTrace();
+            }
+        }
 
         System.out.println("추출한 토큰 : " + accessToken);
+        System.out.println("추출한 회원번호 : " + userNo);
 
         if (accessToken == null) {
             // Access Token이 없을 경우 리다이렉트\
@@ -49,7 +60,7 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
         // access token을 사용하여 AuthenticationToken 생성, 원래는 UsernamePasswordAuthenticationToken를 사용해야 하나, 이번
         // 로그인은 아이디, 비밀번호 로그인이 아니라 토큰을 이용한 인증이기 때문에 위 클래스를 커스텀하여 만듦
 //        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(accessToken, null);
-        CustomAuthenticationToken authRequest = new CustomAuthenticationToken(accessToken);
+        CustomAuthenticationToken authRequest = new CustomAuthenticationToken(accessToken, userNo);
 
         System.out.println("authRequest : " + authRequest);
 

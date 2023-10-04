@@ -101,8 +101,8 @@ private final CustomAuthenticationProvider customAuthenticationProvider;
 
     @Bean
     public CustomOAuth2Filter customOAuth2Filter() throws Exception {
-        String NoToken = "http://localhost:3000";
-        CustomOAuth2Filter filter = new CustomOAuth2Filter("/login/**",NoToken); // "/login/**"은 OAuth 2.0 토큰을 받을 엔드포인트 URL입니다.
+        String redirectUrl = "http://localhost:3000";
+        CustomOAuth2Filter filter = new CustomOAuth2Filter("/login/**",redirectUrl); // "/login/**"은 OAuth 2.0 토큰을 받을 엔드포인트 URL입니다.
         System.out.println("(SecurityConfig) filter : " + filter);
         filter.setAuthenticationManager(authenticationManager());
         return filter;

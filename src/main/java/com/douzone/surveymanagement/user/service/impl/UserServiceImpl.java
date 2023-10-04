@@ -3,13 +3,8 @@ package com.douzone.surveymanagement.user.service.impl;
 import com.douzone.surveymanagement.user.dto.UserInfo;
 import com.douzone.surveymanagement.user.mapper.UserMapper;
 import com.douzone.surveymanagement.user.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 
 /**
@@ -39,10 +34,18 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    public int loginCheck(String userEmail){
+    public int beforeRegistUser(UserInfo userInfo){
         int flag = 0;
 
-        flag = userMapper.findUserByUserEmail(userEmail);
+        flag = userMapper.beforeRegistUser(userInfo);
+
+        return flag;
+    }
+
+    public int registUser(UserInfo userInfo){
+        int flag = 0;
+
+        flag = userMapper.registUser(userInfo);
 
         return flag;
     }
@@ -58,5 +61,20 @@ public class UserServiceImpl implements UserService {
 
         return userInfo;
     }
+
+    @Override
+    public UserInfo findUserByAccessTokenAndUserNo(String accessToken, long userNo){
+
+        System.out.println("userimpl : " + accessToken);
+        System.out.println("userimpl : " + userNo);
+
+        UserInfo userInfo = userMapper.findUserByAccessTokenAndUserNo(accessToken, userNo);
+
+        System.out.println("userimpldd : " + userInfo);
+
+        return userInfo;
+    }
+
+
 
 }
