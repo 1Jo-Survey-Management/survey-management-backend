@@ -1,6 +1,7 @@
 package com.douzone.surveymanagement.common.advisor;
 
 import com.douzone.surveymanagement.common.exception.NotAcceptableFileException;
+import com.douzone.surveymanagement.common.exception.NotFoundElementException;
 import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.common.response.ErrorResponse;
 import com.douzone.surveymanagement.common.response.MethodArgumentValidError;
@@ -51,6 +52,15 @@ public class RestControllerAdvisor {
                 ErrorResponse.ofMethodArgumentValidError(methodArgumentValidErrors)
                 )
             );
+    }
+
+    @ExceptionHandler(value = {NotFoundElementException.class})
+    public ResponseEntity<CommonResponse<ErrorResponse>> noSuchElementExceptionHandler(
+        NotFoundElementException e) {
+
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(CommonResponse.error(ErrorResponse.of(e.getMessage())));
     }
 
     /**
