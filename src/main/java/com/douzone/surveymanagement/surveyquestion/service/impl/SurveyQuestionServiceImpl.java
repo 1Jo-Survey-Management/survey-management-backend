@@ -1,10 +1,14 @@
 package com.douzone.surveymanagement.surveyquestion.service.impl;
 
+import com.douzone.surveymanagement.questiontype.enums.QuestionTypeEnum;
 import com.douzone.surveymanagement.selection.service.SelectionService;
 import com.douzone.surveymanagement.surveyquestion.dto.request.SurveyQuestionCreateDto;
 import com.douzone.surveymanagement.surveyquestion.mapper.SurveyQuestionMapper;
 import com.douzone.surveymanagement.surveyquestion.service.SurveyQuestionService;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author : 강명관
  * @since : 1.0
  **/
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -26,15 +31,30 @@ public class SurveyQuestionServiceImpl implements SurveyQuestionService {
     /**
      * {@inheritDoc}
      */
-    @Transactional
-    @Override
-    public void insertSurveyQuestion(SurveyQuestionCreateDto surveyQuestionCreateDto) {
-//
-//        surveyQuestionMapper.insertSurveyQuestion(surveyQuestionCreateDto);
-//
-//        surveyQuestionCreateDto.getSelectionCreateDtoList().forEach(
-//            selectionService::insertSelection
-//        );
+    public void insertQuestionList(long surveyNo,
+                                   List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList) {
 
+        surveyQuestionCreateDtoList.forEach(surveyQuestionCreateDto -> {
+            surveyQuestionCreateDto.setSurveyNo(surveyNo);
+            surveyQuestionMapper.insertSurveyQuestion(surveyQuestionCreateDto);
+            }
+        );
+
+        List<Long> questionNoList = surveyQuestionCreateDtoList.stream()
+            .map(SurveyQuestionCreateDto::getSurveyQuestionNo)
+            .collect(Collectors.toList());
+
+        for (SurveyQuestionCreateDto questionDto : surveyQuestionCreateDtoList) {
+            QuestionTypeEnum questionTypeEnum =
+                QuestionTypeEnum.convertTo(questionDto.getQuestionTypeNo());
+
+            selectionService.insertSelectionList(
+                questionTypeEnum,
+                questionNoList,
+                questionDto.getSurveyQuestionNo(),
+                questionDto.getSelectionCreateDtoList()
+            );
+        }
     }
+
 }

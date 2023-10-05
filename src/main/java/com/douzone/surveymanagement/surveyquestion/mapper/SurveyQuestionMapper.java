@@ -12,5 +12,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface SurveyQuestionMapper {
 
-    void insertSurveyQuestion(SurveyQuestionCreateDto surveyQuestionCreateDto);
+    long insertSurveyQuestion(SurveyQuestionCreateDto surveyQuestionCreateDto);
+
 }

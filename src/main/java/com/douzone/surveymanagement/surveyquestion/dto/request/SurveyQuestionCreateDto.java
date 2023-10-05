@@ -1,13 +1,12 @@
 package com.douzone.surveymanagement.surveyquestion.dto.request;
 
 import com.douzone.surveymanagement.selection.dto.reqeust.SelectionCreateDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
 import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
@@ -23,8 +22,11 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 public class SurveyQuestionCreateDto {
 
-//    @NotNull(message = "설문 번호는 null일 수 없습니다.")
-    private int surveyNo;
+    @JsonIgnore
+    private long surveyNo;
+
+    @JsonIgnore
+    private long surveyQuestionNo;
 
     @JsonProperty("questionType")
     @NotNull(message = "문항 번호는 null일 수 없습니다.")
@@ -42,7 +44,11 @@ public class SurveyQuestionCreateDto {
     @NotNull(message = "필수 여부는 null일 수 없습니다.")
     boolean isRequired;
 
-//    @Valid
+    @Valid
     @JsonProperty("selections")
     private List<SelectionCreateDto> selectionCreateDtoList;
+
+    public void setSurveyNo(long surveyNo) {
+        this.surveyNo = surveyNo;
+    }
 }

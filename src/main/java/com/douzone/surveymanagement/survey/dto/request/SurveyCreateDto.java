@@ -8,6 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Some description here.
@@ -15,6 +16,7 @@ import lombok.Getter;
  * @author : 강명관
  * @since : 1.0
  **/
+@ToString
 @Getter
 @AllArgsConstructor
 public class SurveyCreateDto {
@@ -27,9 +29,5 @@ public class SurveyCreateDto {
     @NotEmpty(message = "설문에 대해 최소 한개 이상의 문항이 있어야 합니다.")
     @Valid
     private List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList;
-
-    @Valid
-    private List<SelectionCreateDto> selectionCreateDtoList;
-
 
 }

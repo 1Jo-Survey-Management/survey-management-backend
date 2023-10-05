@@ -2,6 +2,12 @@ package com.douzone.surveymanagement.survey.dto.request;
 
 import com.douzone.surveymanagement.survey.annotation.FutureDateTime;
 import com.douzone.surveymanagement.surveytag.dto.request.SurveyTagCreateDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.validation.Valid;
@@ -13,7 +19,11 @@ import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 설문의 정보를 등록하기 위한 Dto 클래스 입니다.
@@ -21,10 +31,13 @@ import org.hibernate.validator.constraints.Length;
  * @author : 강명관
  * @since : 1.0
  **/
+@ToString
 @Getter
 @AllArgsConstructor
-@Builder
 public class SurveyInfoCreateDto {
+
+    @JsonIgnore
+    private long surveyNo;
     @NotNull(message = "유저 번호는 null일 수 없습니다.")
     private long userNo;
 
@@ -42,18 +55,18 @@ public class SurveyInfoCreateDto {
     @Min(value = 1, message = "설문 설명은 최소 1자보다 길어야 합니다.")
     private String surveyDescription;
 
-    @NotNull(message = "설문의 이미지는 null일 수 없습니다.")
-    private String surveyImage;
+    private String surveyImagePath;
 
-    @FutureDateTime
+    public void setSurveyImagePath(String surveyImagePath) {
+        this.surveyImagePath = surveyImagePath;
+    }
     private LocalDateTime surveyPostAt;
 
+    @FutureDateTime
     @NotNull(message = "설문의 마감일은 null일 수 없습니다.")
-    private LocalDateTime surveyClosingAt;
+    private LocalDate surveyClosingAt;
 
     @NotNull(message = "설문 태그는 null일 수 없습니다.")
-    @NotEmpty(message = "설문의 태그는 최소 한개는 선택되어야 합니다.")
-    @Size(max = 2, message = "설문 태그는 최대 2개까지 지정 가능합니다.")
-    @Valid
-    List<SurveyTagCreateDto> surveyTagCreateDtoList;
+    @Size(min = 1, max = 2, message = "태그는 1 ~ 2개만 설정이 가능합니다.")
+    List<Integer> surveyTags;
 }

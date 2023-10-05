@@ -12,7 +12,7 @@
                             survey_status_no,
                             open_status_no,
                             survey_title,
-                            survey_discription,
+                            survey_description,
                             survey_image,
                             survey_post_at,
                             survey_closing_at)
@@ -21,9 +21,13 @@
                 #{openStatusNo},
                 #{surveyTitle},
                 #{surveyDescription},
-                #{surveyImage},
+                #{surveyImagePath},
                 #{surveyPostAt},
                 #{surveyClosingAt})
+
+        <selectKey keyProperty="surveyNo" keyColumn="survey_no" order="AFTER" resultType="long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
     </insert>
 
 

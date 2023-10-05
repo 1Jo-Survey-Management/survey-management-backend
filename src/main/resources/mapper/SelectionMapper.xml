@@ -16,15 +16,45 @@
         )
         VALUES (
                    #{surveyQuestionNo},
-                   #{surveyQuestionMoveNo},
+                    <choose>
+                        <when test="surveyQuestionMoveNo == 0">
+                            NULL
+                        </when>
+                        <otherwise>
+                            #{surveyQuestionMoveNo}
+                        </otherwise>
+                    </choose>,
                    #{selectionValue},
                    #{isMovable}
                );
 
     </insert>
 
-
-
-
+    <insert id="insertSelectionList" parameterType="java.util.List">
+        INSERT INTO selection (
+        `survey_question_no`,
+        `survey_question_move_no`,
+        `selection_value`,
+        `is_movable`,
+        `is_end_of_survey`
+        )
+        VALUES
+        <foreach collection="selectionCreateDtoList" item="item" separator=",">
+            (
+            #{surveyQuestionNo},
+            <choose>
+                <when test="item.surveyQuestionMoveNo == 0">
+                    NULL
+                </when>
+                <otherwise>
+                    #{item.surveyQuestionMoveNo}
+                </otherwise>
+            </choose>,
+            #{item.selectionValue},
+            #{item.isMovable},
+            #{item.isEndOfSurvey}
+            )
+        </foreach>
+    </insert>
 
 </mapper>

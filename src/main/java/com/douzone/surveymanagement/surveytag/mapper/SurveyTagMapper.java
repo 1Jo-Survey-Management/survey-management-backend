@@ -12,5 +12,11 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface SurveyTagMapper {
 
+    /**
+     * 설문을 저장하는 INSERT 메서드 입니다.
+     *
+     * @param surveyTagCreateDto 설문번호와 태그번호가 들어가 있는 Dto
+     * @author : 강명관
+     */
     void insertSurveyTag(SurveyTagCreateDto surveyTagCreateDto);
 }

@@ -13,7 +13,7 @@ public interface SurveyTagService {
     /**
      * 설문에 대한 태그를 저장하는 메서드 입니다.
      *
-     * @param surveyTagCreateDto 설문번호, 설문 태그 번호를 갖고있는 Dto
+     * @param surveyTagCreateDto 설문번호와 태그번호가 들어가 있는 Dto
      * @author : 강명관
      */
     void insertSurveyTag(SurveyTagCreateDto surveyTagCreateDto);

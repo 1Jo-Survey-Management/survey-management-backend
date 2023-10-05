@@ -1,9 +1,10 @@
 package com.douzone.surveymanagement.selection.dto.reqeust;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
 /**
@@ -12,14 +13,12 @@ import org.hibernate.validator.constraints.Length;
  * @author : 강명관
  * @since : 1.0
  **/
+@ToString
 @Getter
 @AllArgsConstructor
-@Builder
 public class SelectionCreateDto {
 
-    @NotNull(message = "문항 번호는 null일 수 업습니다.")
-    private long surveyQuestionNo;
-
+    @JsonProperty("questionMoveId")
     private long surveyQuestionMoveNo;
 
     @NotNull(message = "선택지 내용은 null일 수 없습니다.")
@@ -28,4 +27,11 @@ public class SelectionCreateDto {
 
     @NotNull(message = "이동 여부는 null일 수 없습니다.")
     private boolean isMovable;
+
+    @NotNull(message = "설문 종료 여부는 null일 수 없습니다.")
+    private boolean isEndOfSurvey;
+
+    public void setSurveyQuestionMoveNo(long surveyQuestionMoveNo) {
+        this.surveyQuestionMoveNo = surveyQuestionMoveNo;
+    }
 }
