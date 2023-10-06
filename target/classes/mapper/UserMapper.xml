@@ -16,6 +16,23 @@
         WHERE access_token = #{accessToken}
     </select>
 
+    <select id="findUserByAccessTokenAndUserNo" resultType="com.douzone.surveymanagement.user.dto.UserInfo">
+        SELECT *
+        FROM user
+        WHERE access_token = #{accessToken} and user_no = #{userNo}
+    </select>
+
+    <insert id="beforeRegistUser" >
+        INSERT
+        INTO user(user_email,access_token)
+        VALUES (#{userEmail},#{accessToken})
+    </insert>
+
+    <update id="registUser">
+        UPDATE user
+        SET user_nickname = #{userNickname}, user_gender =#{userGender}, user_birth=#{userBirth}
+        WHERE user_no = #{userNo}
+    </update>
 
     <!-- 다른 SQL 쿼리 정의 -->
 </mapper>

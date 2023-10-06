@@ -26,14 +26,15 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         Long userNo = customToken.getUserNo();
 
         System.out.println("authenticate 들어옴, 토큰값 : " + tokenValue);
+        System.out.println("userNo : " + userNo);
 
 
         // TODO: 토큰이랑 회원번호가 들어오면 회원이 있다는 말이니 1번으로 가고
         // TODO: 토큰만 들어오면 회원이 없다는 말이라서 2번으로 간다
 
 
-        // 1. 토큰과 회원번호가 들어오면 이미 존재하는 회원이므로 인가 객체 반환
-        if(userNo!=null){
+        // 1. 토큰과 회원번호가 들어오면 회원 확인, mysql에서 회원번호 1부터 시작이기 때문에 0이면 회원일 수 없음
+        if(!tokenValue.equals("") && userNo!=0 ){
             UserInfo user = userService.findUserByAccessTokenAndUserNo(tokenValue, userNo);
 
             System.out.println("토큰과 회원 번호로 회원 확인 : " + user);
@@ -51,7 +52,20 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
             return null;
         }
-        // 2. 토큰만 들어오면 회원가입이 아직 완료되지 않은 회원이라 비어있는 인가 객체 반환
+        // 2. 만약 callback uri로 인하여 임시적인 인가 객체를 반환해야 될 수 있음
+        else if (((CustomAuthenticationToken) authentication).getCallBackUri().equals("/login/oauth2/code/naver")) {
+
+            System.out.println("콜백 인가 들어옴");
+            CustomAuthentication customAuthentication = new CustomAuthentication(
+                    // 인가만 해줌
+                    new CustomUserDetails(null, null, null, customToken.getAuthorities()),
+                    null
+            );
+
+            System.out.println("customAuthentication : " + customAuthentication.getAuthorities());
+            return customAuthentication;
+        }
+        // 3. 토큰만 들어오면 회원가입이 아직 완료되지 않은 회원이라 비어있는 인가 객체 반환
         else {
             UserInfo user = userService.findUserByUserAccessToken(tokenValue);
 
