@@ -45,14 +45,14 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
         System.out.println("추출한 토큰 : " + accessToken);
         System.out.println("추출한 회원번호 : " + userNo);
 
-        if (accessToken == null && !naverCodeTokenCheck.equals("/login/oauth2/code/naver")) {
+        if (accessToken == null && !naverCodeTokenCheck.equals("/login/oauth2/code/naver") && !naverCodeTokenCheck.equals("/login/oauth2/code/naver/call")) {
             // Access Token이 없거나 네이버 CallBack이 아닌 경우 리다이렉트
 
             System.out.println("토큰 없을때 리다이렉트 경로 : " + loginRedirectUrl);
             response.sendRedirect(loginRedirectUrl);
 
             return null;
-        } else if (naverCodeTokenCheck.equals("/login/oauth2/code/naver")) {
+        } else if (naverCodeTokenCheck.equals("/login/oauth2/code/naver") || naverCodeTokenCheck.equals("/login/oauth2/code/naver/call")) {
             System.out.println("네이버 CallBack으로 통과");
 
             CustomAuthenticationToken authRequest = new CustomAuthenticationToken(null, null, naverCodeTokenCheck);

@@ -53,7 +53,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             return null;
         }
         // 2. 만약 callback uri로 인하여 임시적인 인가 객체를 반환해야 될 수 있음
-        else if (((CustomAuthenticationToken) authentication).getCallBackUri().equals("/login/oauth2/code/naver")) {
+        else if (((CustomAuthenticationToken) authentication).getCallBackUri().equals("/login/oauth2/code/naver")
+                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/login/oauth2/code/naver/call")) {
 
             System.out.println("콜백 인가 들어옴");
             CustomAuthentication customAuthentication = new CustomAuthentication(

@@ -35,6 +35,8 @@ public class LoginController {
     private final ClientRegistrationRepository clientRegistrationRepository;
     private final UserServiceImpl userService;
 
+    public ResponseEntity<CommonResponse> commonResponseResponseEntity;
+
     /**
      * 특정 API 요청 테스트
      *
@@ -122,6 +124,52 @@ public class LoginController {
         return ResponseEntity.of(java.util.Optional.ofNullable(commonResponse));
     }
 
+
+    @PostMapping("oauth2/code/naver/call")
+    public ResponseEntity<CommonResponse> requestNaver(){
+        UserInfo userInfo = null;
+
+        // RestTemplate 객체 생성
+        RestTemplate restTemplate = new RestTemplate();
+
+        // 요청을 보낼 URL 정의
+        String apiUrl = "https://nid.naver.com/oauth2.0/authorize?client_id=ukwEecKhMrJzOdjwpJfB&response_type=code&redirect_uri=http://localhost:8080/login/oauth2/code/naver";
+
+        // GET 요청 보내기
+        ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
+
+        // 응답 데이터 가져오기
+        String responseBody = response.getBody();
+
+        // 응답 상태 코드 확인
+        int statusCode = response.getStatusCodeValue();
+
+//        System.out.println("응답 데이터: " + responseBody);
+        System.out.println("상태 코드: " + statusCode);
+
+        String clientid = "ukwEecKhMrJzOdjwpJfB";
+        CommonResponse commonResponse = CommonResponse.successOf(clientid);
+
+        // 응답에 클라이언트아이디 보내서 구분자로 사용
+        commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.ofNullable(commonResponse));
+
+        System.out.println("commonResponseResponseEntity : " + commonResponseResponseEntity);
+
+        return commonResponseResponseEntity;
+    }
+
+    // 클라이언트 아이디 가지고 다시 요청 보내면 그때 제대로된 유저 엔티티보내줌// param 말고 헤더로 잡게끔 수정하기
+    @PostMapping("oauth2/code/naver/accessback")
+    public ResponseEntity<CommonResponse> accessback(@RequestParam(name = "clientid", required = false) String clientid) {
+
+        if(clientid!=null){
+            return commonResponseResponseEntity;
+        }else{
+            return null;
+        }
+
+    }
+
     /**
      * 네이버 로그인 서비스 요청후 CallBack url 리다이렉트 받아서 토큰 처리 메서드
      *
@@ -130,129 +178,138 @@ public class LoginController {
      * @return
      */
     @GetMapping("oauth2/code/naver")
-    public String naverCallback(@RequestParam("code") String code, @RequestParam("state") String state) {
-        /**
-         *  클라이언트 ID와 시크릿을 설정
-         */
+    public void naverCallback(@RequestParam(name = "code", required = false) String code,
+                                @RequestParam(name = "state", required = false) String state) {
 
-        System.out.println("네이버 콜백 들어옴");
+            System.out.println("네이버 콜백 들어옴");
 
-        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("naver");
-        String clientId = clientRegistration.getClientId();
-        String clientSecret = clientRegistration.getClientSecret();
+            ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("naver");
+            String clientId = clientRegistration.getClientId();
+            String clientSecret = clientRegistration.getClientSecret();
 
-        /**
-         * Authorization Code를 사용하여 액세스 토큰 요청
-         */
-        String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=" + clientId +
-                "&client_secret=" + clientSecret + "&code=" + code + "&state=" + state;
+            /**
+             * Authorization Code를 사용하여 액세스 토큰 요청
+             */
+            String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=" + clientId +
+                    "&client_secret=" + clientSecret + "&code=" + code + "&state=" + state;
 
-        System.out.println("tokenUrl : " + tokenUrl);
+            System.out.println("tokenUrl : " + tokenUrl);
 
-        /**
-         * 네이버 API 엔드포인트 URL
-         */
-        String userInfoUrl = "https://openapi.naver.com/v1/nid/me";
+            /**
+             * 네이버 API 엔드포인트 URL
+             */
+            String userInfoUrl = "https://openapi.naver.com/v1/nid/me";
 
-        Map<String, String> params = GetAccessToken.getToken(tokenUrl);
+            Map<String, String> params = GetAccessToken.getToken(tokenUrl);
 
-        String accessToken = params.get("access_token");
-        String expiresIn = params.get("expires_in");
-        String refreshToken = params.get("refresh_token");
+            String accessToken = params.get("access_token");
+            String expiresIn = params.get("expires_in");
+            String refreshToken = params.get("refresh_token");
 
-        System.out.println("(LoginController) expires in : " + expiresIn);
-        System.out.println("(LoginController) refreshToken : " + refreshToken);
+            System.out.println("(LoginController) expires in : " + expiresIn);
+            System.out.println("(LoginController) refreshToken : " + refreshToken);
 
-        RestTemplate restTemplate = new RestTemplate();
-        /**
-         * HTTP 요청 헤더 설정
-         */
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer " + accessToken);
+            RestTemplate restTemplate = new RestTemplate();
+            /**
+             * HTTP 요청 헤더 설정
+             */
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + accessToken);
 
-        System.out.println("headers : " + headers);
+            System.out.println("headers : " + headers);
 
-        /**
-         * HTTP 요청 엔터티 생성
-         */
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+            /**
+             * HTTP 요청 엔터티 생성
+             */
+            HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        /**
-         * HTTP GET 요청
-         */
-        ResponseEntity<NaverUserInfoResponse> response = restTemplate.exchange(
-                userInfoUrl,
-                HttpMethod.GET,
-                entity,
-                NaverUserInfoResponse.class
-        );
+            /**
+             * HTTP GET 요청
+             */
+            ResponseEntity<NaverUserInfoResponse> response = restTemplate.exchange(
+                    userInfoUrl,
+                    HttpMethod.GET,
+                    entity,
+                    NaverUserInfoResponse.class
+            );
 
-        /**
-         * API 응답 데이터를 NaverUserInfoResponse 객체로 변환
-         */
-        NaverUserInfoResponse userInfo = response.getBody();
+            /**
+             * API 응답 데이터를 NaverUserInfoResponse 객체로 변환
+             */
+            NaverUserInfoResponse userInfo = response.getBody();
 
-        String userEmail = userInfo.getResponse().getEmail();
+            String userEmail = userInfo.getResponse().getEmail();
 
-        // accessToken으로 회원이 존재하고 프로필 모두 등록 되었는지 확인
-        UserInfo userExistCheck = userService.findUserByUserAccessToken("abc");
+            // accessToken으로 회원이 존재하고 프로필 모두 등록 되었는지 확인
+            UserInfo userExistCheck = userService.findUserByUserAccessToken("abc");
 
-        System.out.println("userExistCheck : " + userExistCheck);
+            System.out.println("userExistCheck : " + userExistCheck);
 
 
-        // 회원 가입 실시. 첫 로그인 프로필 등록
-        // 데이터 베이스에 이메일과 액세스 토큰만 일단! 저장하여 만들어 놓고
-        // 토큰 생성 첫 프로필 모달 있는 페이지로 전달
-        // 이후 요청으로 돌아올때 회원가입 확정과 함게 인가 완료
-        //TODO : 이메일,액세스 토큰으로만 회원가입 해놓기
+            // 회원 가입 실시. 첫 로그인 프로필 등록
+            // 데이터 베이스에 이메일과 액세스 토큰만 일단! 저장하여 만들어 놓고
+            // 토큰 생성 첫 프로필 모달 있는 페이지로 전달
+            // 이후 요청으로 돌아올때 회원가입 확정과 함게 인가 완료
+            //TODO : 이메일,액세스 토큰으로만 회원가입 해놓기
 
-        // 완료되지 않은 회원가입 정보 확인
-        UserInfo userIncompletedCheck = new UserInfo();
-        userIncompletedCheck = userService.findUserByUserAccessToken("abc");
+            // 완료되지 않은 회원가입 정보 확인
+            UserInfo userIncompletedCheck = new UserInfo();
+            userIncompletedCheck = userService.findUserByUserAccessToken("abc");
 
-        // db에 회원이 존재할때
-        if (userExistCheck != null) {
-            // 완료된 회원이라면
-            if (!userExistCheck.getUserNickname().isEmpty()) {
-                System.out.println("userInfo : " + userInfo.getResponse().getEmail());
-                System.out.println("response : " + response.getStatusCode());
+            // 반환할 객체
+            CommonResponse commonResponse ;
 
-                UserInfo userCheck = userService.findUserByUserAccessToken("abc");
+            // db에 회원이 존재할때
+            if (userExistCheck != null) {
+                // 완료된 회원이라면
+                if (!userExistCheck.getUserNickname().isEmpty()) {
+                    System.out.println("userInfo : " + userInfo.getResponse().getEmail());
+                    System.out.println("response : " + response.getStatusCode());
 
-                System.out.println("유저 확인됨! : " + userCheck);
+                    UserInfo userCheck = userService.findUserByUserAccessToken("abc");
 
-                //리턴 url에 토큰이랑 회원Pk 반환
-                return "redirect:http://localhost:3000/survey/main?accessToken=abc&&userNo=" + userCheck.getUserNo();
-            }
-            // 완료되지 않은 회원이라면(프로필 정보 필요함)
-            else{
+                    System.out.println("유저 확인됨! : " + userCheck);
+
+                    commonResponse = CommonResponse.successOf(userCheck);
+
+
+                    //리턴 url에 토큰이랑 회원Pk 반환
+                    commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.ofNullable(commonResponse));
+                }
+                // 완료되지 않은 회원이라면(프로필 정보 필요함)
+                else {
                     System.out.println("이미 미완료 회원 정보 있음");
                     System.out.println("미완료 회원번호 : " + userIncompletedCheck.getUserNo());
 
+                    commonResponse = CommonResponse.successOf(userIncompletedCheck);
+
                     // 이후 요청 : 토큰 + 회원pk = 정상 로그인 , 토큰 = 미완료 회원 등록 진행
-                    return "redirect:http://localhost:3000?accessToken=abc";
+                    commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.ofNullable(commonResponse));
+                }
+
+            }
+            // db에 회원이 존재하지 않을때(db에 accessToken 기준 미완료 회원도 없을때)
+            else {
+
+                System.out.println("미완료 회원 존재 x");
+
+                UserInfo userRegist = new UserInfo();
+
+                userRegist.setUserEmail(userEmail);
+                userRegist.setAccessToken("abc");
+
+                int flag = userService.beforeRegistUser(userRegist);
+
+                System.out.println("미완료 회원 등록 : " + flag);
+
+                commonResponse = CommonResponse.successOf(userRegist);
+
+                // 이후 요청 : 토큰 + 회원pk = 정상 로그인 , 토큰 = 미완료 회원 등록 진행
+                commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.ofNullable(commonResponse));
+
             }
 
         }
-        // db에 회원이 존재하지 않을때(db에 accessToken 기준 미완료 회원도 없을때)
-        else {
 
-            System.out.println("미완료 회원 존재 x");
-
-            UserInfo userRegist = new UserInfo();
-
-            userRegist.setUserEmail(userEmail);
-            userRegist.setAccessToken("abc");
-
-            int flag = userService.beforeRegistUser(userRegist);
-
-            System.out.println("미완료 회원 등록 : " + flag);
-
-            // 이후 요청 : 토큰 + 회원pk = 정상 로그인 , 토큰 = 미완료 회원 등록 진행
-            return "redirect:http://localhost:3000?accessToken=abc";
-
-        }
-
-    }
 }
