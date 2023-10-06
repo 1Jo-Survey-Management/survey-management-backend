@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.douzone.surveymanagement.survey.mapper.QuerySurveyMapper">
+    <resultMap id="surveyDetailInfoDto" type="com.douzone.surveymanagement.survey.dto.response.SurveyDetailInfoDto">
+    <result property="surveyNo" column="survey_no"/>
+    <result property="surveyTitle" column="survey_title"/>
+    <result property="surveyDiscription" column="survey_discription"/>
+    <result property="surveyImage" column="survey_image"/>
+    <result property="surveyPostAt" column="survey_post_at"/>
+    <result property="surveyClosingAt" column="survey_closing_at"/>
+    <result property="userNickName" column="user_nickname"/>
+    <result property="userImage" column="user_image"/>
+    <result property="surveyStatusName" column="survey_status_name"/>
+    <result property="openStatusName" column="open_status_name"/>
+    <result property="surveyAttendCount" column="survey_attend_count"/>
+    <result property="isDeleted" column="is_deleted"/>
+        <collection property="tag" javaType="list" resultMap="tagDto"></collection>
+</resultMap>
+    <resultMap id="tagDto" type="string">
+        <result property="tagName" column="tag_name"/>
+    </resultMap>
+
+    <select id="recentSurvey" resultMap="surveyDetailInfoDto">
+        select survey.survey_no,
+               survey_title,
+               survey_discription,
+               survey_image,
+               survey_post_at,
+               survey_closing_at,
+               user.user_nickname,
+               user.user_image,
+               survey_status.survey_status_name,
+               os.open_status_name,
+               count(survey_attend.survey_no) as attend_count,
+               is_deleted,
+               tag.tag_name
+        from survey
+                 left join survey_status on survey.survey_status_no = survey_status.survey_status_no
+                 left join user on user.user_no = survey.user_no
+                 left join open_status os on survey.open_status_no = os.open_status_no
+                 left join survey_attend on survey.survey_no = survey_attend.survey_no
+                 left join survey_tag on survey.survey_no = survey_tag.survey_no
+                 left join tag on survey_tag.tag_no = tag.tag_no
+        where is_deleted = 0
+          and survey_status.survey_status_no = 2 and survey_post_at is not null
+        group by survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
+                 survey_attend.survey_no, os.open_status_no, survey.survey_no,tag.tag_no, survey_tag.tag_no
+        order by survey_post_at desc
+            limit 10
+    </select>
+
+
+
+    <select id="closingSurvey" resultMap="surveyDetailInfoDto">
+        select survey.survey_no,
+               survey_title,
+               survey_discription,
+               survey_image,
+               survey_post_at,
+               survey_closing_at,
+               user.user_nickname,
+               user.user_image,
+               survey_status.survey_status_name,
+               os.open_status_name,
+               count(survey_attend.survey_no) as attend_count,
+               is_deleted,
+               tag.tag_name
+        from survey
+                 left join survey_status on survey.survey_status_no = survey_status.survey_status_no
+                 left join user on user.user_no = survey.user_no
+                 left join open_status os on survey.open_status_no = os.open_status_no
+                 left join survey_attend on survey.survey_no = survey_attend.survey_no
+                 left join survey_tag on survey.survey_no = survey_tag.survey_no
+                 left join tag on survey_tag.tag_no = tag.tag_no
+        where is_deleted = 0
+          and survey_status.survey_status_no = 3
+
+        group by survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
+                 survey_attend.survey_no, os.open_status_no, survey.survey_no,tag.tag_no, survey_tag.tag_no
+        order by survey_closing_at desc
+            limit 10
+    </select>
+
+    <select id="readAllSurvey" resultMap="surveyDetailInfoDto">
+        select survey.survey_no,
+        survey_title,
+        survey_discription,
+        survey_image,
+        survey_post_at,
+        survey_closing_at,
+        user.user_nickname,
+        user.user_image,
+        survey_status.survey_status_name,
+        os.open_status_name,
+        count(survey_attend.survey_no) as attend_count,
+        is_deleted,
+        tag.tag_name
+        from survey
+        left join survey_status on survey.survey_status_no = survey_status.survey_status_no
+        left join user on user.user_no = survey.user_no
+        left join open_status os on survey.open_status_no = os.open_status_no
+        left join survey_attend on survey.survey_no = survey_attend.survey_no
+        left join survey_tag on survey.survey_no = survey_tag.survey_no
+        left join tag on survey_tag.tag_no = tag.tag_no
+        where is_deleted = 0
+        AND survey.survey_status_no != 1
+        group by survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
+        survey_attend.survey_no, os.open_status_no, survey.survey_no,tag.tag_no, survey_tag.tag_no
+        ORDER BY
+        CASE WHEN survey_status.survey_status_no = 3 THEN 1 ELSE 0 END, -- survey_status가 3인 것을 마지막에
+        survey_post_at DESC limit 20
+    </select>
+    
+    <select id="weeklySurvey" resultMap="surveyDetailInfoDto">
+        select survey.survey_no,
+               survey_title,
+               survey_discription,
+               survey_image,
+               survey_post_at,
+               survey_closing_at,
+               user.user_nickname,
+               user.user_image,
+               survey_status.survey_status_name,
+               os.open_status_name,
+               count(survey_attend.survey_no) as attend_count,
+               is_deleted,
+               tag.tag_name
+        from survey
+                 left join survey_status on survey.survey_status_no = survey_status.survey_status_no
+                 left join user on user.user_no = survey.user_no
+                 left join open_status os on survey.open_status_no = os.open_status_no
+                 left join survey_attend on survey.survey_no = survey_attend.survey_no
+                 left join survey_tag on survey.survey_no = survey_tag.survey_no
+                 left join tag on survey_tag.tag_no = tag.tag_no
+        WHERE survey_post_at >= DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY) - INTERVAL 6 DAY
+          and is_deleted = 0
+          and survey_status.survey_status_no = 2
+        group by survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
+            survey_attend.survey_no, os.open_status_no, survey.survey_no,tag.tag_no, survey_tag.tag_no
+        order by attend_count desc, survey_post_at desc
+            limit 10;
+    </select>
+
+    <select id="selectClosingSurvey" resultMap="surveyDetailInfoDto">
+        select survey.survey_no,
+               survey_title,
+               survey_discription,
+               survey_image,
+               survey_post_at,
+               survey_closing_at,
+               user.user_nickname,
+               user.user_image,
+               survey_status.survey_status_name,
+               os.open_status_name,
+               count(survey_attend.survey_no) as attend_count,
+               is_deleted,
+               tag.tag_name
+        from survey
+                 left join survey_status on survey.survey_status_no = survey_status.survey_status_no
+                 left join user on user.user_no = survey.user_no
+                 left join open_status os on survey.open_status_no = os.open_status_no
+                 left join survey_attend on survey.survey_no = survey_attend.survey_no
+                 left join survey_tag on survey.survey_no = survey_tag.survey_no
+                 left join tag on survey_tag.tag_no = tag.tag_no
+        WHERE is_deleted = 0
+          and survey_status.survey_status_no = 3
+        group by survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
+            survey_attend.survey_no, os.open_status_no, survey.survey_no,tag.tag_no, survey_tag.tag_no
+        order by survey_closing_at desc
+            limit 20;
+    </select>
+
+    <select id="selectPostSurvey" resultMap="surveyDetailInfoDto">
+        select survey.survey_no,
+               survey_title,
+               survey_discription,
+               survey_image,
+               survey_post_at,
+               survey_closing_at,
+               user.user_nickname,
+               user.user_image,
+               survey_status.survey_status_name,
+               os.open_status_name,
+               count(survey_attend.survey_no) as attend_count,
+               is_deleted,
+               tag.tag_name
+        from survey
+                 left join survey_status on survey.survey_status_no = survey_status.survey_status_no
+                 left join user on user.user_no = survey.user_no
+                 left join open_status os on survey.open_status_no = os.open_status_no
+                 left join survey_attend on survey.survey_no = survey_attend.survey_no
+                 left join survey_tag on survey.survey_no = survey_tag.survey_no
+                 left join tag on survey_tag.tag_no = tag.tag_no
+        WHERE is_deleted = 0
+          and survey_status.survey_status_no = 2
+        group by survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
+                 survey_attend.survey_no, os.open_status_no, survey.survey_no,tag.tag_no, survey_tag.tag_no
+        order by survey_post_at desc
+            limit 20;
+    </select>
+
+</mapper>
