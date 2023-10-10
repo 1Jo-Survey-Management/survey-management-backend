@@ -69,7 +69,6 @@ public class MySurveyApi {
             @RequestBody MySurveyDTO mySurveyDTO) {
 
         int deleted = mySurveyServiceImpl.updateMySurveysInProgress(mySurveyDTO);
-            System.out.println("deleted: " + deleted);
             if (deleted == 1) {
                 return ResponseEntity
                         .ok()
