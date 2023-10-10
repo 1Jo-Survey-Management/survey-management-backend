@@ -45,10 +45,10 @@ public interface UserService {
          * 유저의 이미지 정보를 업데이트합니다.
          *
          * @param userNo       유저 번호
-         * @param file 새 이미지 파일
+         * @param File 새 이미지 파일
          * @return 업데이트 성공 여부 (true: 성공, false: 실패)
          */
-    boolean updateUserImage(long userNo, MultipartFile file);
+    boolean updateUserImage(long userNo, MultipartFile File);
 
     /**
      * 이전 사용자 이미지를 삭제하고 데이터베이스를 업데이트합니다.

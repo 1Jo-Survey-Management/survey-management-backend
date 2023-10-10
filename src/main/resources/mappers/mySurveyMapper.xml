@@ -28,74 +28,68 @@
 
     <!-- user_no가 유저가 작성한 설문 목록을 가져오는 쿼리 -->
     <select id="selectMySurveysWithSorting" resultMap="surveyResultMap">
-        <![CDATA[
-            SELECT
-                s.*,
-                t.tag_name AS tagNames,
-                COUNT(DISTINCT sa.user_no) AS attendee_count
-            FROM
-                survey s
-            LEFT JOIN
-                survey_attend sa ON s.survey_no = sa.survey_no
-            LEFT JOIN
-                survey_tag st ON s.survey_no = st.survey_no
-            LEFT JOIN
-                tag t ON st.tag_no = t.tag_no
-            WHERE
-                s.user_no = #{userNo}
-                AND s.is_deleted = 0
-            GROUP BY
-                s.survey_no, t.tag_name -- 추가적으로 태그 이름에 대한 GROUP BY
-            ORDER BY
-                CASE
-                WHEN s.survey_status_no = 1 THEN 1  -- 작성 중
-                WHEN s.survey_status_no = 2 THEN 2  -- 진행 중
-                ELSE 3  -- 마감
-                END,
-                s.survey_closing_at;
-        ]]>
+        SELECT
+            s.*,
+            t.tag_name AS tagNames,
+            COUNT(DISTINCT sa.user_no) AS attendee_count
+        FROM
+            survey s
+        LEFT JOIN
+            survey_attend sa ON s.survey_no = sa.survey_no
+        LEFT JOIN
+            survey_tag st ON s.survey_no = st.survey_no
+        LEFT JOIN
+            tag t ON st.tag_no = t.tag_no
+        WHERE
+            s.user_no = #{userNo}
+            AND s.is_deleted = 0
+        GROUP BY
+            s.survey_no, t.tag_name -- 추가적으로 태그 이름에 대한 GROUP BY
+        ORDER BY
+            CASE
+            WHEN s.survey_status_no = 1 THEN 1  -- 작성 중
+            WHEN s.survey_status_no = 2 THEN 2  -- 진행 중
+            ELSE 3  -- 마감
+            END,
+            s.survey_closing_at;
     </select>
 
     <!-- user_no가 참여한 설문 목록을 가져오는 쿼리 -->
     <select id="selectMyParticipatedSurveys" resultMap="surveyResultMap">
-        <![CDATA[
-    SELECT
-        s.*,
-        u.user_nickname AS userNickname,
-        t.tag_name AS tagNames,
-        COUNT(DISTINCT sa.user_no) AS attendee_count
-    FROM
-        survey s
-    LEFT JOIN
-        survey_attend sa ON s.survey_no = sa.survey_no
-    LEFT JOIN
-        survey_tag st ON s.survey_no = st.survey_no
-    LEFT JOIN
-        tag t ON st.tag_no = t.tag_no
-    LEFT JOIN
-        user u ON s.user_no = u.user_no
-    WHERE
-        sa.user_no = #{userNo}
-        AND s.is_deleted = 0
-    GROUP BY
-        s.survey_no, u.user_nickname, t.tag_name
-    ORDER BY
-        CASE
-            WHEN s.survey_status_no = 1 THEN 1
-            WHEN s.survey_status_no = 2 THEN 2
-            ELSE 3
-        END,
-        s.survey_closing_at;
-    ]]>
+        SELECT
+            s.*,
+            u.user_nickname AS userNickname,
+            t.tag_name AS tagNames,
+            COUNT(DISTINCT sa.user_no) AS attendee_count
+        FROM
+            survey s
+        LEFT JOIN
+            survey_attend sa ON s.survey_no = sa.survey_no
+        LEFT JOIN
+            survey_tag st ON s.survey_no = st.survey_no
+        LEFT JOIN
+            tag t ON st.tag_no = t.tag_no
+        LEFT JOIN
+            user u ON s.user_no = u.user_no
+        WHERE
+            sa.user_no = #{userNo}
+            AND s.is_deleted = 0
+        GROUP BY
+            s.survey_no, u.user_nickname, t.tag_name
+        ORDER BY
+            CASE
+                WHEN s.survey_status_no = 1 THEN 1
+                WHEN s.survey_status_no = 2 THEN 2
+                ELSE 3
+            END,
+            s.survey_closing_at;
     </select>
 
 
     <!-- 본인이 작성 중인 설문을 삭제하는 쿼리 -->
     <update id="updateMySurveysInProgress" parameterType="com.douzone.surveymanagement.mysurvey.dto.request.MySurveyDTO">
-        <![CDATA[
-            UPDATE survey
-            SET is_deleted = 1
-            WHERE user_no = #{userNo} AND survey_no = #{surveyNo} AND survey_status_no = 1;
-        ]]>
+        UPDATE survey
+        SET is_deleted = 1
+        WHERE user_no = #{userNo} AND survey_no = #{surveyNo} AND survey_status_no = 1;
     </update>
 </mapper>

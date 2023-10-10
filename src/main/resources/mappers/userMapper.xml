@@ -6,26 +6,26 @@
 
     <select id="getUserByUserNo" resultType="com.douzone.surveymanagement.user.dto.request.UserDTO">
         SELECT
-        user_no AS userNo,
-        user_nickname AS userNickname,
-        user_birth AS userBirth,
-        user_gender AS userGender,
-        user_email AS userEmail,
-        user_image AS userImage,
-        created_at AS createdAt
+            user_no AS userNo,
+            user_nickname AS userNickname,
+            user_birth AS userBirth,
+            user_gender AS userGender,
+            user_email AS userEmail,
+            user_image AS userImage,
+            created_at AS createdAt
         FROM user
         WHERE user_no = #{userNo}
     </select>
 
     <select id="getUserByUserNickname" parameterType="String" resultType="com.douzone.surveymanagement.user.dto.request.UserModifyDTO">
         SELECT
-        user_no AS userNo,
-        user_nickname AS userNickname,
-        user_birth AS userBirth,
-        user_gender AS userGender,
-        user_email AS userEmail,
-        user_image AS userImage,
-        created_at AS createdAt
+            user_no AS userNo,
+            user_nickname AS userNickname,
+            user_birth AS userBirth,
+            user_gender AS userGender,
+            user_email AS userEmail,
+            user_image AS userImage,
+            created_at AS createdAt
         FROM user
         WHERE user_nickname = #{userNickname}
     </select>
@@ -33,9 +33,9 @@
     <update id="updateUserNickNameByUserNo" parameterType="com.douzone.surveymanagement.user.dto.request.UserModifyDTO">
         update user
         set
-        user_nickname = #{userNickname}
+            user_nickname = #{userNickname}
         where
-        user_no = #{userNo}
+            user_no = #{userNo}
     </update>
 
     <update id="updateUserImage" parameterType="com.douzone.surveymanagement.user.dto.request.ImageModifyDTO">

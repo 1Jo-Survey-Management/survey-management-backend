@@ -28,7 +28,7 @@ public interface MySurveyService {
      * 사용자가 작성 중인 설문 중 삭제할 설문을 삭제합니다.
      *
      * @param mySurveyDTO 설문 객체 DTO
-     * @return 삭제된 설문의 개수
+     * @return 삭제 성공 여부 (true: 삭제 성공, false: 삭제 실패)
      */
-    int updateMySurveysInProgress(MySurveyDTO mySurveyDTO);
+    boolean deleteMySurveyInProgress(MySurveyDTO mySurveyDTO);
 }

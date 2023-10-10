@@ -19,5 +19,4 @@ public interface MyPageMapper {
     UserModifyDTO getUserByUserNickname(String userNickname);
 
     void deletePreviousUserImage(long userNo);
-
 }

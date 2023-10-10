@@ -12,9 +12,6 @@ import java.util.List;
  *
  * @version 1.0
  */
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Getter
 public class MySurveyDTO {
     private Long surveyNo;

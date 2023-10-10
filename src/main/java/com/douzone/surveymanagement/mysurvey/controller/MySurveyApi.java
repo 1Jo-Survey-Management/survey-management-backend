@@ -67,17 +67,15 @@ public class MySurveyApi {
     @PutMapping("/update-write-surveys")
     public ResponseEntity<CommonResponse> updateMySurvey(
             @RequestBody MySurveyDTO mySurveyDTO) {
-
-        int deleted = mySurveyServiceImpl.updateMySurveysInProgress(mySurveyDTO);
-            if (deleted == 1) {
-                return ResponseEntity
-                        .ok()
-                        .body(CommonResponse.successOf("Survey deleted successfully"));
-            } else {
-                return ResponseEntity
-                        .status(HttpStatus.BAD_REQUEST)
-                        .body(CommonResponse.<String>error(ErrorResponse.of("Failed to delete survey")));
-            }
-
+        boolean isDeleted = mySurveyServiceImpl.deleteMySurveyInProgress(mySurveyDTO);
+        if (isDeleted) {
+            return ResponseEntity
+                    .ok()
+                    .body(CommonResponse.successOf("Survey deleted successfully"));
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(CommonResponse.<String>error(ErrorResponse.of("Failed to delete survey")));
+        }
     }
 }

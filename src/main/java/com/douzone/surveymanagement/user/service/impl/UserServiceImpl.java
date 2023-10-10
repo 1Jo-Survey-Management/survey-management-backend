@@ -24,12 +24,14 @@ import java.nio.file.Paths;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     private final MyPageMapper myPageMapper;
 
 
     @Override
+    @Transactional
     public boolean updateUserNickName(UserModifyDTO userModifyDTO) {
         UserModifyDTO existUserNickname = myPageMapper.getUserByUserNickname(userModifyDTO.getUserNickname());
 
@@ -50,12 +52,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean duplicateUsername(UserModifyDTO userModifyDTO) {
         UserModifyDTO existUserNickname = myPageMapper.getUserByUserNickname(userModifyDTO.getUserNickname());
-
-        if (existUserNickname != null && isUserNicknameDuplicate(existUserNickname.getUserNickname())) {
-            return true;
-        }
-        return false;
-
+        return existUserNickname != null && isUserNicknameDuplicate(existUserNickname.getUserNickname());
     }
 
     @Override
@@ -66,11 +63,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public boolean updateUserImage(long userNo, MultipartFile file) {
+    public boolean updateUserImage(long userNo, MultipartFile File) {
         try {
             deletePreviousUserImage(userNo);
 
-            String imagePath = FileUploadUtil.uploadFile(file);
+            String imagePath = FileUploadUtil.uploadFile(File);
 
             ImageModifyDTO imageModifyDTO = new ImageModifyDTO(userNo, imagePath);
 

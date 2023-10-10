@@ -65,9 +65,9 @@ public class UserApi {
     @PutMapping("/{userNo}/image")
     public ResponseEntity<CommonResponse> updateUserImage(
             @PathVariable long userNo,
-            @RequestParam("file") MultipartFile file) {
+            @RequestParam("file") MultipartFile File) {
 
-        boolean updated = userServiceImpl.updateUserImage(userNo, file);
+        boolean updated = userServiceImpl.updateUserImage(userNo, File);
 
         if (updated) {
             return ResponseEntity

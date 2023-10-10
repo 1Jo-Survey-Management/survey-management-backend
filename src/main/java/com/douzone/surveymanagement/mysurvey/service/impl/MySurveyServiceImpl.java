@@ -13,13 +13,12 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MySurveyServiceImpl implements MySurveyService {
     private final MySurveyMapper mySurveyMapper;
 
     @Override
     public List<MySurveyDTO> selectMySurveysWithSorting(long userNo) {
-        List<MySurveyDTO> surveys = mySurveyMapper.selectMySurveysWithSorting(userNo);
-
         return mySurveyMapper.selectMySurveysWithSorting(userNo);
     }
 
@@ -31,12 +30,7 @@ public class MySurveyServiceImpl implements MySurveyService {
 
     @Override
     @Transactional
-    public int updateMySurveysInProgress(MySurveyDTO mySurveyDTO) {
-        int isDeleted = 0;
-
-        if (mySurveyDTO.getSurveyStatusNo() == 1) {
-            isDeleted = mySurveyMapper.updateMySurveysInProgress(mySurveyDTO);
-        }
-        return isDeleted;
+    public boolean deleteMySurveyInProgress(MySurveyDTO mySurveyDTO) {
+        return mySurveyDTO.getSurveyStatusNo() == 1 && mySurveyMapper.updateMySurveysInProgress(mySurveyDTO) == 1;
     }
 }
