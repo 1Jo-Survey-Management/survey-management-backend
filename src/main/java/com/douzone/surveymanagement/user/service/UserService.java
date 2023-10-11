@@ -12,5 +12,7 @@ public interface UserService {
 
     UserInfo findUserByUserAccessToken(String accessToken);
 
+    UserInfo findUserByUserEmail(String accessToken);
+
     UserInfo findUserByAccessTokenAndUserNo(String accessToken, long userNo);
 }

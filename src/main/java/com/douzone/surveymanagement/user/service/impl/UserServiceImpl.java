@@ -50,6 +50,14 @@ public class UserServiceImpl implements UserService {
         return flag;
     }
 
+    public int updateAccessToken(UserInfo userInfo){
+        int flag = 0;
+
+        flag = userMapper.updateAccessToken(userInfo);
+
+        return flag;
+    }
+
     @Override
     public UserInfo findUserByUserAccessToken(String accessToken){
 
@@ -63,10 +71,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserInfo findUserByUserEmail(String userEmail){
+
+        System.out.println("userimpl : " + userEmail);
+
+        UserInfo userInfo = userMapper.selectAllByUserEmail(userEmail);
+
+        System.out.println("userimpldd : " + userInfo);
+
+        return userInfo;
+    }
+
+    @Override
     public UserInfo findUserByAccessTokenAndUserNo(String accessToken, long userNo){
 
-        System.out.println("userimpl : " + accessToken);
-        System.out.println("userimpl : " + userNo);
+        System.out.println("userimplaccessToken : " + accessToken);
+        System.out.println("userimpluserNo : " + userNo);
 
         UserInfo userInfo = userMapper.findUserByAccessTokenAndUserNo(accessToken, userNo);
 

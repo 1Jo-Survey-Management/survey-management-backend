@@ -85,6 +85,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
             return null;
         }
+        //4. 돌아온 이메일과 비교하여 회원을 인증하고 엑세스 토큰이 만료되었거나 존재하지 않으면 교체해준다
 
     }
 

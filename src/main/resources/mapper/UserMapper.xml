@@ -6,10 +6,6 @@
         SELECT * FROM user WHERE user_email = #{userEmail}
     </select>
 
-    <select id="findUserByUserEmail" >
-        SELECT * FROM user WHERE user_email = #{userEmail}
-    </select>
-
     <select id="findUserByUserAccessToken" parameterType="String" resultType="com.douzone.surveymanagement.user.dto.UserInfo">
         SELECT *
         FROM user
@@ -32,6 +28,10 @@
         UPDATE user
         SET user_nickname = #{userNickname}, user_gender =#{userGender}, user_birth=#{userBirth}
         WHERE user_no = #{userNo}
+    </update>
+
+    <update id="updateAccessToken">
+        UPDATE user SET access_token=#{accessToken} WHERE user_no = #{userNo};
     </update>
 
     <!-- 다른 SQL 쿼리 정의 -->

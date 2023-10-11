@@ -22,4 +22,6 @@ public interface UserMapper {
     int beforeRegistUser(UserInfo userInfo);
 
     int registUser(UserInfo userInfo);
+
+    int updateAccessToken(UserInfo userInfo);
 }

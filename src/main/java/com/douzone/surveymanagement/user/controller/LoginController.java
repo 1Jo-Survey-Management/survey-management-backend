@@ -62,11 +62,21 @@ public class LoginController {
 
         System.out.println("가져온 프로필 : " + userInfo);
 
+        String authorizationHeader = request.getHeader("Authorization");
+        String accessToken = "";
+        CommonResponse commonResponse = null;
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            accessToken = authorizationHeader.substring(7); // "Bearer " 이후의 토큰 부분
+            System.out.println("헤더에서 accessToken : " + accessToken);
+
+        }
+
         //TODO 1: 가져온 프로필들 db에 저장하기
 
         UserInfo userRegist = new UserInfo();
 
-        userRegist = userService.findUserByUserAccessToken("abc");
+        userRegist = userService.findUserByUserAccessToken(accessToken);
 
         userInfo.setUserNo(userRegist.getUserNo());
 
@@ -76,12 +86,10 @@ public class LoginController {
 
         //TODO 2: 회원정보 다시 db에서 가져오기(회원 번호도 가져오기 위해서)
 
-        String authorizationHeader = request.getHeader("Authorization");
-        String accessToken = "";
-        CommonResponse commonResponse = null;
+
         UserInfo userAllInfo = new UserInfo();
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            accessToken = authorizationHeader.substring(7); // "Bearer " 이후의 토큰 부분
+
             System.out.println("헤더에서 accessToken : " + accessToken);
 
             userAllInfo = userService.findUserByUserAccessToken(accessToken);
@@ -178,7 +186,7 @@ public class LoginController {
      * @return
      */
     @GetMapping("oauth2/code/naver")
-    public void naverCallback(@RequestParam(name = "code", required = false) String code,
+    public ResponseEntity<CommonResponse> naverCallback(@RequestParam(name = "code", required = false) String code,
                                 @RequestParam(name = "state", required = false) String state) {
 
             System.out.println("네이버 콜백 들어옴");
@@ -198,7 +206,6 @@ public class LoginController {
             /**
              * 네이버 API 엔드포인트 URL
              */
-            String userInfoUrl = "https://openapi.naver.com/v1/nid/me";
 
             Map<String, String> params = GetAccessToken.getToken(tokenUrl);
 
@@ -227,6 +234,7 @@ public class LoginController {
             /**
              * HTTP GET 요청
              */
+            String userInfoUrl = "https://openapi.naver.com/v1/nid/me";
             ResponseEntity<NaverUserInfoResponse> response = restTemplate.exchange(
                     userInfoUrl,
                     HttpMethod.GET,
@@ -241,11 +249,53 @@ public class LoginController {
 
             String userEmail = userInfo.getResponse().getEmail();
 
-            // accessToken으로 회원이 존재하고 프로필 모두 등록 되었는지 확인
-            UserInfo userExistCheck = userService.findUserByUserAccessToken("abc");
+            UserInfo searchUserInfobyEmail = userService.findUserByUserEmail(userEmail);
+            String dbUserEmail = null;
+            String dbAccessToken = null;
+            long dbUserNo = 0;
 
+            if(searchUserInfobyEmail!=null){
+                dbUserEmail = searchUserInfobyEmail.getUserEmail();
+                dbAccessToken = searchUserInfobyEmail.getAccessToken();
+                dbUserNo = searchUserInfobyEmail.getUserNo();
+                System.out.println("(컨트롤러)dbUserEmail : " + dbUserEmail);
+            }
+
+            // 여기서 userEmail로 네이버 로그인과 회원존재하는지를 확인해서 이메일==회원 이메일 이라서 회원 존재하는데
+            // userExistCheck가 false이다. 그렇다면 로그아웃해서 accessToken만 없는 거임 그래서 토큰만 업데이트 해줌
+
+            // db에 회원이 존재하고, accessToken이 없으면 새로 받은 토큰 다시 db에 넣어줌
+            if(dbUserEmail!= null && dbUserEmail.equals(userEmail) && dbAccessToken==null){
+                UserInfo updateUserToken = new UserInfo();
+
+                System.out.println("로그아웃된 회원 다시 로그인");
+
+                updateUserToken.setUserEmail(dbUserEmail);
+                updateUserToken.setAccessToken(accessToken);
+                updateUserToken.setUserNo(dbUserNo);
+                int flag = userService.updateAccessToken(updateUserToken);
+
+                System.out.println("Update AccessToken : " + flag);
+            }
+            // db에 회원이 존재하고, accessToken이 만료됐다면 새로운 토큰 다시 db에 넣어줌
+            else if (dbUserEmail!= null && dbUserEmail.equals(userEmail) && !dbAccessToken.equals(accessToken)){
+                UserInfo updateUserToken = new UserInfo();
+
+                System.out.println("AccessToken 만료, 토큰 업데이트ㅇㅇㅇ");
+
+                updateUserToken.setUserNo(dbUserNo);
+                updateUserToken.setAccessToken(accessToken);
+                int flag = userService.updateAccessToken(updateUserToken);
+
+                System.out.println("Update AccessToken : " + flag);
+            }
+
+        // accessToken으로 회원이 존재하고 프로필 모두 등록 되었는지 확인
+        UserInfo userExistCheck = userService.findUserByUserAccessToken(accessToken);
+
+        if(userExistCheck!=null){
             System.out.println("userExistCheck : " + userExistCheck);
-
+        }
 
             // 회원 가입 실시. 첫 로그인 프로필 등록
             // 데이터 베이스에 이메일과 액세스 토큰만 일단! 저장하여 만들어 놓고
@@ -255,19 +305,21 @@ public class LoginController {
 
             // 완료되지 않은 회원가입 정보 확인
             UserInfo userIncompletedCheck = new UserInfo();
-            userIncompletedCheck = userService.findUserByUserAccessToken("abc");
+            userIncompletedCheck = userService.findUserByUserAccessToken(accessToken);
 
             // 반환할 객체
             CommonResponse commonResponse ;
 
+            String userNickname = userExistCheck.getUserNickname();
+
             // db에 회원이 존재할때
             if (userExistCheck != null) {
                 // 완료된 회원이라면
-                if (!userExistCheck.getUserNickname().isEmpty()) {
+                if (userNickname!=null) {
                     System.out.println("userInfo : " + userInfo.getResponse().getEmail());
                     System.out.println("response : " + response.getStatusCode());
 
-                    UserInfo userCheck = userService.findUserByUserAccessToken("abc");
+                    UserInfo userCheck = userService.findUserByUserAccessToken(accessToken);
 
                     System.out.println("유저 확인됨! : " + userCheck);
 
@@ -276,6 +328,7 @@ public class LoginController {
 
                     //리턴 url에 토큰이랑 회원Pk 반환
                     commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.ofNullable(commonResponse));
+                    return commonResponseResponseEntity;
                 }
                 // 완료되지 않은 회원이라면(프로필 정보 필요함)
                 else {
@@ -285,7 +338,9 @@ public class LoginController {
                     commonResponse = CommonResponse.successOf(userIncompletedCheck);
 
                     // 이후 요청 : 토큰 + 회원pk = 정상 로그인 , 토큰 = 미완료 회원 등록 진행
+
                     commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.ofNullable(commonResponse));
+                    return commonResponseResponseEntity;
                 }
 
             }
@@ -297,7 +352,7 @@ public class LoginController {
                 UserInfo userRegist = new UserInfo();
 
                 userRegist.setUserEmail(userEmail);
-                userRegist.setAccessToken("abc");
+                userRegist.setAccessToken(accessToken);
 
                 int flag = userService.beforeRegistUser(userRegist);
 
@@ -307,7 +362,7 @@ public class LoginController {
 
                 // 이후 요청 : 토큰 + 회원pk = 정상 로그인 , 토큰 = 미완료 회원 등록 진행
                 commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.ofNullable(commonResponse));
-
+                return commonResponseResponseEntity;
             }
 
         }
