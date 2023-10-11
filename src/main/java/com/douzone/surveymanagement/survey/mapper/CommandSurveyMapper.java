@@ -1,5 +1,6 @@
 package com.douzone.surveymanagement.survey.mapper;
 
+import com.douzone.surveymanagement.survey.dto.request.SurveyInfoCreateDto;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -9,5 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @since : 1.0
  **/
 @Mapper
-public interface SurveyMapper {
+public interface CommandSurveyMapper {
+
+    void insertSurveyInfo(SurveyInfoCreateDto surveyInfoCreateDto);
 }

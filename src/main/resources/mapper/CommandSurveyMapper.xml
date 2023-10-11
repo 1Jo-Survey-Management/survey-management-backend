@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.douzone.surveymanagement.survey.mapper.CommandSurveyMapper">
+
+    <insert
+            id="insertSurveyInfo"
+            parameterType="com.douzone.surveymanagement.survey.dto.request.SurveyInfoCreateDto">
+        INSERT INTO survey (user_no,
+                            survey_status_no,
+                            open_status_no,
+                            survey_title,
+                            survey_description,
+                            survey_image,
+                            survey_post_at,
+                            survey_closing_at)
+        VALUES (#{userNo},
+                #{surveyStatusNo},
+                #{openStatusNo},
+                #{surveyTitle},
+                #{surveyDescription},
+                #{surveyImagePath},
+                #{surveyPostAt},
+                #{surveyClosingAt})
+
+        <selectKey keyProperty="surveyNo" keyColumn="survey_no" order="AFTER" resultType="long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+
+
+
+</mapper>

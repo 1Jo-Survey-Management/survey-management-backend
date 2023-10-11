@@ -17,4 +17,5 @@ public class Selection {
     private final long surveyQuestionMoveNo;
     private final String selectionValue;
     private final boolean isMovable;
+    private final boolean isEndOfSurvey;
 }
