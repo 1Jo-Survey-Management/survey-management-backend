@@ -1,0 +1,22 @@
+package com.douzone.surveymanagement.surveytag.mapper;
+
+import com.douzone.surveymanagement.surveytag.dto.request.SurveyTagCreateDto;
+import org.apache.ibatis.annotations.Mapper;
+
+/**
+ * 설문 태그에 대한 mybatis 매퍼 인터페이스 입니다.
+ *
+ * @author : 강명관
+ * @since : 1.0
+ **/
+@Mapper
+public interface SurveyTagMapper {
+
+    /**
+     * 설문을 저장하는 INSERT 메서드 입니다.
+     *
+     * @param surveyTagCreateDto 설문번호와 태그번호가 들어가 있는 Dto
+     * @author : 강명관
+     */
+    void insertSurveyTag(SurveyTagCreateDto surveyTagCreateDto);
+}
