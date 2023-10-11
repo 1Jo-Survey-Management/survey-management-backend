@@ -54,11 +54,18 @@ public class RestControllerAdvisor {
             );
     }
 
+    /**
+     * 요소를 찾지 못했을때를 처리하기 위한 공통에러인 NotFoundElementException 을 처리하기 위한 핸들러 입니다.
+     *
+     * @param e NotFoundElementException
+     * @return HttpStatus: NOT_FOUND, 공통 읍답객체에 ErrorResponse 객체를 담은 응답입니다.
+     * @author : 강명관
+     */
     @ExceptionHandler(value = {NotFoundElementException.class})
-    public ResponseEntity<CommonResponse<ErrorResponse>> noSuchElementExceptionHandler(
+    public ResponseEntity<CommonResponse<ErrorResponse>> notFoundElementExceptionHandler(
         NotFoundElementException e) {
 
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .contentType(MediaType.APPLICATION_JSON)
             .body(CommonResponse.error(ErrorResponse.of(e.getMessage())));
     }
@@ -84,7 +91,7 @@ public class RestControllerAdvisor {
      * 처리하지 못한 전역 에러를 처리하기 위한 ExceptionHandler 입니다.
      *
      * @param e Exception
-     * @return  공통 읍답객체에 ErrorResponse 객체를 담은 응답입니다.
+     * @return  공통 응답객체에 ErrorResponse 객체를 담은 응답입니다.
      * @author : 강명관
      */
     @ExceptionHandler({Exception.class, RuntimeException.class})
