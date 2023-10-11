@@ -24,4 +24,6 @@ public interface UserMapper {
     int registUser(UserInfo userInfo);
 
     int updateAccessToken(UserInfo userInfo);
+
+    int deleteAccessToken(UserInfo userInfo);
 }

@@ -58,6 +58,14 @@ public class UserServiceImpl implements UserService {
         return flag;
     }
 
+    public int deleteAccessToken(UserInfo userInfo){
+        int flag = 0;
+
+        flag = userMapper.deleteAccessToken(userInfo);
+
+        return flag;
+    }
+
     @Override
     public UserInfo findUserByUserAccessToken(String accessToken){
 

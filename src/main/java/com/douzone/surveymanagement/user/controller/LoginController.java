@@ -133,49 +133,84 @@ public class LoginController {
     }
 
 
-    @PostMapping("oauth2/code/naver/call")
-    public ResponseEntity<CommonResponse> requestNaver(){
-        UserInfo userInfo = null;
+    @GetMapping("logout")
+    public ResponseEntity<CommonResponse> logout(HttpServletRequest request){
 
-        // RestTemplate 객체 생성
-        RestTemplate restTemplate = new RestTemplate();
+        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("naver");
+        String clientId = clientRegistration.getClientId();
+        String clientSecret = clientRegistration.getClientSecret();
 
-        // 요청을 보낼 URL 정의
-        String apiUrl = "https://nid.naver.com/oauth2.0/authorize?client_id=ukwEecKhMrJzOdjwpJfB&response_type=code&redirect_uri=http://localhost:8080/login/oauth2/code/naver";
+        String authorizationHeader = request.getHeader("Authorization");
+        String accessToken = "";
 
-        // GET 요청 보내기
-        ResponseEntity<String> response = restTemplate.getForEntity(apiUrl, String.class);
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            accessToken = authorizationHeader.substring(7); // "Bearer " 이후의 토큰 부분
+            System.out.println("헤더에서 accessToken : " + accessToken);
 
-        // 응답 데이터 가져오기
-        String responseBody = response.getBody();
-
-        // 응답 상태 코드 확인
-        int statusCode = response.getStatusCodeValue();
-
-//        System.out.println("응답 데이터: " + responseBody);
-        System.out.println("상태 코드: " + statusCode);
-
-        String clientid = "ukwEecKhMrJzOdjwpJfB";
-        CommonResponse commonResponse = CommonResponse.successOf(clientid);
-
-        // 응답에 클라이언트아이디 보내서 구분자로 사용
-        commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.ofNullable(commonResponse));
-
-        System.out.println("commonResponseResponseEntity : " + commonResponseResponseEntity);
-
-        return commonResponseResponseEntity;
-    }
-
-    // 클라이언트 아이디 가지고 다시 요청 보내면 그때 제대로된 유저 엔티티보내줌// param 말고 헤더로 잡게끔 수정하기
-    @PostMapping("oauth2/code/naver/accessback")
-    public ResponseEntity<CommonResponse> accessback(@RequestParam(name = "clientid", required = false) String clientid) {
-
-        if(clientid!=null){
-            return commonResponseResponseEntity;
-        }else{
-            return null;
         }
+        // accessToken으로 회원의 존재를 먼저 확인한다.
+        UserInfo checkUserBeforeDeleteAccessToken = userService.findUserByUserAccessToken(accessToken);
 
+        if(checkUserBeforeDeleteAccessToken!=null) {
+            String checkDeleteAccessToken = checkUserBeforeDeleteAccessToken.getAccessToken();
+            long userNo = checkUserBeforeDeleteAccessToken.getUserNo();
+            System.out.println("checkUserBeforeDeleteAccessToken : " + checkDeleteAccessToken);
+
+
+            // RestTemplate 객체 생성
+            RestTemplate restTemplate = new RestTemplate();
+
+            // 요청을 보낼 URL 정의
+            String apiUrl = "https://nid.naver.com/oauth2.0/token?grant_type=delete";
+
+            // 요청 바디 데이터 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+            String requestBody =
+                    "service_provider=NAVER" +
+                    "&client_id=" + clientId +
+                    "&client_secret=" + clientSecret +
+                    "&access_token=" + accessToken;
+
+            HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+
+            // POST 요청 보내기
+            ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, requestEntity, String.class);
+
+            //---------------------------------------
+            // 응답 데이터 가져오기
+            String responseBody = response.getBody();
+
+            // 응답 상태 코드 확인
+            int statusCode = response.getStatusCodeValue();
+
+            System.out.println("응답 데이터: " + responseBody);
+            System.out.println("상태 코드: " + statusCode);
+
+            if (statusCode == 200) {
+                // 성공하면 db에서도 accessToken을 삭제한다
+                UserInfo userInfo = new UserInfo();
+                userInfo.setUserNo(userNo);
+                userInfo.setAccessToken(accessToken);
+
+                int flag = userService.deleteAccessToken(userInfo);
+
+                System.out.println("db에서도 삭제 : " + flag);
+
+                CommonResponse<String> commonResponse = CommonResponse.successOf(responseBody);
+
+                commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
+
+                System.out.println("commonResponseResponseEntity : " + commonResponseResponseEntity);
+
+                return commonResponseResponseEntity;
+
+            } else {
+                return null;
+            }
+        }
+        return null;
     }
 
     /**
