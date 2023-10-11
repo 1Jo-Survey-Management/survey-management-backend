@@ -15,19 +15,19 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
  * @author : 강명관
  * @since : 1.0
  **/
-@EnableWebSecurity()
+
+@EnableWebSecurity
 public class SecurityConfig  {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests()
-                .anyRequest().permitAll()
-                .and()
-                .csrf()
-                .disable()
-                .cors().configurationSource(corsConfigurationSource());
-
+            .authorizeHttpRequests()
+            .anyRequest().permitAll()
+            .and()
+            .csrf()
+            .disable()
+            .cors().configurationSource(corsConfigurationSource());
         return http.build();
     }
 
@@ -43,6 +43,8 @@ public class SecurityConfig  {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:3000"));
         configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
