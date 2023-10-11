@@ -1,11 +1,11 @@
 package com.douzone.surveymanagement.survey.dto.response;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@RequiredArgsConstructor
 public class TagDto {
     private  String tagName;
 

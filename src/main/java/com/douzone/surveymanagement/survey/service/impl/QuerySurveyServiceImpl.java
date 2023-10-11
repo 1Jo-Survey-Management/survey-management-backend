@@ -4,12 +4,25 @@ import com.douzone.surveymanagement.survey.dto.response.SurveyDetailInfoDto;
 import com.douzone.surveymanagement.survey.mapper.QuerySurveyMapper;
 import com.douzone.surveymanagement.survey.service.QuerySurveyService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
+/**
+ *
+ * @{inheritDoc}
+ *
+ *
+ */
 @Service
 public class QuerySurveyServiceImpl implements QuerySurveyService {
     private QuerySurveyMapper querySurveyMapper;
+
+    private int showNextPage(int page){
+        int nextPage = page * 20;
+        return nextPage;
+    }
 
     public QuerySurveyServiceImpl(QuerySurveyMapper querySurveyMapper) {
         this.querySurveyMapper = querySurveyMapper;
@@ -17,34 +30,32 @@ public class QuerySurveyServiceImpl implements QuerySurveyService {
 
     @Override
     public List<SurveyDetailInfoDto> readWeeklySurvey() {
-        return querySurveyMapper.weeklySurvey();
+        return querySurveyMapper.selectWeeklySurvey();
     }
 
     @Override
     public List<SurveyDetailInfoDto> readRecentSurvey() {
 
-        return querySurveyMapper.recentSurvey();
+        return querySurveyMapper.selectRecentSurvey();
     }
 
     @Override
     public List<SurveyDetailInfoDto> readClosingSurvey() {
-        List<SurveyDetailInfoDto> surveyList = querySurveyMapper.closingSurvey();// 1.2~ 10 pk
-
-        return surveyList;
+        return querySurveyMapper.closingSurvey();
     }
 
     @Override
-    public List<SurveyDetailInfoDto> getSurveyAll() {
-        return querySurveyMapper.readAllSurvey();
+    public List<SurveyDetailInfoDto> getSurveyAll(int page) {
+        return querySurveyMapper.selectAllSurvey(showNextPage(page));
     }
 
     @Override
-    public List<SurveyDetailInfoDto> selectClosing() {
-        return querySurveyMapper.selectClosingSurvey();
+    public List<SurveyDetailInfoDto> selectClosing(int page) {
+        return querySurveyMapper.selectClosingSurvey(showNextPage(page));
     }
 
     @Override
-    public List<SurveyDetailInfoDto> selectPost() {
-        return querySurveyMapper.selectPostSurvey();
+    public List<SurveyDetailInfoDto> selectPost(int page) {
+        return querySurveyMapper.selectPostSurvey(showNextPage(page));
     }
 }
