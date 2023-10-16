@@ -12,11 +12,7 @@ import org.springframework.stereotype.Service;
  * @author 김선규
  */
 @Service
-//@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
-
-    //  private final UserServiceImpl2 userServiceImpl2;
     private final UserMapper userMapper;
 
     @Autowired
@@ -24,18 +20,8 @@ public class UserServiceImpl implements UserService {
         this.userMapper = userMapper;
     }
 
-
-    public UserInfo selectAllByUserEmail(String userEmail){
-        UserInfo user;
-
-        user = userMapper.selectAllByUserEmail(userEmail);
-
-        return user;
-    }
-
-
     public int beforeRegistUser(UserInfo userInfo){
-        int flag = 0;
+        int flag ;
 
         flag = userMapper.beforeRegistUser(userInfo);
 
@@ -43,7 +29,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public int registUser(UserInfo userInfo){
-        int flag = 0;
+        int flag ;
 
         flag = userMapper.registUser(userInfo);
 
@@ -51,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public int updateAccessToken(UserInfo userInfo){
-        int flag = 0;
+        int flag ;
 
         flag = userMapper.updateAccessToken(userInfo);
 
@@ -59,7 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public int deleteAccessToken(UserInfo userInfo){
-        int flag = 0;
+        int flag ;
 
         flag = userMapper.deleteAccessToken(userInfo);
 
@@ -69,11 +55,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserInfo findUserByUserAccessToken(String accessToken){
 
-        System.out.println("userimpl : " + accessToken);
-
         UserInfo userInfo = userMapper.findUserByUserAccessToken(accessToken);
-
-        System.out.println("userimpldd : " + userInfo);
 
         return userInfo;
     }
@@ -81,11 +63,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserInfo findUserByUserEmail(String userEmail){
 
-        System.out.println("userimpl : " + userEmail);
-
         UserInfo userInfo = userMapper.selectAllByUserEmail(userEmail);
-
-        System.out.println("userimpldd : " + userInfo);
 
         return userInfo;
     }
@@ -93,12 +71,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserInfo findUserByAccessTokenAndUserNo(String accessToken, long userNo){
 
-        System.out.println("userimplaccessToken : " + accessToken);
-        System.out.println("userimpluserNo : " + userNo);
-
         UserInfo userInfo = userMapper.findUserByAccessTokenAndUserNo(accessToken, userNo);
-
-        System.out.println("userimpldd : " + userInfo);
 
         return userInfo;
     }

@@ -4,6 +4,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 
 import java.util.Optional;
 
+/**
+ * 아이디 비밀번호
+ * @author 김선규
+ */
 @Getter
 public class CustomAuthenticationToken extends UsernamePasswordAuthenticationToken {
     private final String callBackUri;

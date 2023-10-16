@@ -20,8 +20,8 @@
 
     <insert id="beforeRegistUser" >
         INSERT
-        INTO user(user_email,access_token)
-        VALUES (#{userEmail},#{accessToken})
+        INTO user(user_email,access_token, refresh_token, expires_in)
+        VALUES (#{userEmail},#{accessToken}, #{refreshToken}, #{expiresIn})
     </insert>
 
     <update id="registUser">
@@ -31,11 +31,11 @@
     </update>
 
     <update id="updateAccessToken">
-        UPDATE user SET access_token=#{accessToken} WHERE user_no = #{userNo};
+        UPDATE user SET access_token=#{accessToken}, refresh_token=#{refreshToken}, expires_in=#{expiresIn} WHERE user_no = #{userNo};
     </update>
 
     <update id="deleteAccessToken">
-        UPDATE user SET access_token = null WHERE user_no = #{userNo};
+        UPDATE user SET access_token = null, refresh_token = null WHERE user_no = #{userNo};
     </update>
 
     <!-- 다른 SQL 쿼리 정의 -->

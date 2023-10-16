@@ -4,8 +4,12 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
+/**
+ * token을 추가한 CustomAuthentication 입니다
+ * @author 김선규
+ */
 public class CustomAuthentication implements Authentication {
-    private final CustomUserDetails userDetails; // 사용자 정보를 저장하는 사용자 지정 클래스
+    private final CustomUserDetails userDetails;
     private final String customToken;
 
     public CustomAuthentication(CustomUserDetails userDetails, String customToken) {
@@ -30,17 +34,16 @@ public class CustomAuthentication implements Authentication {
 
     @Override
     public Object getPrincipal() {
-        return userDetails.getEmail();
+        return userDetails;
     }
 
     @Override
     public boolean isAuthenticated() {
-        return true; // 사용자 지정 로직에 따라 인증 여부를 설정
+        return true;
     }
 
     @Override
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-        // 사용자 지정 로직에 따라 인증 여부를 설정
     }
 
     @Override
