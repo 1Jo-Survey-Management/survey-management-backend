@@ -55,6 +55,7 @@ private final CustomAuthenticationProvider customAuthenticationProvider;
         http        .addFilterBefore(customOAuth2Filter(authenticationManager()),
                         UsernamePasswordAuthenticationFilter.class);
 
+
         return http.build();
     }
 
@@ -81,7 +82,7 @@ private final CustomAuthenticationProvider customAuthenticationProvider;
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("/**"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowedOriginPatterns(List.of("*"));

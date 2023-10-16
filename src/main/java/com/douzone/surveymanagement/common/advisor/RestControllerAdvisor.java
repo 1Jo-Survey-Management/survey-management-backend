@@ -1,8 +1,13 @@
 package com.douzone.surveymanagement.common.advisor;
 
+
+import com.douzone.surveymanagement.common.exception.NotAcceptableFileException;
+import com.douzone.surveymanagement.common.exception.NotFoundElementException;
 import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.common.response.ErrorResponse;
 import com.douzone.surveymanagement.common.response.MethodArgumentValidError;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,8 +16,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 컨트롤러단에서 발생하는 에러를 처리하기 위한 ControllerAdvice 입니다.
@@ -28,7 +31,7 @@ public class RestControllerAdvisor {
      * MethodArgumentNotValidException 을 처리하기 위한 ExceptionHandler 입니다.
      *
      * @param e MethodArgumentNotValidException
-     * @return 공통 읍답객체에 ErrorResponse 객체를 담은 응답입니다.
+     * @return HttpStatus: BAD_REQUEST, 공통 읍답객체에 ErrorResponse 객체를 담은 응답입니다.
      * @author : 강명관
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -53,12 +56,43 @@ public class RestControllerAdvisor {
             );
     }
 
+    /**
+     * 요소를 찾지 못했을때를 처리하기 위한 공통에러인 NotFoundElementException 을 처리하기 위한 핸들러 입니다.
+     *
+     * @param e NotFoundElementException
+     * @return HttpStatus: NOT_FOUND, 공통 읍답객체에 ErrorResponse 객체를 담은 응답입니다..
+     * @author : 강명관
+     */
+    @ExceptionHandler(value = {NotFoundElementException.class})
+    public ResponseEntity<CommonResponse<ErrorResponse>> notFoundElementExceptionHandler(
+        NotFoundElementException e) {
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(CommonResponse.error(ErrorResponse.of(e.getMessage())));
+    }
+
+    /**
+     * 업로드 불가능한 파일 형식에 대한 에러 핸드러 입니다.
+     *
+     * @param e Custom NotAcceptableFileException
+     * @return HttpStatus: NOT_ACCEPT, 공통 읍답객체에 ErrorResponse 객체를 담은 응답입니다.
+     * @author : 강명관
+     */
+    @ExceptionHandler(NotAcceptableFileException.class)
+    public ResponseEntity<CommonResponse<ErrorResponse>> notAcceptableFileExceptionHandler(
+        Exception e) {
+
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(CommonResponse.error(ErrorResponse.of(e.getMessage())));
+    }
 
     /**
      * 처리하지 못한 전역 에러를 처리하기 위한 ExceptionHandler 입니다.
      *
      * @param e Exception
-     * @return 공통 읍답객체에 ErrorResponse 객체를 담은 응답입니다.
+     * @return  공통 응답객체에 ErrorResponse 객체를 담은 응답입니다.
      * @author : 강명관
      */
     @ExceptionHandler({Exception.class, RuntimeException.class})
@@ -66,6 +100,8 @@ public class RestControllerAdvisor {
 
         log.error("Internal Server Error");
         log.error("message : {} ", e.getMessage());
+
+        e.printStackTrace();
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .contentType(MediaType.APPLICATION_JSON)
