@@ -52,7 +52,7 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
 
         if (accessToken == null && !naverCodeTokenCheck.equals("/login/oauth2/code/naver") && !naverCodeTokenCheck.equals("/login/oauth2/code/naver/call")) {
 
-            System.out.println("토큰 없다인마 ");
+            System.out.println("토큰 없음 ");
 
             return null;
         } else if (naverCodeTokenCheck.equals("/login/oauth2/code/naver") || naverCodeTokenCheck.equals("/login/oauth2/code/naver/call")) {

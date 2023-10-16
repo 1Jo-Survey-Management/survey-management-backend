@@ -1,7 +1,6 @@
 package com.douzone.surveymanagement.user.controller;
 
 import com.douzone.surveymanagement.common.response.CommonResponse;
-import com.douzone.surveymanagement.user.dto.NaverAccessTokenExpires;
 import com.douzone.surveymanagement.user.dto.NaverUserInfoResponse;
 import com.douzone.surveymanagement.user.dto.UserInfo;
 import com.douzone.surveymanagement.user.service.impl.UserServiceImpl;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -56,52 +54,8 @@ public class LoginController {
         return commonResponseResponseEntity;
     }
 
-    /**
-     * @param refreshToken
-     * @return
-     */
-    @PostMapping("/refreshtoken")
-    public ResponseEntity<?> refreshToken(@RequestBody UserInfo refreshToken) {
-
-        System.out.println("토큰 만료시 refreshToken : " + refreshToken.getRefreshToken());
-        System.out.println("토큰 만료시 oldAccessToken : " + refreshToken.getOldAccessToken());
-
-        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("naver");
-        String clientId = clientRegistration.getClientId();
-        String clientSecret = clientRegistration.getClientSecret();
-
-        String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=refresh_token&client_id=" + clientId +
-                "&client_secret=" + clientSecret + "&refresh_token=" + refreshToken.getRefreshToken();
-
-        System.out.println("tokenUrl : " + tokenUrl);
-
-        Map<String, String> params = GetAccessToken.getToken(tokenUrl);
-
-        String accessToken = params.get("access_token");
-        String expiresIn = params.get("expires_in");
-        String viewRefreshToken = params.get("refresh_token");
-
-        System.out.println("accessToken 갱신 : " + accessToken);
-        System.out.println("expiresIn : " + expiresIn);
-        System.out.println("refreshToken : " + viewRefreshToken);
-
-        UserInfo userInfo;
-
-        userInfo = userService.findUserByUserAccessToken(refreshToken.getOldAccessToken());
-        userInfo.setAccessToken(accessToken);
-        userInfo.setRefreshToken(refreshToken.getRefreshToken());
-        userInfo.setExpiresIn(expiresIn);
-
-        userService.updateAccessToken(userInfo);
-        CommonResponse commonResponse = CommonResponse.successOf(userInfo);
-
-        commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.ofNullable(commonResponse));
-        return commonResponseResponseEntity;
-    }
-
     @GetMapping("logout")
     public ResponseEntity<CommonResponse> logout(HttpServletRequest request) {
-
         ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("naver");
         String clientId = clientRegistration.getClientId();
         String clientSecret = clientRegistration.getClientSecret();
@@ -111,66 +65,70 @@ public class LoginController {
         // accessToken으로 회원의 존재를 먼저 확인한다.
         UserInfo checkUserBeforeDeleteAccessToken = userService.findUserByUserAccessToken(accessToken);
 
-        //--------------------------------------- TODO 1 : 네이버 accesstoken 삭제 메서드 만들기
         if (checkUserBeforeDeleteAccessToken != null) {
             String checkDeleteAccessToken = checkUserBeforeDeleteAccessToken.getAccessToken();
             long userNo = checkUserBeforeDeleteAccessToken.getUserNo();
             System.out.println("checkUserBeforeDeleteAccessToken : " + checkDeleteAccessToken);
 
-            // RestTemplate 객체 생성
-            RestTemplate restTemplate = new RestTemplate();
+            // 네이버 AccessToken을 삭제
+            boolean naverAccessTokenDeleted = deleteNaverAccessToken(clientId, clientSecret, accessToken);
 
-            // 요청을 보낼 URL 정의
-            String apiUrl = "https://nid.naver.com/oauth2.0/token?grant_type=delete";
+            if (naverAccessTokenDeleted) {
+                // DB에서도 AccessToken 삭제
+                boolean dbAccessTokenDeleted = deleteAccessTokenInDB(userNo, accessToken);
 
-            // 요청 바디 데이터 설정
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-            String requestBody =
-                    "service_provider=NAVER" +
-                            "&client_id=" + clientId +
-                            "&client_secret=" + clientSecret +
-                            "&access_token=" + accessToken;
-
-            HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
-
-            // POST 요청 보내기
-            ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, requestEntity, String.class);
-
-            String responseBody = response.getBody();
-
-            int statusCode = response.getStatusCodeValue();
-
-            System.out.println("응답 데이터: " + responseBody);
-            System.out.println("상태 코드: " + statusCode);
-
-            if (statusCode == 200) {
-                // 성공하면 db에서도 accessToken을 삭제한다
-                UserInfo userInfo = new UserInfo();
-                userInfo.setUserNo(userNo);
-                userInfo.setAccessToken(accessToken);
-
-                int flag = userService.deleteAccessToken(userInfo);
-
-                System.out.println("db에서도 삭제 : " + flag);
-
-            } else {
-                return null;
+                if (dbAccessTokenDeleted) {
+                    CommonResponse<String> commonResponse = CommonResponse.successOf("AccessToken 삭제 성공");
+                    return ResponseEntity.of(java.util.Optional.of(commonResponse));
+                }
             }
-            //---------------------------------------------------------------------------------------
-
-            CommonResponse<String> commonResponse = CommonResponse.successOf(responseBody);
-
-            commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
-
-            System.out.println("commonResponseResponseEntity : " + commonResponseResponseEntity);
-
-            return commonResponseResponseEntity;
-
         }
+
         return null;
     }
+
+    private boolean deleteNaverAccessToken(String clientId, String clientSecret, String accessToken) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        // 요청을 보낼 URL 정의
+        String apiUrl = "https://nid.naver.com/oauth2.0/token?grant_type=delete";
+
+        // 요청 바디 데이터 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        String requestBody =
+                "service_provider=NAVER" +
+                        "&client_id=" + clientId +
+                        "&client_secret=" + clientSecret +
+                        "&access_token=" + accessToken;
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        // POST 요청 보내기
+        ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, requestEntity, String.class);
+
+        String responseBody = response.getBody();
+        int statusCode = response.getStatusCodeValue();
+
+        System.out.println("응답 데이터: " + responseBody);
+        System.out.println("상태 코드: " + statusCode);
+
+        return statusCode == 200;
+    }
+
+    private boolean deleteAccessTokenInDB(long userNo, String accessToken) {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserNo(userNo);
+        userInfo.setAccessToken(accessToken);
+
+        int flag = userService.deleteAccessToken(userInfo);
+
+        System.out.println("DB에서도 삭제 : " + flag);
+
+        return flag > 0;
+    }
+
 
     /**
      * 네이버 로그인 서비스 요청후 CallBack url 리다이렉트 받아서 토큰 처리 메서드
@@ -273,6 +231,12 @@ public class LoginController {
         return response.getBody();
     }
 
+    /**
+     *
+     * @param userInfo
+     * @param params
+     * @return commonResponse
+     */
     private CommonResponse handleUserRegistration(NaverUserInfoResponse userInfo, Map<String, String> params) {
 
         String userEmail = userInfo.getResponse().getEmail();
@@ -290,7 +254,6 @@ public class LoginController {
             System.out.println("이메일로 검색한 회원 존재 하지 않음");
         }
 
-        // AccessToken issue handling
         if (dbUserEmail != null && dbUserEmail.equals(userEmail) && dbAccessToken == null) {
             UserInfo updateUserToken = new UserInfo();
             System.out.println("로그아웃된 회원 다시 로그인");
@@ -371,18 +334,12 @@ public class LoginController {
             DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
             String formattedStringExpiresIn = formatter.format(instant);
 
-            System.out.println("미완료회원에 들어가는 만료시간 : " + formattedStringExpiresIn);
-            System.out.println("미완료회원에 들어가는 만료시간 : " + formatter);
-
             UserInfo userRegist = new UserInfo();
 
             userRegist.setUserEmail(userEmail);
             userRegist.setAccessToken(params.get("access_token"));
             userRegist.setExpiresIn(formattedStringExpiresIn);
             userRegist.setRefreshToken(params.get("refresh_token"));
-
-            // expires in을 컴퓨터 시간에 영향 받지 않고 1시간 이후를 측정한 후 db에 저장
-            // provider에서 시간 체크한 후 지났으면 갱신, 안지났으면 말고
 
             int flag = userService.beforeRegistUser(userRegist);
 
