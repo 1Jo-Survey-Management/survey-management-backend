@@ -1,6 +1,7 @@
 package com.douzone.surveymanagement.user.service;
 import com.douzone.surveymanagement.user.dto.request.UserDTO;
 import com.douzone.surveymanagement.user.dto.request.UserModifyDTO;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import com.douzone.surveymanagement.user.dto.UserInfo;
 
@@ -9,7 +10,23 @@ import com.douzone.surveymanagement.user.dto.UserInfo;
  */
 public interface UserService {
 
-  /**
+    int beforeRegistUser(UserInfo userInfo);
+
+    @Transactional
+    int registUser(UserInfo userInfo);
+
+    @Transactional
+    int updateAccessToken(UserInfo userInfo);
+
+    int deleteAccessToken(UserInfo userInfo);
+
+    UserInfo findUserByUserAccessToken(String accessToken);
+
+    UserInfo findUserByUserEmail(String userEmail);
+
+    UserInfo findUserByAccessTokenAndUserNo(String accessToken, long userNo);
+
+    /**
   
     UserInfo findUserByUserAccessToken(String accessToken);
 

@@ -8,6 +8,7 @@ import com.douzone.surveymanagement.user.util.CustomAuthentication;
 import com.douzone.surveymanagement.user.util.CustomUserDetails;
 import com.douzone.surveymanagement.user.util.GetAccessToken;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,6 +32,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/login")
 @RequiredArgsConstructor
+@Slf4j
 public class LoginController {
 
     private final ClientRegistrationRepository clientRegistrationRepository;
@@ -38,6 +40,12 @@ public class LoginController {
 
     public ResponseEntity<CommonResponse> commonResponseResponseEntity;
 
+    /**
+     * 회원 프로필 가져오는 메서드입니다.
+     * @param request
+     * @return 회원정보
+     * @author 김선규
+     */
     @PostMapping("user")
     public ResponseEntity<CommonResponse> userProfile(HttpServletRequest request) {
         String accessToken = getAccessTokenFromRequest(request);
@@ -49,6 +57,13 @@ public class LoginController {
         return commonResponseResponseEntity;
     }
 
+    /**
+     * 회원 가입하는 메서드입니다.
+     * @param userInfo
+     * @param request
+     * @return ResponseEntity<CommonResponse>
+     * @author 김선규
+     */
     @PostMapping("/regist")
     public ResponseEntity<CommonResponse> registUser(@RequestBody UserInfo userInfo, HttpServletRequest request) {
         String accessToken;
@@ -65,103 +80,26 @@ public class LoginController {
         return commonResponseResponseEntity;
     }
 
-    @GetMapping("logout")
-    public ResponseEntity<CommonResponse> logout(HttpServletRequest request) {
-        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("naver");
-        String clientId = clientRegistration.getClientId();
-        String clientSecret = clientRegistration.getClientSecret();
-
-        String accessToken = getAccessTokenFromRequest(request);
-
-        // accessToken으로 회원의 존재를 먼저 확인한다.
-        UserInfo checkUserBeforeDeleteAccessToken = userService.findUserByUserAccessToken(accessToken);
-
-        if (checkUserBeforeDeleteAccessToken != null) {
-            String checkDeleteAccessToken = checkUserBeforeDeleteAccessToken.getAccessToken();
-            long userNo = checkUserBeforeDeleteAccessToken.getUserNo();
-            System.out.println("checkUserBeforeDeleteAccessToken : " + checkDeleteAccessToken);
-
-            // 네이버 AccessToken을 삭제
-            boolean naverAccessTokenDeleted = deleteNaverAccessToken(clientId, clientSecret, accessToken);
-
-            if (naverAccessTokenDeleted) {
-                // DB에서도 AccessToken 삭제
-                boolean dbAccessTokenDeleted = deleteAccessTokenInDB(userNo, accessToken);
-
-                if (dbAccessTokenDeleted) {
-                    CommonResponse<String> commonResponse = CommonResponse.successOf("AccessToken 삭제 성공");
-                    return ResponseEntity.of(java.util.Optional.of(commonResponse));
-                }
-            }
-        }
-
-        return null;
-    }
-
-    private boolean deleteNaverAccessToken(String clientId, String clientSecret, String accessToken) {
-        RestTemplate restTemplate = new RestTemplate();
-
-        // 요청을 보낼 URL 정의
-        String apiUrl = "https://nid.naver.com/oauth2.0/token?grant_type=delete";
-
-        // 요청 바디 데이터 설정
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        String requestBody =
-                "service_provider=NAVER" +
-                        "&client_id=" + clientId +
-                        "&client_secret=" + clientSecret +
-                        "&access_token=" + accessToken;
-
-        HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
-
-        // POST 요청 보내기
-        ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, requestEntity, String.class);
-
-        String responseBody = response.getBody();
-        int statusCode = response.getStatusCodeValue();
-
-        System.out.println("응답 데이터: " + responseBody);
-        System.out.println("상태 코드: " + statusCode);
-
-        return statusCode == 200;
-    }
-
-    private boolean deleteAccessTokenInDB(long userNo, String accessToken) {
-        UserInfo userInfo = new UserInfo();
-        userInfo.setUserNo(userNo);
-        userInfo.setAccessToken(accessToken);
-
-        int flag = userService.deleteAccessToken(userInfo);
-
-        System.out.println("DB에서도 삭제 : " + flag);
-
-        return flag > 0;
-    }
-
-
     /**
-     * 네이버 로그인 서비스 요청후 CallBack url 리다이렉트 받아서 토큰 처리 메서드
+     * 네이버 로그인 서비스 요청후 CallBack uri를 받아서 회원가입 진행하는 메서드입니다
      *
      * @param code
      * @param state
-     * @return
+     * @return ResponseEntity
+     * @author 김선규
      */
     @GetMapping("oauth2/code/naver")
     public ResponseEntity<CommonResponse> naverCallback(@RequestParam(name = "code", required = false) String code,
                                                         @RequestParam(name = "state", required = false) String state) {
-        System.out.println("네이버 콜백 들어옴");
+        log.debug("Naver CallBack Uri");
         ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("naver");
         String clientId = clientRegistration.getClientId();
         String clientSecret = clientRegistration.getClientSecret();
 
         Map<String, String> parms = getAccessTokenUsingCode(clientId, clientSecret, code, state);
 
-        System.out.println("params accessToken : " + parms.get("access_token"));
+        log.debug("params accessToken : " + parms.get("access_token"));
         NaverUserInfoResponse userInfo = getNaverUserInfo(parms.get("access_token"));
-
-        // provider에서 만료시간을 체크하고 만료시간이 지났을시 자동으로 갱신하게 해준다
 
         CommonResponse commonResponse = handleUserRegistration(userInfo, parms);
 
@@ -169,22 +107,33 @@ public class LoginController {
         return commonResponseResponseEntity;
     }
 
-
+    /**
+     * 회원가입을 진행하는 메서드입니다
+     * @param userInfo
+     * @param request
+     * @return CommonResponse
+     * @author 김선규
+     */
     private CommonResponse handleUserRegistration(UserInfo userInfo, HttpServletRequest request) {
-        // Logic for handling user registration
+
         String accessToken = getAccessTokenFromRequest(request);
         UserInfo registUser = createRegisteredUser(userInfo, accessToken);
 
-        int flag = userService.registUser(registUser); // Register user information in the database
+        userService.registUser(registUser);
 
         authenticateUserAfterRegistration(registUser);
 
-        // Create and return the response object
         return CommonResponse.successOf(registUser);
     }
 
+    /**
+     * request header에서 accessToken을 추출하는 메서드입니다.
+     * @param request
+     * @return accessToken
+     * @author 김선규
+     */
     private String getAccessTokenFromRequest(HttpServletRequest request) {
-        // Logic to extract the access token from the request
+
         String authorizationHeader = request.getHeader("Authorization");
         String accessToken = "";
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -193,8 +142,15 @@ public class LoginController {
         return accessToken;
     }
 
+    /**
+     * 등록된 회원의 정보를 가져오는 메서드입니다.
+     * @param userInfo
+     * @param accessToken
+     * @return userInfo
+     * @author 김선규
+     */
     private UserInfo createRegisteredUser(UserInfo userInfo, String accessToken) {
-        // Logic to create a registered user with the necessary information
+
         UserInfo userRegist = userService.findUserByUserAccessToken(accessToken);
         userInfo.setUserNo(userRegist.getUserNo());
         userInfo.setUserEmail(userRegist.getUserEmail());
@@ -205,8 +161,13 @@ public class LoginController {
         return userInfo;
     }
 
+    /**
+     * 완료된 회원가입에 대하여 인증 객체와 ContextHolder에 등록해주는 메서드입니다.
+     * @param userInfo
+     * @author 김선규
+     */
     private void authenticateUserAfterRegistration(UserInfo userInfo) {
-        // Logic to authenticate the user after registration
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         CustomAuthentication changeCustomAuthentication = new CustomAuthentication(
@@ -216,6 +177,15 @@ public class LoginController {
         SecurityContextHolder.getContext().setAuthentication(changeCustomAuthentication);
     }
 
+    /**
+     * 네이버 Code Url로 accessToken, refreshToken, expiresIn 가져오는 메서드입니다.
+     * @param clientId
+     * @param clientSecret
+     * @param code
+     * @param state
+     * @return params
+     * @author 김선규
+     */
     private Map<String, String> getAccessTokenUsingCode(String clientId, String clientSecret, String code, String state) {
 
         String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=" + clientId +
@@ -224,6 +194,12 @@ public class LoginController {
         return params;
     }
 
+    /**
+     * 네이버 OAuth에서 프로필 연동으로 정보 가져오는 메서드입니다.
+     * @param accessToken
+     * @return UserInfo
+     * @author 김선규
+     */
     private NaverUserInfoResponse getNaverUserInfo(String accessToken) {
 
         RestTemplate restTemplate = new RestTemplate();
@@ -243,10 +219,11 @@ public class LoginController {
     }
 
     /**
-     *
+     * 프로필로 들고온 회원 유저 정보로 회원가입 완료하는 메서드입니다.
      * @param userInfo
      * @param params
      * @return commonResponse
+     * @author 김선규
      */
     private CommonResponse handleUserRegistration(NaverUserInfoResponse userInfo, Map<String, String> params) {
 
@@ -260,38 +237,34 @@ public class LoginController {
             dbUserEmail = searchUserInfobyEmail.getUserEmail();
             dbAccessToken = searchUserInfobyEmail.getAccessToken();
             dbUserNo = searchUserInfobyEmail.getUserNo();
-            System.out.println("(컨트롤러)dbUserEmail : " + dbUserEmail);
+
         } else {
-            System.out.println("이메일로 검색한 회원 존재 하지 않음");
+            log.error("이메일로 검색한 회원 존재 하지 않음");
         }
 
         if (dbUserEmail != null && dbUserEmail.equals(userEmail) && dbAccessToken == null) {
             UserInfo updateUserToken = new UserInfo();
-            System.out.println("로그아웃된 회원 다시 로그인");
+            log.debug("로그아웃된 회원 다시 로그인");
             updateUserToken.setUserEmail(dbUserEmail);
             updateUserToken.setAccessToken(params.get("access_token"));
             updateUserToken.setRefreshToken(params.get("refresh_token"));
             updateUserToken.setUserNo(dbUserNo);
             int flag = userService.updateAccessToken(updateUserToken);
-            System.out.println("Update AccessToken : " + flag);
+            log.debug("Update AccessToken : " + flag);
         } else if (dbUserEmail != null && dbUserEmail.equals(userEmail) && !dbAccessToken.equals(params.get("access_token"))) {
             UserInfo updateUserToken = new UserInfo();
-            System.out.println("AccessToken 만료, 토큰 업데이트");
+            log.debug("AccessToken 만료, 토큰 업데이트");
             updateUserToken.setUserNo(dbUserNo);
             updateUserToken.setAccessToken(params.get("access_token"));
             updateUserToken.setRefreshToken(params.get("refresh_token"));
             int flag = userService.updateAccessToken(updateUserToken);
-            System.out.println("Update AccessToken : " + flag);
+            log.debug("Update AccessToken : " + flag);
         }
 
         // accessToken으로 회원이 존재하고 프로필 모두 등록 되었는지 확인
         UserInfo userExistCheck = userService.findUserByUserAccessToken(params.get("access_token"));
 
-        System.out.println("userExistcheck : " + userExistCheck);
-
-        if (userExistCheck != null) {
-            System.out.println("userExistCheck : " + userExistCheck);
-        }
+        log.debug("userExistcheck : " + userExistCheck);
 
         // 완료되지 않은 회원가입 정보 확인
         UserInfo userIncompletedCheck = userService.findUserByUserAccessToken(params.get("access_token"));
@@ -305,13 +278,11 @@ public class LoginController {
             String userNickname = userExistCheck.getUserNickname();
             // 완료된 회원이라면
             if (userNickname != null) {
-                System.out.println("userInfo : " + userInfo.getResponse().getEmail());
+
+                log.debug("유저 확인됨! userEmail : " + userInfo.getResponse().getEmail());
 
                 UserInfo userCheck = userService.findUserByUserAccessToken(params.get("access_token"));
 
-                System.out.println("유저 확인됨! : " + userCheck);
-
-                // refresh token 과 expires_in 설정
                 userCheck.setExpiresIn(userCheck.getExpiresIn());
                 userCheck.setRefreshToken(params.get("refresh_token"));
 
@@ -321,8 +292,7 @@ public class LoginController {
             }
             // 완료되지 않은 회원이라면(프로필 정보 필요함)
             else {
-                System.out.println("이미 미완료 회원 정보 있음");
-                System.out.println("미완료 회원번호 : " + userIncompletedCheck.getUserNo());
+                log.debug("(회원가입 중)미완료 회원번호 : " + userIncompletedCheck.getUserNo());
 
                 userIncompletedCheck.setExpiresIn(params.get("expires_in"));
                 userIncompletedCheck.setRefreshToken(params.get("refresh_token"));
@@ -336,7 +306,7 @@ public class LoginController {
         // db에 회원이 존재하지 않을때(db에 accessToken 기준 미완료 회원도 없을때)
         else {
 
-            System.out.println("미완료 회원 존재 x");
+            log.debug("미완료 회원도 존재 x");
 
             // 토큰 발급 받은 만료시간 설정 (버퍼 시간 고려 50분으로 설정)
             Instant instant = Instant.now().plusSeconds(3000);
@@ -354,10 +324,11 @@ public class LoginController {
 
             int flag = userService.beforeRegistUser(userRegist);
 
-            System.out.println("미완료 회원 등록 : " + flag);
+            log.debug("미완료 회원 등록 : " + flag);
 
             commonResponse = CommonResponse.successOf(userRegist);
         }
         return commonResponse;
     }
+
 }

@@ -3,7 +3,6 @@ package com.douzone.surveymanagement.user.service.impl;
 import com.douzone.surveymanagement.user.dto.UserInfo;
 import com.douzone.surveymanagement.user.mapper.UserMapper;
 import com.douzone.surveymanagement.user.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.douzone.surveymanagement.common.utils.FileUploadUtil;
@@ -12,10 +11,8 @@ import com.douzone.surveymanagement.user.dto.request.UserDTO;
 import com.douzone.surveymanagement.user.dto.request.UserModifyDTO;
 import com.douzone.surveymanagement.user.exception.DuplicateUsernameException;
 import com.douzone.surveymanagement.user.mapper.MyPageMapper;
-import com.douzone.surveymanagement.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,11 +33,7 @@ public class UserServiceImpl implements UserService {
     private final MyPageMapper myPageMapper;
     private final UserMapper userMapper;
 
-    @Autowired
-    public UserServiceImpl(UserMapper userMapper){
-        this.userMapper = userMapper;
-    }
-
+    @Override
     public int beforeRegistUser(UserInfo userInfo){
         int flag ;
 
@@ -48,7 +41,8 @@ public class UserServiceImpl implements UserService {
 
         return flag;
     }
-
+    @Override
+    @Transactional
     public int registUser(UserInfo userInfo){
         int flag ;
 
@@ -56,7 +50,8 @@ public class UserServiceImpl implements UserService {
 
         return flag;
     }
-
+    @Override
+    @Transactional
     public int updateAccessToken(UserInfo userInfo){
         int flag ;
 
@@ -64,7 +59,7 @@ public class UserServiceImpl implements UserService {
 
         return flag;
     }
-
+    @Override
     public int deleteAccessToken(UserInfo userInfo){
         int flag ;
 
