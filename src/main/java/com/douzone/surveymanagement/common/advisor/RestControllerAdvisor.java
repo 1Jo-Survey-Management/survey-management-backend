@@ -58,7 +58,7 @@ public class RestControllerAdvisor {
      * 요소를 찾지 못했을때를 처리하기 위한 공통에러인 NotFoundElementException 을 처리하기 위한 핸들러 입니다.
      *
      * @param e NotFoundElementException
-     * @return HttpStatus: NOT_FOUND, 공통 읍답객체에 ErrorResponse 객체를 담은 응답입니다.
+     * @return HttpStatus: NOT_FOUND, 공통 읍답객체에 ErrorResponse 객체를 담은 응답입니다..
      * @author : 강명관
      */
     @ExceptionHandler(value = {NotFoundElementException.class})
