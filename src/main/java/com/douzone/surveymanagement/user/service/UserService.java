@@ -10,16 +10,46 @@ import com.douzone.surveymanagement.user.dto.UserInfo;
  */
 public interface UserService {
 
+    /**
+     * 회원가입 전 미완료 회원 등록
+     * @param userInfo
+     * @return 성공 여부
+     */
     int beforeRegistUser(UserInfo userInfo);
 
+    /**
+     * 회원 가입
+     * @param userInfo
+     */
     void registUser(UserInfo userInfo);
 
+    /**
+     * 토큰 갱신
+     * @param userInfo
+     * @return 갱신 성공 여부
+     */
     int updateAccessToken(UserInfo userInfo);
 
+    /**
+     * 토큰으로 유저 정보 조회
+     * @param accessToken
+     * @return 유저 정보
+     */
     UserInfo findUserByUserAccessToken(String accessToken);
 
+    /**
+     * 이메일로 유저 정보 조회
+     * @param userEmail
+     * @return 유저 정보
+     */
     UserInfo findUserByUserEmail(String userEmail);
 
+    /**
+     * 토큰과 유저번호로 유저 정보 조회
+     * @param accessToken
+     * @param userNo
+     * @return 유저 정보
+     */
     UserInfo findUserByAccessTokenAndUserNo(String accessToken, long userNo);
 
     /*

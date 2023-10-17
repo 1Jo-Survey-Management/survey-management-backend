@@ -22,5 +22,4 @@ public interface UserMapper {
 
     int updateAccessToken(UserInfo userInfo);
 
-    int deleteAccessToken(UserInfo userInfo);
 }
