@@ -38,6 +38,17 @@ public class LoginController {
 
     public ResponseEntity<CommonResponse> commonResponseResponseEntity;
 
+    @PostMapping("user")
+    public ResponseEntity<CommonResponse> userProfile(HttpServletRequest request) {
+        String accessToken = getAccessTokenFromRequest(request);
+
+        UserInfo returnUser = userService.findUserByUserAccessToken(accessToken);
+
+        CommonResponse commonResponse = CommonResponse.successOf(returnUser);
+        commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
+        return commonResponseResponseEntity;
+    }
+
     @PostMapping("/regist")
     public ResponseEntity<CommonResponse> registUser(@RequestBody UserInfo userInfo, HttpServletRequest request) {
         String accessToken;
@@ -301,7 +312,7 @@ public class LoginController {
                 System.out.println("유저 확인됨! : " + userCheck);
 
                 // refresh token 과 expires_in 설정
-                userCheck.setExpiresIn(params.get("expires_in"));
+                userCheck.setExpiresIn(userCheck.getExpiresIn());
                 userCheck.setRefreshToken(params.get("refresh_token"));
 
                 commonResponse = CommonResponse.successOf(userCheck);

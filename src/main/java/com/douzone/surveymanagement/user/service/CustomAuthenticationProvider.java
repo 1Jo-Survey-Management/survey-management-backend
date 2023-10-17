@@ -4,6 +4,7 @@ import com.douzone.surveymanagement.user.util.CustomAuthentication;
 import com.douzone.surveymanagement.user.util.CustomAuthenticationToken;
 import com.douzone.surveymanagement.user.util.CustomUserDetails;
 import com.douzone.surveymanagement.user.util.GetAccessToken;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -46,18 +47,18 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         System.out.println("authenticate 들어옴, 토큰값 : " + oldAccessToken);
         System.out.println("userNo : " + userNo);
-        System.out.println("oldAccessToken : " + oldAccessToken);
-
 
         // db에 있는 유효시간이 유효한지 확인 후, 유효하지 않으면 갱신 시켜줌
         UserInfo userInfo = userService.findUserByUserAccessToken(oldAccessToken);
 
-        if(userInfo!=null && userInfo.getUserNo()!=0 ){
+        // accessToken 없으면 임시 객체이기 때문에 토큰 유효성 검사 생략
+        if(userInfo!=null) {
             String refreshToken = userInfo.getRefreshToken();
             String expiresCheck = userInfo.getExpiresIn();
 
             System.out.println("refreshToken : " + refreshToken);
             System.out.println("expiresCheck : " + expiresCheck);
+
 
             // 컴퓨터에 영향 받지 않는 현재 시간
             Instant instant = Instant.now();
@@ -67,16 +68,15 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
             System.out.println("현재시간 : " + formatter);
             System.out.println("유효시간 : " + expiresCheck);
-            Instant parsedInstant = Instant.from(formatter.parse(expiresCheck));
 
-            // 출력으로 시간 확인
-            System.out.println("현재 시간 : " + instant);
-            System.out.println("유효 시간 : " + parsedInstant);
+            Instant parsedInstant = null;
+            if (expiresCheck != null) {
+                parsedInstant = Instant.from(formatter.parse(expiresCheck));
+                System.out.println("유효 시간 : " + parsedInstant);
+            } else {
+                // expiresCheck가 null인 경우 예외 처리 또는 기본 동작을 수행
+                System.out.println("expiresCheck가 null입니다.");
 
-            int comparisonResult = instant.compareTo(parsedInstant);
-
-            // 유효시간이 같지 않으면 갱신
-            if(comparisonResult > 0){
                 System.out.println("토큰 유효시간 만료");
                 String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=refresh_token&client_id=" + clientId +
                         "&client_secret=" + clientSecret + "&refresh_token=" + refreshToken;
@@ -106,8 +106,47 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 userInfo2.setExpiresIn(formattedStringExpiresIn);
 
                 userService.updateAccessToken(userInfo2);
+
+
+            }
+            if (parsedInstant != null) {
+                int comparisonResult = instant.compareTo(parsedInstant);
+
+                // 유효시간이 같지 않으면 갱신
+                if (comparisonResult > 0) {
+                    System.out.println("토큰 유효시간 만료");
+                    String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=refresh_token&client_id=" + clientId +
+                            "&client_secret=" + clientSecret + "&refresh_token=" + refreshToken;
+
+                    System.out.println("tokenUrl : " + tokenUrl);
+
+                    Map<String, String> params = GetAccessToken.getToken(tokenUrl);
+
+                    String accessToken = params.get("access_token");
+                    String renewRefreshToken = params.get("refresh_token");
+                    // 토큰 발급 받은 만료시간 설정 (버퍼 시간 고려 50분으로 설정)
+                    Instant instant2 = Instant.now().plusSeconds(3000);
+
+                    // ISO 8601 형식으로 Instant를 문자열로 변환
+                    DateTimeFormatter formatter2 = DateTimeFormatter.ISO_INSTANT;
+                    String formattedStringExpiresIn = formatter2.format(instant2);
+
+                    System.out.println("accessToken 갱신 : " + accessToken);
+                    System.out.println("expiresIn : " + formattedStringExpiresIn);
+                    System.out.println("refreshToken : " + renewRefreshToken);
+
+                    UserInfo userInfo2;
+
+                    userInfo2 = userService.findUserByUserAccessToken(oldAccessToken);
+                    userInfo2.setAccessToken(accessToken);
+                    userInfo2.setRefreshToken(renewRefreshToken);
+                    userInfo2.setExpiresIn(formattedStringExpiresIn);
+
+                    userService.updateAccessToken(userInfo2);
+                }
             }
         }
+
             // 1. 토큰과 회원번호가 들어오면 회원 확인, mysql에서 회원번호 1부터 시작이기 때문에 0이면 회원일 수 없음
             if (!oldAccessToken.equals("") && userNo != 0) {
                 UserInfo user = userService.findUserByAccessTokenAndUserNo(oldAccessToken, userNo);

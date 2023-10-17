@@ -38,8 +38,9 @@ private final CustomAuthenticationProvider customAuthenticationProvider;
     public AuthenticationManager authenticationManager () throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http,AuthenticationManagerBuilder auth) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .cors()
                 .and()
@@ -64,8 +65,14 @@ private final CustomAuthenticationProvider customAuthenticationProvider;
         auth.authenticationProvider(customAuthenticationProvider);
     }
 
+    /**
+     * OAuth 로그인에 대한 필터입니다.
+     * @param authenticationManager
+     * @return filter
+     * @author 김선규
+     */
     @Bean
-    public CustomOAuth2Filter customOAuth2Filter(AuthenticationManager authenticationManager) throws Exception {
+    public CustomOAuth2Filter customOAuth2Filter(AuthenticationManager authenticationManager) {
         String redirectUrl = "http://localhost:3000/";
         CustomOAuth2Filter filter = new CustomOAuth2Filter("/**",redirectUrl);
         filter.setAuthenticationManager(authenticationManager);
