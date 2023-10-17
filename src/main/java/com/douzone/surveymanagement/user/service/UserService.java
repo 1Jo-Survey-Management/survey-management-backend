@@ -12,13 +12,9 @@ public interface UserService {
 
     int beforeRegistUser(UserInfo userInfo);
 
-    @Transactional
-    int registUser(UserInfo userInfo);
+    void registUser(UserInfo userInfo);
 
-    @Transactional
     int updateAccessToken(UserInfo userInfo);
-
-    int deleteAccessToken(UserInfo userInfo);
 
     UserInfo findUserByUserAccessToken(String accessToken);
 
@@ -26,17 +22,7 @@ public interface UserService {
 
     UserInfo findUserByAccessTokenAndUserNo(String accessToken, long userNo);
 
-    /**
-  
-    UserInfo findUserByUserAccessToken(String accessToken);
-
-    UserInfo findUserByUserEmail(String accessToken);
-
-    UserInfo findUserByAccessTokenAndUserNo(String accessToken, long userNo);
-
-    int updateAccessToken(UserInfo userInfo);
-
-    /**
+    /*
      * 유저의 닉네임을 변경합니다.
      *
      * @param userModifyDTO 유저 닉네임 수정 DTO

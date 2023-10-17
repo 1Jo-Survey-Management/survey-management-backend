@@ -44,7 +44,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String clientSecret = clientRegistration.getClientSecret();
         CustomAuthenticationToken customToken = (CustomAuthenticationToken) authentication;
         String oldAccessToken = customToken.getCustomToken();
-        Long userNo = customToken.getUserNo();
+        long userNo = customToken.getUserNo();
 
         log.debug("oldAccessToken : " + oldAccessToken);
         log.debug("userNo : " + userNo);
@@ -96,7 +96,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 userInfo2.setExpiresIn(formattedStringExpiresIn);
 
                 userService.updateAccessToken(userInfo2);
-
 
             }
             if (parsedInstant != null) {

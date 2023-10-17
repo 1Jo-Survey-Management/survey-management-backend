@@ -3,7 +3,9 @@
 
 <mapper namespace="com.douzone.surveymanagement.user.mapper.UserMapper">
     <select id="selectAllByUserEmail" >
-        SELECT * FROM user WHERE user_email = #{userEmail}
+        SELECT *
+        FROM user
+        WHERE user_email = #{userEmail}
     </select>
 
     <select id="findUserByUserAccessToken" parameterType="String" resultType="com.douzone.surveymanagement.user.dto.UserInfo">
@@ -31,12 +33,14 @@
     </update>
 
     <update id="updateAccessToken">
-        UPDATE user SET access_token=#{accessToken}, refresh_token=#{refreshToken}, expires_in=#{expiresIn} WHERE user_no = #{userNo};
+        UPDATE user
+        SET access_token=#{accessToken}, refresh_token=#{refreshToken}, expires_in=#{expiresIn}
+        WHERE user_no = #{userNo};
     </update>
 
     <update id="deleteAccessToken">
-        UPDATE user SET access_token = null, refresh_token = null WHERE user_no = #{userNo};
+        UPDATE user
+        SET access_token = null, refresh_token = null
+        WHERE user_no = #{userNo};
     </update>
-
-    <!-- 다른 SQL 쿼리 정의 -->
 </mapper>

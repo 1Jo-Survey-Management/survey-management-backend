@@ -43,12 +43,10 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     @Transactional
-    public int registUser(UserInfo userInfo){
-        int flag ;
+    public void registUser(UserInfo userInfo){
 
-        flag = userMapper.registUser(userInfo);
+        userMapper.registUser(userInfo);
 
-        return flag;
     }
     @Override
     @Transactional
@@ -56,14 +54,6 @@ public class UserServiceImpl implements UserService {
         int flag ;
 
         flag = userMapper.updateAccessToken(userInfo);
-
-        return flag;
-    }
-    @Override
-    public int deleteAccessToken(UserInfo userInfo){
-        int flag ;
-
-        flag = userMapper.deleteAccessToken(userInfo);
 
         return flag;
     }
