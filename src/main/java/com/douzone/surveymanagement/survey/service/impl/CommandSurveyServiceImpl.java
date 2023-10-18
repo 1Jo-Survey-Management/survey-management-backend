@@ -74,5 +74,11 @@ public class CommandSurveyServiceImpl implements CommandSurveyService {
 
         surveyQuestionService.insertQuestionList(surveyNo, surveyQuestionCreateDtoList);
     }
+
+    @Transactional
+    @Override
+    public void updateSurveyStatusToDeadline() {
+        commandSurveyMapper.updateSurveyStatusToDeadline();
+    }
 }
 

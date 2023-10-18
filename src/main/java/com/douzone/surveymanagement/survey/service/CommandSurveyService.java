@@ -36,4 +36,12 @@ public interface CommandSurveyService {
                       List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList,
                       MultipartFile surveyImage);
 
+
+    /**
+     * 설문의 상태가 진행중이고, 마감일이 오늘(00시 00분)보다 이전일 경우에 해당 설문을 마감 상태로 변경시키는 메서드 입니다.
+     *
+     * @author : 강명관
+     */
+    void updateSurveyStatusToDeadline();
+
 }
