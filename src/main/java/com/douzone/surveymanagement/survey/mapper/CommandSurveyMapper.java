@@ -13,4 +13,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface CommandSurveyMapper {
 
     void insertSurveyInfo(SurveyInfoCreateDto surveyInfoCreateDto);
+
+    void updateSurveyStatusToDeadline();
 }

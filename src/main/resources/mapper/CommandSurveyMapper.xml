@@ -31,6 +31,17 @@
     </insert>
 
 
+    <update id="updateSurveyStatusToDeadline">
+        <![CDATA[
+        UPDATE
+            survey
+        SET
+            survey_status_no = 3
+        WHERE survey_status_no = 2
+          AND survey_closing_at < NOW();
+        ]]>
+    </update>
+
 
 
 </mapper>

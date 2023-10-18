@@ -1,6 +1,5 @@
 package com.douzone.surveymanagement.survey.dto.request;
 
-import com.douzone.surveymanagement.selection.dto.reqeust.SelectionCreateDto;
 import com.douzone.surveymanagement.surveyquestion.dto.request.SurveyQuestionCreateDto;
 import java.util.List;
 import javax.validation.Valid;
