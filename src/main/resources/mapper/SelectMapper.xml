@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.douzone.surveymanagement.statistics.mapper.SelectMapper">
+    <resultMap id="SelectDto" type="com.douzone.surveymanagement.statistics.dto.SelectDto">
+        <result property="surveyNo" column="survey_no"/>
+        <result property="surveyTitle" column="survey_title"/>
+        <result property="surveyQuestionTitle" column="survey_question_title"/>
+        <result property="questionTypeNo" column="question_type_no"/>
+        <result property="selectionNo" column="selection_no"/>
+        <result property="selectionValue" column="selection_value"/>
+        <result property="selectionCount" column="selection_count"/>
+        <result property="questionAttendCount" column="question_attend_count"/>
+    </resultMap>
+    <select id="findSelection" resultMap="SelectDto">
+        SELECT s.survey_no,
+               s.survey_title,
+               sq.survey_question_title,
+               sq.question_type_no,
+               sas.selection_no,
+               se.selection_value,
+               COUNT(se.selection_no) AS selection_count,
+               SUM(COUNT(se.selection_no)) OVER() AS question_attend_count
+        FROM survey AS s
+                 INNER JOIN survey_question sq
+                            ON s.survey_no = sq.survey_no
+                 INNER JOIN survey_answer sa
+                            ON sq.survey_question_no = sa.survey_question_no
+                 LEFT JOIN (
+            SELECT * FROM survey_answer_selection
+        ) AS sas ON sa.survey_answer_no = sas.survey_answer_no
+                 INNER JOIN selection AS se
+                            ON sas.selection_no = se.selection_no
+        WHERE se.survey_question_no = #{surveyNo}
+          AND   s.survey_no = #{surveyQuestionNo}
+        GROUP BY s.survey_no,sq.survey_question_title,sq.question_type_no,sas.selection_no;
+
+    </select>
+
+</mapper>

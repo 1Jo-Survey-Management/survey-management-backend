@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,10 +15,10 @@ public class SurveyDetailInfoDto {
 
     private  long surveyNo;
     private  String surveyTitle;
-    private  String surveyDiscription;
+    private  String surveyDescription;
     private  String surveyImage;
     private  LocalDateTime surveyPostAt;
-    private  LocalDateTime surveyClosingAt;
+    private LocalDate surveyClosingAt;
     private  String userNickName;
     private  String userImage;
     private  String surveyStatusName;
@@ -26,5 +27,7 @@ public class SurveyDetailInfoDto {
     private  long surveyAttendCount;
     private  boolean isDeleted;
     private List<String> tag;
+
+    private List<Long> userNo;
 
 }
