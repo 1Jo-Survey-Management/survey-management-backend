@@ -13,6 +13,7 @@ import lombok.*;
 public class SelectDto {
         private final long surveyNo;
         private final String surveyTitle;
+        private final String surveyWriter;
         private final String userNickname;
         private final String surveyPostAt;
         private final String surveyClosingAt;
@@ -22,7 +23,9 @@ public class SelectDto {
         private final long selectionNo;
         private final String selectionValue;
         private final int selectionCount;
+        private final int totalAttend;
         private final int questionAttendCount;
         private final String surveySubjectiveAnswer;
+        private final int surveySubjectiveAnswerCount;
 
         }
