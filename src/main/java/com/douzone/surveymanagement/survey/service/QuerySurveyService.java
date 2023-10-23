@@ -1,8 +1,6 @@
 package com.douzone.surveymanagement.survey.service;
 
 import com.douzone.surveymanagement.survey.dto.response.SurveyDetailInfoDto;
-import com.douzone.surveymanagement.survey.mapper.QuerySurveyMapper;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
