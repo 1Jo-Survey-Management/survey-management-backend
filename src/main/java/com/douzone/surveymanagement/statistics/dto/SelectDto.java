@@ -1,27 +1,28 @@
 package com.douzone.surveymanagement.statistics.dto;
 
 import com.douzone.surveymanagement.questiontype.domain.QuestionType;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
+@Builder
 @Getter
-@RequiredArgsConstructor
+@Setter
+//@RequiredArgsConstructor
+@NoArgsConstructor(force = true)
+@AllArgsConstructor
 public class SelectDto {
-        private long surveyNo;
-        private String surveyTitle;
-        private String userNickname;
-        private LocalDateTime surveyPostAt;
-        private LocalDate surveyClosingAt;
-        private long surveyQuestionNo;
-        private String surveyQuestionTitle;
-        private int questionTypeNo;
-        private long selectionNo;
-        private String selectionValue;
-        private int selectionCount;
-        private String surveySubjectiveAnswer;
+        private final long surveyNo;
+        private final String surveyTitle;
+        private final String userNickname;
+        private final String surveyPostAt;
+        private final String surveyClosingAt;
+        private final String surveyQuestionTitle;
+        private final String surveyQuestionNo;
+        private final int questionTypeNo;
+        private final long selectionNo;
+        private final String selectionValue;
+        private final int selectionCount;
+        private final int questionAttendCount;
+        private final String surveySubjectiveAnswer;
 
         }

@@ -18,4 +18,9 @@ public class SelectServiceImpl implements SelectService {
     public List<SelectDto> readSelection(int surveyNo) {
         return selectMapper.findSelection(surveyNo);
     }
+
+    @Override
+    public List<SelectDto> readSelectionAll(int surveyNo) {
+        return selectMapper.readSelectionAll(surveyNo);
+    }
 }
