@@ -2,7 +2,6 @@ package com.douzone.surveymanagement.statistics.controller;
 
 import com.douzone.surveymanagement.statistics.dto.SelectDto;
 import com.douzone.surveymanagement.statistics.service.SelectService;
-import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +20,8 @@ public class SelectController {
     private SelectService selectService;
 
     @GetMapping("/result")
-    public ResponseEntity<List<SelectDto>> findSelectionList(@RequestParam(value = "surveyno") int surveyNo,@RequestParam(value = "questionno") int surveyQuestionNo){
-       List<SelectDto> selectList = selectService.readSelection(surveyNo, surveyQuestionNo);
+    public ResponseEntity<List<SelectDto>> findSelectionList(@RequestParam(value = "surveyno") int surveyNo){
+       List<SelectDto> selectList = selectService.readSelection(surveyNo);
         return ResponseEntity.ok(selectList);
     }
 }
