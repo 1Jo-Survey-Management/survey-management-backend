@@ -8,6 +8,7 @@
         <result property="surveyNo" column="survey_no"/>
         <result property="userNickname" column="user_nickname"/>
         <result property="surveyTitle" column="survey_title"/>
+        <result property="surveyWriter" column="survey_writer"/>
         <result property="surveyPostAt" column="survey_post_at"/>
         <result property="surveyClosingAt" column="survey_closing_at"/>
         <result property="surveyQuestionTitle" column="survey_question_title"/>
@@ -16,7 +17,10 @@
         <result property="selectionNo" column="selection_no"/>
         <result property="selectionValue" column="selection_value"/>
         <result property="selectionCount" column="selection_count"/>
+        <result property="totalAttend" column="total_attend"/>
+        <result property="questionAttendCount" column="question_attend_count"/>
         <result property="surveySubjectiveAnswer" column="survey_subjective_answer"/>
+        <result property="surveySubjectiveAnswerCount" column="survey_subjective_answer_count"/>
     </resultMap>
     <select id="findSelection" resultMap="SelectDto">
         SELECT s.survey_no,
@@ -46,15 +50,18 @@
     <select id="readSelectionAll" resultMap="SelectDto">
         SELECT DISTINCT
             u.user_nickname,
+            wt.user_nickname AS survey_writer,
             s.survey_no,
             s.survey_title,
             s.survey_post_at,
             s.survey_closing_at,
+            MAX(sa.survey_attend_no) OVER (PARTITION BY s.survey_no) AS total_attend,
             sq.survey_question_no,
             sq.survey_question_title,
             qt.question_type_no,
             se.selection_no,
             COUNT(se.selection_no) AS selection_count,
+            COUNT(survey_subjective_answer) AS survey_subjective_answer_count,
             CASE
                 WHEN qt.question_type_no IN (4, 5) THEN saa.survey_subjective_answer
                 ELSE NULL
@@ -63,6 +70,7 @@
         FROM user AS u
                  JOIN survey_attend AS sa ON u.user_no = sa.user_no
                  JOIN survey AS s ON sa.survey_no = s.survey_no
+                 LEFT JOIN user AS wt ON wt.user_no = s.user_no
                  LEFT JOIN survey_question AS sq ON s.survey_no = sq.survey_no
                  LEFT JOIN survey_answer AS saa ON sa.survey_attend_no = saa.survey_attend_no
                  LEFT JOIN survey_answer_selection AS sas ON saa.survey_answer_no = sas.survey_answer_no
@@ -72,6 +80,7 @@
         GROUP BY
             u.user_nickname,
             s.survey_no,
+            survey_writer,
             s.survey_title,
             s.survey_post_at,
             s.survey_closing_at,
