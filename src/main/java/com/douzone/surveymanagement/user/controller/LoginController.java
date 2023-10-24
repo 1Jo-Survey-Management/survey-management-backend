@@ -171,7 +171,7 @@ public class LoginController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         CustomAuthentication changeCustomAuthentication = new CustomAuthentication(
-                new CustomUserDetails(userInfo.getUserNo(), userInfo.getUserEmail(), userInfo.getUserNickname(), authorities),
+                new CustomUserDetails(userInfo.getUserNo(), userInfo.getUserEmail(), userInfo.getUserNickname(), userInfo.getUserGender(), userInfo.getUserBirth(), userInfo.getUserImage(), authorities),
                 userInfo.getAccessToken()
         );
         SecurityContextHolder.getContext().setAuthentication(changeCustomAuthentication);

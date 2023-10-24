@@ -1,7 +1,9 @@
 package com.douzone.surveymanagement.user.filter;
 
+import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.user.util.CustomAuthentication;
 import com.douzone.surveymanagement.user.util.CustomAuthenticationToken;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,11 +21,9 @@ import java.io.IOException;
  * @author 김선규
  */
 public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
-    private final String loginRedirectUrl;
 
-    public CustomOAuth2Filter(String defaultFilterProcessesUrl, String loginRedirectUrl) {
+    public CustomOAuth2Filter(String defaultFilterProcessesUrl) {
         super(new AntPathRequestMatcher(defaultFilterProcessesUrl));
-        this.loginRedirectUrl = loginRedirectUrl;
     }
 
     @Override
@@ -35,24 +35,15 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
         System.out.println("request 체크 : " + request.getServletPath());
 
         String accessToken = extractAccessTokenFromRequest(request);
-        String userNoHeader = request.getHeader("userNo");
-        Long userNo = null;
+
         String naverCodeTokenCheck = request.getServletPath();
 
-        if (userNoHeader != null) {
-            try {
-                userNo = Long.parseLong(userNoHeader);
-            } catch (NumberFormatException e) {
-                e.getStackTrace();
-            }
-        }
-
         System.out.println("추출한 토큰 : " + accessToken);
-        System.out.println("추출한 회원번호 : " + userNo);
 
         if (accessToken == null && !naverCodeTokenCheck.equals("/login/oauth2/code/naver") && !naverCodeTokenCheck.equals("/login/oauth2/code/naver/call")) {
 
-            System.out.println("토큰 없음 ");
+            // AnonymousAuthenticationFilter 로 처리하는 부분으로 리팩토링 해야함
+            System.out.println("토큰도 없고, 접근 허가된 로그인 용 url 들도 아닐때 ");
 
             return null;
         } else if (naverCodeTokenCheck.equals("/login/oauth2/code/naver") || naverCodeTokenCheck.equals("/login/oauth2/code/naver/call")) {
@@ -68,7 +59,7 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
             return authentication;
         }
 
-        CustomAuthenticationToken authRequest = new CustomAuthenticationToken(accessToken, userNo, null);
+        CustomAuthenticationToken authRequest = new CustomAuthenticationToken(accessToken, null, null);
 
         System.out.println("authRequest : " + authRequest);
 
@@ -76,6 +67,7 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
 
         if (authentication==null) {
             System.out.println("authentication null");
+            return null;
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);

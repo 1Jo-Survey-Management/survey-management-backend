@@ -14,7 +14,10 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -44,35 +47,37 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String clientSecret = clientRegistration.getClientSecret();
         CustomAuthenticationToken customToken = (CustomAuthenticationToken) authentication;
         String oldAccessToken = customToken.getCustomToken();
-        long userNo = customToken.getUserNo();
 
         log.debug("oldAccessToken : " + oldAccessToken);
-        log.debug("userNo : " + userNo);
+
+        System.out.println("oldAccessToken : " + oldAccessToken);
 
         // db에 있는 유효시간이 유효한지 확인 후, 유효하지 않으면 갱신 시켜줌
         UserInfo userInfo = userService.findUserByUserAccessToken(oldAccessToken);
 
+        System.out.println("프로바이더 인포 : " + userInfo);
+
         // accessToken 없으면 임시 객체이기 때문에 토큰 유효성 검사 생략
-        if(userInfo!=null) {
+        if (userInfo != null) {
             String refreshToken = userInfo.getRefreshToken();
             String expiresCheck = userInfo.getExpiresIn();
 
-            // 컴퓨터에 영향 받지 않는 현재 시간
-            Instant instant = Instant.now();
+            ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
+            ZonedDateTime currentSeoulTime = ZonedDateTime.now(seoulZoneId);
 
-            // 문자열을 Instant로 파싱
-            DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
-
-            log.debug("현재시간 : " + formatter);
+            log.debug("현재시간 : " + currentSeoulTime);
             log.debug("유효시간 : " + expiresCheck);
+            System.out.println("현재시간 : " + currentSeoulTime);
+            System.out.println("유효시간 : " + expiresCheck);
 
-            Instant parsedInstant = null;
+            ZonedDateTime parsedInstant = null;
             if (expiresCheck != null) {
-                parsedInstant = Instant.from(formatter.parse(expiresCheck));
+                parsedInstant = ZonedDateTime.parse(expiresCheck);
                 log.debug("유효시간 : " + parsedInstant);
             } else {
                 log.debug("expiresCheck = null");
                 log.debug("토큰 유효시간 만료");
+                System.out.println("토큰 유효시간 만료");
 
                 String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=refresh_token&client_id=" + clientId +
                         "&client_secret=" + clientSecret + "&refresh_token=" + refreshToken;
@@ -81,12 +86,13 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
                 String accessToken = params.get("access_token");
                 String renewRefreshToken = params.get("refresh_token");
-                // 토큰 발급 받은 만료시간 설정 (버퍼 시간 고려 50분으로 설정)
-                Instant instant2 = Instant.now().plusSeconds(3000);
 
-                // ISO 8601 형식으로 Instant를 문자열로 변환
-                DateTimeFormatter formatter2 = DateTimeFormatter.ISO_INSTANT;
-                String formattedStringExpiresIn = formatter2.format(instant2);
+                // 토큰 발급 받은 만료시간 설정 (버퍼 시간 고려 50분으로 설정)
+                ZonedDateTime newExpiresTime = currentSeoulTime.plusMinutes(50);
+
+                // yyyy-MM-dd HH:mm:ss 형식으로 ZonedDateTime를 문자열로 변환
+                DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                String formattedStringExpiresIn = newExpiresTime.format(formatter2);
 
                 UserInfo userInfo2;
 
@@ -96,15 +102,15 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 userInfo2.setExpiresIn(formattedStringExpiresIn);
 
                 userService.updateAccessToken(userInfo2);
-
             }
+
             if (parsedInstant != null) {
-                int comparisonResult = instant.compareTo(parsedInstant);
+                int comparisonResult = currentSeoulTime.compareTo(parsedInstant);
 
                 // 유효시간이 같지 않으면 갱신
                 if (comparisonResult > 0) {
-
                     log.debug("토큰 유효시간 만료");
+
                     String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=refresh_token&client_id=" + clientId +
                             "&client_secret=" + clientSecret + "&refresh_token=" + refreshToken;
 
@@ -114,12 +120,13 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
                     String accessToken = params.get("access_token");
                     String renewRefreshToken = params.get("refresh_token");
-                    // 토큰 발급 받은 만료시간 설정 (버퍼 시간 고려 50분으로 설정)
-                    Instant instant2 = Instant.now().plusSeconds(3000);
 
-                    // ISO 8601 형식으로 Instant를 문자열로 변환
-                    DateTimeFormatter formatter2 = DateTimeFormatter.ISO_INSTANT;
-                    String formattedStringExpiresIn = formatter2.format(instant2);
+                    // 토큰 발급 받은 만료시간 설정 (버퍼 시간 고려 50분으로 설정)
+                    ZonedDateTime newExpiresTime = currentSeoulTime.plusMinutes(50);
+
+                    // yyyy-MM-dd HH:mm:ss 형식으로 ZonedDateTime를 문자열로 변환
+                    DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    String formattedStringExpiresIn = newExpiresTime.format(formatter2);
 
                     UserInfo userInfo2;
 
@@ -133,9 +140,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             }
         }
 
+
             // 1. 토큰과 회원번호가 들어오면 회원 확인, mysql에서 회원번호 1부터 시작이기 때문에 0이면 회원일 수 없음
-            if (!oldAccessToken.equals("") && userNo != 0) {
-                UserInfo user = userService.findUserByAccessTokenAndUserNo(oldAccessToken, userNo);
+            if (!oldAccessToken.equals("")) {
+//                UserInfo user = userService.findUserByAccessTokenAndUserNo(oldAccessToken, userNo);
+                UserInfo user = userService.findUserByUserAccessToken(oldAccessToken);
 
                 log.debug("토큰과 회원 번호로 회원 확인 : " + user);
 
@@ -144,7 +153,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                     // 사용자가 인증되면 CustomAuthentication 객체를 생성하고 사용자 정보를 설정
                     CustomAuthentication customAuthentication = new CustomAuthentication(
                             //아래의 형식으로 다 넣어주기
-                            new CustomUserDetails(user.getUserNo(), user.getUserEmail(), user.getUserNickname(), customToken.getAuthorities()),
+                            new CustomUserDetails(user.getUserNo(), user.getUserEmail(), user.getUserNickname(), user.getUserGender(), user.getUserBirth(), user.getUserImage(), customToken.getAuthorities()),
                             oldAccessToken
                     );
                     return customAuthentication;
@@ -158,7 +167,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 log.debug("CallBack Authentication");
 
                 CustomAuthentication customAuthentication = new CustomAuthentication(
-                        new CustomUserDetails(null, null, null, customToken.getAuthorities()),
+                        new CustomUserDetails(null, null, null, null, null, null, customToken.getAuthorities()),
                         null
                 );
 
@@ -173,7 +182,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 if (user != null) {
                     CustomAuthentication customAuthentication = new CustomAuthentication(
 
-                            new CustomUserDetails(user.getUserNo(), null, null, customToken.getAuthorities()),
+                            new CustomUserDetails(user.getUserNo(), null, null, null, null, null, customToken.getAuthorities()),
                             oldAccessToken
                     );
                     return customAuthentication;

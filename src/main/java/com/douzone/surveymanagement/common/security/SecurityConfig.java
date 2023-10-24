@@ -73,8 +73,7 @@ private final CustomAuthenticationProvider customAuthenticationProvider;
      */
     @Bean
     public CustomOAuth2Filter customOAuth2Filter(AuthenticationManager authenticationManager) {
-        String redirectUrl = "http://localhost:3000/";
-        CustomOAuth2Filter filter = new CustomOAuth2Filter("/**",redirectUrl);
+        CustomOAuth2Filter filter = new CustomOAuth2Filter("/**");
         filter.setAuthenticationManager(authenticationManager);
         return filter;
     }
