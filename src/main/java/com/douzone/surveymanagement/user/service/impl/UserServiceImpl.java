@@ -92,6 +92,11 @@ public class UserServiceImpl implements UserService {
             }
         }
     }
+
+    @Override
+    public String findUserImageByUserNo(long userNo) {
+        return myPageMapper.selectUserImageByUserNo(userNo);
+    }
 }
 
 

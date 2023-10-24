@@ -47,4 +47,10 @@
     <delete id="deletePreviousUserImage" parameterType="long">
         UPDATE user SET user_image = NULL WHERE user_no = #{userNo};
     </delete>
+
+    <select id="selectUserImageByUserNo" parameterType="long" resultType="string">
+        SELECT user_image
+        FROM user
+        WHERE user_no = #{userNo}
+    </select>
 </mapper>
