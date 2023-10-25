@@ -14,7 +14,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface CommandSurveyMapper {
 
     /**
-     * 설문에 대한 정보를 등로하는 쿼리 입니다.
+     * 설문에 대한 정보를 등록하는 쿼리 입니다.
      *
      * @param surveyInfoCreateDto 설문 정보를 담은 Dto
      * @author : 강명관
