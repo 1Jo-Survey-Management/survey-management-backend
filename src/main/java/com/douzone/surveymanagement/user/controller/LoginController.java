@@ -101,7 +101,6 @@ public class LoginController {
         Map<String, String> parms = getAccessTokenUsingCode(clientId, clientSecret, code, state);
 
         log.debug("params accessToken : " + parms.get("access_token"));
-        System.out.println("params accessToken : " + parms.get("access_token"));
         NaverUserInfoResponse userInfo = getNaverUserInfo(parms.get("access_token"));
 
         CommonResponse commonResponse = handleUserRegistration(userInfo, parms);
@@ -249,7 +248,6 @@ public class LoginController {
         if (dbUserEmail != null && dbUserEmail.equals(userEmail) && (dbAccessToken == null || !dbAccessToken.equals(newAccessToken)) ) {
             UserInfo updateUserToken = new UserInfo();
             log.debug("로그아웃된 회원 다시 로그인");
-            System.out.println("로그아웃된 회원 다시 로그인");
 
             ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
             ZonedDateTime currentSeoulTime = ZonedDateTime.now(seoulZoneId);
@@ -269,14 +267,12 @@ public class LoginController {
             updateUserToken.setUserNo(dbUserNo);
             int flag = userService.updateAccessToken(updateUserToken);
             log.debug("Update AccessToken : " + flag);
-            System.out.println("Update AccessToken : " + flag);
         }
 
         // accessToken으로 회원이 존재하고 프로필 모두 등록 되었는지 확인
         UserInfo userExistCheck = userService.findUserByUserAccessToken(params.get("access_token"));
 
         log.debug("userExistcheck : " + userExistCheck);
-        System.out.println("userExistcheck : " + userExistCheck);
 
         // 완료되지 않은 회원가입 정보 확인
         UserInfo userIncompletedCheck = userService.findUserByUserAccessToken(params.get("access_token"));
@@ -288,12 +284,11 @@ public class LoginController {
         // db에 회원이 존재할때
         if (userExistCheck != null) {
             String userNickname = userExistCheck.getUserNickname();
-            System.out.println("userNickname : " + userNickname);
+
             // 완료된 회원이라면
             if (userNickname != null) {
 
                 log.debug("유저 확인됨! userEmail : " + userInfo.getResponse().getEmail());
-                System.out.println("유저 확인됨! userEmail : " + userInfo.getResponse().getEmail());
 
                 UserInfo userCheck = userService.findUserByUserAccessToken(params.get("access_token"));
 

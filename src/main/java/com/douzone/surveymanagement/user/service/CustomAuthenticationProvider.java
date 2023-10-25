@@ -50,12 +50,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         log.debug("oldAccessToken : " + oldAccessToken);
 
-        System.out.println("oldAccessToken : " + oldAccessToken);
-
         // db에 있는 유효시간이 유효한지 확인 후, 유효하지 않으면 갱신 시켜줌
         UserInfo userInfo = userService.findUserByUserAccessToken(oldAccessToken);
-
-        System.out.println("프로바이더 인포 : " + userInfo);
 
         // accessToken 없으면 임시 객체이기 때문에 토큰 유효성 검사 생략
         if (userInfo != null) {
@@ -67,8 +63,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
             log.debug("현재시간 : " + currentSeoulTime);
             log.debug("유효시간 : " + expiresCheck);
-            System.out.println("현재시간 : " + currentSeoulTime);
-            System.out.println("유효시간 : " + expiresCheck);
 
             ZonedDateTime parsedInstant = null;
             if (expiresCheck != null) {
@@ -76,12 +70,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 expiresCheck = expiresCheck + "+09:00";
                 parsedInstant = ZonedDateTime.parse(expiresCheck);
                 log.debug("유효시간 : " + parsedInstant);
-                System.out.println("유효시간 : " + parsedInstant);
             } else {
-                log.debug("expiresCheck = null");
                 log.debug("토큰 유효시간 만료");
-                System.out.println("토큰 유효시간 만료1");
-
                 String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=refresh_token&client_id=" + clientId +
                         "&client_secret=" + clientSecret + "&refresh_token=" + refreshToken;
 
@@ -114,13 +104,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
                 // 유효시간이 같지 않으면 갱신
                 if (comparisonResult > 0) {
-                    log.debug("토큰 유효시간 만료2");
-
                     String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=refresh_token&client_id=" + clientId +
                             "&client_secret=" + clientSecret + "&refresh_token=" + refreshToken;
-
-                    System.out.println("tokenUrl : " + tokenUrl);
-
+                    
                     Map<String, String> params = GetAccessToken.getToken(tokenUrl);
 
                     String accessToken = params.get("access_token");
@@ -152,24 +138,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         }
 
-                //--------------------------> 내일 고칠곳!! 토큰 유효기간 만료로 인하여 업데이트 했을때 업데이트 한 토큰으로 아래의
-                // 1번을 실행 해야 갱신도 되고 하는데 oldAccessToken으로 밖에 인증 하지 못해서 업데이트 된 토큰으로 인증하지
-                // 못해서 접근이 안된다. 그래서 맨처음 로그인 해서 API 요청을 할때에도 오류가 나는 것이다 이부분 고치면 해결됨
-                //
-
             // 1. 회원 확인
             if (!oldAccessToken.equals("")) {
-//                UserInfo user = userService.findUserByAccessTokenAndUserNo(oldAccessToken, userNo);
                 UserInfo user = userService.findUserByUserAccessToken(oldAccessToken);
 
-                log.debug("토큰과 회원 번호로 회원 확인 : " + user);
-                System.out.println("토큰과 회원 번호로 회원 확인 : " + user);
-
-                // 토큰과 회원번호를 아무렇게나 적어서 인가 됨을 방지
                 if (user != null) {
-                    // 사용자가 인증되면 CustomAuthentication 객체를 생성하고 사용자 정보를 설정
                     CustomAuthentication customAuthentication = new CustomAuthentication(
-                            //아래의 형식으로 다 넣어주기
                             new CustomUserDetails(user.getUserNo(), user.getUserEmail(), user.getUserNickname(), user.getUserGender(), user.getUserBirth(), user.getUserImage(), customToken.getAuthorities()),
                             oldAccessToken
                     );

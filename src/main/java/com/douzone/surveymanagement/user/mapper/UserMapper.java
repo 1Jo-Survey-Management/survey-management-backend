@@ -14,8 +14,6 @@ public interface UserMapper {
 
     UserInfo findUserByUserAccessToken(@Param("accessToken") String accessToken);
 
-    UserInfo findUserByAccessTokenAndUserNo(@Param("accessToken") String accessToken, @Param("userNo") long userNo);
-
     int beforeRegistUser(UserInfo userInfo);
 
     int registUser(UserInfo userInfo);

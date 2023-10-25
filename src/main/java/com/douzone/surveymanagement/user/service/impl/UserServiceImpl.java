@@ -33,6 +33,12 @@ public class UserServiceImpl implements UserService {
     private final MyPageMapper myPageMapper;
     private final UserMapper userMapper;
 
+    /**
+     * 회원가입 중의 가입 미완료 회원의 등록 메서드입니다
+     * @param userInfo
+     * @return 성공여부
+     * @author 김선규
+     */
     @Override
     public int beforeRegistUser(UserInfo userInfo){
         int flag ;
@@ -41,6 +47,12 @@ public class UserServiceImpl implements UserService {
 
         return flag;
     }
+
+    /**
+     * 회원가입 유저 등록 메서드입니다
+     * @param userInfo
+     * @author 김선규
+     */
     @Override
     @Transactional
     public void registUser(UserInfo userInfo){
@@ -48,6 +60,13 @@ public class UserServiceImpl implements UserService {
         userMapper.registUser(userInfo);
 
     }
+
+    /**
+     * AccessToken 갱신 메서드입니다
+     * @param userInfo
+     * @return 성공여부
+     * @author 김선규
+     */
     @Override
     @Transactional
     public int updateAccessToken(UserInfo userInfo){
@@ -58,6 +77,12 @@ public class UserServiceImpl implements UserService {
         return flag;
     }
 
+    /**
+     * AccessToken으로 회원 조회하는 메서드입니다
+     * @param accessToken
+     * @return 회원정보
+     * @author 김선규
+     */
     @Override
     public UserInfo findUserByUserAccessToken(String accessToken){
 
@@ -66,6 +91,12 @@ public class UserServiceImpl implements UserService {
         return userInfo;
     }
 
+    /**
+     * 유저 이메일로 회원 조회 하는 메서드입니다
+     * @param userEmail
+     * @return 회원정보
+     * @author 김선규
+     */
     @Override
     public UserInfo findUserByUserEmail(String userEmail){
 
@@ -73,15 +104,6 @@ public class UserServiceImpl implements UserService {
 
         return userInfo;
     }
-
-    @Override
-    public UserInfo findUserByAccessTokenAndUserNo(String accessToken, long userNo){
-
-        UserInfo userInfo = userMapper.findUserByAccessTokenAndUserNo(accessToken, userNo);
-
-        return userInfo;
-    }
-
 
     @Override
     @Transactional

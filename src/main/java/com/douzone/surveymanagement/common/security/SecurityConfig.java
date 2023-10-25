@@ -23,7 +23,7 @@ import java.util.List;
  * @author 김선규
  */
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity(debug = false)
 public class SecurityConfig {
 private final AuthenticationConfiguration authenticationConfiguration;
 private final CustomAuthenticationProvider customAuthenticationProvider;

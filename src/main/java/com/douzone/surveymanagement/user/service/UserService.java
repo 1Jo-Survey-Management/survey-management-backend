@@ -44,14 +44,6 @@ public interface UserService {
      */
     UserInfo findUserByUserEmail(String userEmail);
 
-    /**
-     * 토큰과 유저번호로 유저 정보 조회
-     * @param accessToken
-     * @param userNo
-     * @return 유저 정보
-     */
-    UserInfo findUserByAccessTokenAndUserNo(String accessToken, long userNo);
-
     /*
      * 유저의 닉네임을 변경합니다.
      *
