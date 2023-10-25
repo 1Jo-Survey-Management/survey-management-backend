@@ -1,6 +1,7 @@
 package com.douzone.surveymanagement.survey.service;
 
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoCreateDto;
+import com.douzone.surveymanagement.survey.dto.request.SurveyInfoUpdateDto;
 import com.douzone.surveymanagement.surveyquestion.dto.request.SurveyQuestionCreateDto;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,5 +44,18 @@ public interface CommandSurveyService {
      * @author : 강명관
      */
     void updateSurveyStatusToDeadline();
+
+
+    /**
+     * 설문에 대한 정보를 수정하는 메서드 입니다.
+     *
+     * @param surveyInfoUpdateDto 설문 정보 수정에 필요한 데이터를 담은 Dto
+     * @author : 강명관
+     */
+    void updateSurveyInfo(SurveyInfoUpdateDto surveyInfoUpdateDto, MultipartFile surveyImage);
+
+    void updateSurvey(SurveyInfoUpdateDto surveyInfoUpdateDto,
+                      MultipartFile surveyImage,
+                      List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList);
 
 }

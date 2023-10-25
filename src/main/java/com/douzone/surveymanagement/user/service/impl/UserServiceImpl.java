@@ -64,20 +64,15 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public boolean updateUserImage(long userNo, MultipartFile File) {
-        try {
-            deletePreviousUserImage(userNo);
+        deletePreviousUserImage(userNo);
 
-            String imagePath = FileUploadUtil.uploadFile(File);
+        String imagePath = FileUploadUtil.uploadFile(File);
 
-            ImageModifyDTO imageModifyDTO = new ImageModifyDTO(userNo, imagePath);
+        ImageModifyDTO imageModifyDTO = new ImageModifyDTO(userNo, imagePath);
 
-            int updatedRows = myPageMapper.updateUserImage(imageModifyDTO);
+        int updatedRows = myPageMapper.updateUserImage(imageModifyDTO);
 
-            return updatedRows > 0;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return updatedRows > 0;
     }
 
     @Override
@@ -96,6 +91,11 @@ public class UserServiceImpl implements UserService {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public String findUserImageByUserNo(long userNo) {
+        return myPageMapper.selectUserImageByUserNo(userNo);
     }
 }
 

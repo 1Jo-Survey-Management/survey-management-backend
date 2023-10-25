@@ -26,7 +26,6 @@ public class SurveyInfoCreateDto {
 
     @JsonIgnore
     private long surveyNo;
-    @NotNull(message = "유저 번호는 null일 수 없습니다.")
     private long userNo;
 
     @NotNull(message = "설문 상태는 null일 수 없습니다.")
@@ -45,9 +44,6 @@ public class SurveyInfoCreateDto {
 
     private String surveyImagePath;
 
-    public void setSurveyImagePath(String surveyImagePath) {
-        this.surveyImagePath = surveyImagePath;
-    }
     private LocalDateTime surveyPostAt;
 
     @FutureDateTime
@@ -57,4 +53,12 @@ public class SurveyInfoCreateDto {
     @NotNull(message = "설문 태그는 null일 수 없습니다.")
     @Size(min = 1, max = 2, message = "태그는 1 ~ 2개만 설정이 가능합니다.")
     List<Integer> surveyTags;
+
+    public void setUserNo(long userNo) {
+        this.userNo = userNo;
+    }
+
+    public void setSurveyImagePath(String surveyImagePath) {
+        this.surveyImagePath = surveyImagePath;
+    }
 }
