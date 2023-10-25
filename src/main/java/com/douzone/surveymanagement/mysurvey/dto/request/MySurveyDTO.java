@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import lombok.Setter;
 
 /**
  * 설문 정보 DTO 클래스입니다.
@@ -13,6 +14,8 @@ import java.util.List;
  * @version 1.0
  */
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class MySurveyDTO {
     private Long surveyNo;
     private Long userNo;

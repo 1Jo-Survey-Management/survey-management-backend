@@ -31,6 +31,8 @@ public class SurveyQuestionServiceImpl implements SurveyQuestionService {
     /**
      * {@inheritDoc}
      */
+    @Transactional
+    @Override
     public void insertQuestionList(long surveyNo,
                                    List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList) {
 
@@ -43,6 +45,8 @@ public class SurveyQuestionServiceImpl implements SurveyQuestionService {
         List<Long> questionNoList = surveyQuestionCreateDtoList.stream()
             .map(SurveyQuestionCreateDto::getSurveyQuestionNo)
             .collect(Collectors.toList());
+
+        log.info("questionNoList {}", questionNoList);
 
         for (SurveyQuestionCreateDto questionDto : surveyQuestionCreateDtoList) {
             QuestionTypeEnum questionTypeEnum =
@@ -57,4 +61,22 @@ public class SurveyQuestionServiceImpl implements SurveyQuestionService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Transactional
+    @Override
+    public void deleteAllQuestionAndSelection(long surveyNo) {
+        selectionService.deleteAllSelection(surveyNo);
+        surveyQuestionMapper.deleteAllSurveyQuestionsBySurveyNo(surveyNo);
+    }
+
+    @Override
+    public void updateQuestion(long surveyNo,
+                               List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList) {
+        log.info("updateQuestion surveyNo {}", surveyNo);
+        selectionService.deleteAllSelection(surveyNo);
+        surveyQuestionMapper.deleteAllSurveyQuestionsBySurveyNo(surveyNo);
+        insertQuestionList(surveyNo, surveyQuestionCreateDtoList);
+    }
 }

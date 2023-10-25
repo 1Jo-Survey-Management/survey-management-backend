@@ -1,16 +1,16 @@
 package com.douzone.surveymanagement.survey.service.impl;
 
-import com.douzone.surveymanagement.common.exception.NotAcceptableFileException;
 import com.douzone.surveymanagement.common.utils.FileUploadUtil;
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoCreateDto;
+import com.douzone.surveymanagement.survey.dto.request.SurveyInfoUpdateDto;
 import com.douzone.surveymanagement.survey.mapper.CommandSurveyMapper;
 import com.douzone.surveymanagement.survey.service.CommandSurveyService;
 import com.douzone.surveymanagement.surveyquestion.dto.request.SurveyQuestionCreateDto;
 import com.douzone.surveymanagement.surveyquestion.service.SurveyQuestionService;
 import com.douzone.surveymanagement.surveytag.dto.request.SurveyTagCreateDto;
 import com.douzone.surveymanagement.surveytag.service.SurveyTagService;
-import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,12 +26,13 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class CommandSurveyServiceImpl implements CommandSurveyService {
 
     private final CommandSurveyMapper commandSurveyMapper;
     private final SurveyQuestionService surveyQuestionService;
     private final SurveyTagService surveyTagService;
+
+    private static final int NEXT_DEFAULT_INDEX = 1;
 
     /**
      * {@inheritDoc}
@@ -40,12 +41,7 @@ public class CommandSurveyServiceImpl implements CommandSurveyService {
     @Override
     public long insertSurveyInfo(SurveyInfoCreateDto surveyInfoCreateDto, MultipartFile surveyImage) {
 
-        String saveFilePath = null;
-        try {
-            saveFilePath = FileUploadUtil.uploadFile(surveyImage);
-        } catch (IOException e) {
-            throw new NotAcceptableFileException();
-        }
+        String saveFilePath = FileUploadUtil.uploadFile(surveyImage);
         surveyInfoCreateDto.setSurveyImagePath(saveFilePath);
 
         commandSurveyMapper.insertSurveyInfo(surveyInfoCreateDto);
@@ -54,7 +50,7 @@ public class CommandSurveyServiceImpl implements CommandSurveyService {
 
         surveyInfoCreateDto.getSurveyTags().forEach((tagNo) ->
             surveyTagService.insertSurveyTag(
-                new SurveyTagCreateDto(surveyNo, tagNo)
+                new SurveyTagCreateDto(surveyNo, tagNo + NEXT_DEFAULT_INDEX)
             )
         );
 
@@ -73,6 +69,42 @@ public class CommandSurveyServiceImpl implements CommandSurveyService {
         long surveyNo = insertSurveyInfo(surveyInfoCreateDto, surveyImage);
 
         surveyQuestionService.insertQuestionList(surveyNo, surveyQuestionCreateDtoList);
+    }
+
+    @Transactional
+    @Override
+    public void updateSurveyStatusToDeadline() {
+        commandSurveyMapper.updateSurveyStatusToDeadline();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Transactional
+    @Override
+    public void updateSurveyInfo(SurveyInfoUpdateDto surveyInfoUpdateDto,
+                                 MultipartFile surveyImage) {
+
+        if (Objects.nonNull(surveyImage)) {
+            String fileUploadPath = FileUploadUtil.uploadFile(surveyImage);
+            surveyInfoUpdateDto.setSurveyImage(fileUploadPath);
+        }
+
+        commandSurveyMapper.updateSurvey(surveyInfoUpdateDto);
+    }
+
+    @Transactional
+    @Override
+    public void updateSurvey(SurveyInfoUpdateDto surveyInfoUpdateDto,
+                             MultipartFile surveyImage,
+                             List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList) {
+
+        updateSurveyInfo(surveyInfoUpdateDto, surveyImage);
+        surveyQuestionService.updateQuestion(
+            surveyInfoUpdateDto.getSurveyNo(),
+            surveyQuestionCreateDtoList
+        );
+
     }
 }
 

@@ -100,4 +100,13 @@ public interface UserService {
      */
     void deletePreviousUserImage(long userNo);
 
+    /**
+     * 유저 번호를 통해 유저 이미지 저장 경로를 가져오는 메서드입니다.
+     *
+     * @param userNo 유저 번호
+     * @return 유저 이미지가 저장되어 있는 경로
+     * @author : 강명관
+     */
+    String findUserImageByUserNo(long userNo);
+
 }
