@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Map;
@@ -99,6 +101,7 @@ public class LoginController {
         Map<String, String> parms = getAccessTokenUsingCode(clientId, clientSecret, code, state);
 
         log.debug("params accessToken : " + parms.get("access_token"));
+        System.out.println("params accessToken : " + parms.get("access_token"));
         NaverUserInfoResponse userInfo = getNaverUserInfo(parms.get("access_token"));
 
         CommonResponse commonResponse = handleUserRegistration(userInfo, parms);
@@ -228,6 +231,7 @@ public class LoginController {
     private CommonResponse handleUserRegistration(NaverUserInfoResponse userInfo, Map<String, String> params) {
 
         String userEmail = userInfo.getResponse().getEmail();
+        String newAccessToken = params.get("access_token");
         UserInfo searchUserInfobyEmail = userService.findUserByUserEmail(userEmail);
         String dbUserEmail = null;
         String dbAccessToken = null;
@@ -242,29 +246,37 @@ public class LoginController {
             log.error("이메일로 검색한 회원 존재 하지 않음");
         }
 
-        if (dbUserEmail != null && dbUserEmail.equals(userEmail) && dbAccessToken == null) {
+        if (dbUserEmail != null && dbUserEmail.equals(userEmail) && (dbAccessToken == null || !dbAccessToken.equals(newAccessToken)) ) {
             UserInfo updateUserToken = new UserInfo();
             log.debug("로그아웃된 회원 다시 로그인");
+            System.out.println("로그아웃된 회원 다시 로그인");
+
+            ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
+            ZonedDateTime currentSeoulTime = ZonedDateTime.now(seoulZoneId);
+
+            // 토큰 발급 받은 만료시간 설정 (버퍼 시간 고려 50분으로 설정)
+            ZonedDateTime newExpiresTime = currentSeoulTime.plusMinutes(50);
+
+            // yyyy-MM-dd HH:mm:ss 형식으로 ZonedDateTime를 문자열로 변환
+            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedStringExpiresIn = newExpiresTime.format(formatter2);
+
+
             updateUserToken.setUserEmail(dbUserEmail);
             updateUserToken.setAccessToken(params.get("access_token"));
             updateUserToken.setRefreshToken(params.get("refresh_token"));
+            updateUserToken.setExpiresIn(formattedStringExpiresIn);
             updateUserToken.setUserNo(dbUserNo);
             int flag = userService.updateAccessToken(updateUserToken);
             log.debug("Update AccessToken : " + flag);
-        } else if (dbUserEmail != null && dbUserEmail.equals(userEmail) && !dbAccessToken.equals(params.get("access_token"))) {
-            UserInfo updateUserToken = new UserInfo();
-            log.debug("AccessToken 만료, 토큰 업데이트");
-            updateUserToken.setUserNo(dbUserNo);
-            updateUserToken.setAccessToken(params.get("access_token"));
-            updateUserToken.setRefreshToken(params.get("refresh_token"));
-            int flag = userService.updateAccessToken(updateUserToken);
-            log.debug("Update AccessToken : " + flag);
+            System.out.println("Update AccessToken : " + flag);
         }
 
         // accessToken으로 회원이 존재하고 프로필 모두 등록 되었는지 확인
         UserInfo userExistCheck = userService.findUserByUserAccessToken(params.get("access_token"));
 
         log.debug("userExistcheck : " + userExistCheck);
+        System.out.println("userExistcheck : " + userExistCheck);
 
         // 완료되지 않은 회원가입 정보 확인
         UserInfo userIncompletedCheck = userService.findUserByUserAccessToken(params.get("access_token"));
@@ -276,10 +288,12 @@ public class LoginController {
         // db에 회원이 존재할때
         if (userExistCheck != null) {
             String userNickname = userExistCheck.getUserNickname();
+            System.out.println("userNickname : " + userNickname);
             // 완료된 회원이라면
             if (userNickname != null) {
 
                 log.debug("유저 확인됨! userEmail : " + userInfo.getResponse().getEmail());
+                System.out.println("유저 확인됨! userEmail : " + userInfo.getResponse().getEmail());
 
                 UserInfo userCheck = userService.findUserByUserAccessToken(params.get("access_token"));
 
