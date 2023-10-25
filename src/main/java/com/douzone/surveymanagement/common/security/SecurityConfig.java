@@ -56,7 +56,6 @@ private final CustomAuthenticationProvider customAuthenticationProvider;
         http        .addFilterBefore(customOAuth2Filter(authenticationManager()),
                         UsernamePasswordAuthenticationFilter.class);
 
-
         return http.build();
     }
 
