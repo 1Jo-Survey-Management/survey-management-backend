@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.douzone.surveymanagement.statistics.mapper.SelectMapper">
+    <resultMap id="SelectDto" type="com.douzone.surveymanagement.statistics.dto.SelectDto">
+        <result property="surveyNo" column="survey_no"/>
+        <result property="userNickname" column="user_nickname"/>
+        <result property="surveyTitle" column="survey_title"/>
+        <result property="surveyWriter" column="survey_writer"/>
+        <result property="surveyPostAt" column="survey_post_at"/>
+        <result property="surveyClosingAt" column="survey_closing_at"/>
+        <result property="surveyQuestionTitle" column="survey_question_title"/>
+        <result property="surveyQuestionNo" column="survey_question_no"/>
+        <result property="questionTypeNo" column="question_type_no"/>
+        <result property="selectionNo" column="selection_no"/>
+        <result property="selectionValue" column="selection_value"/>
+        <result property="selectionCount" column="selection_count"/>
+        <result property="totalAttend" column="total_attend"/>
+        <result property="questionAttendCount" column="question_attend_count"/>
+        <result property="surveySubjectiveAnswer" column="survey_subjective_answer"/>
+        <result property="surveySubjectiveAnswerCount" column="survey_subjective_answer_count"/>
+    </resultMap>
+    <select id="findSelection" resultMap="SelectDto">
+        SELECT s.survey_no,
+               s.survey_title,
+               sq.survey_question_title,
+               sq.question_type_no,
+               sas.selection_no,
+               se.selection_value,
+               COUNT(se.selection_no) AS selection_count,
+               SUM(COUNT(se.selection_no)) OVER() AS question_attend_count
+        FROM survey AS s
+                 INNER JOIN survey_question sq
+                            ON s.survey_no = sq.survey_no
+                 INNER JOIN survey_answer sa
+                            ON sq.survey_question_no = sa.survey_question_no
+                 LEFT JOIN (
+            SELECT * FROM survey_answer_selection
+        ) AS sas ON sa.survey_answer_no = sas.survey_answer_no
+                 INNER JOIN selection AS se
+                            ON sas.selection_no = se.selection_no
+        WHERE se.survey_question_no = #{surveyNo}
+          AND   s.survey_no = #{surveyQuestionNo}
+        GROUP BY s.survey_no,sq.survey_question_title,sq.question_type_no,sas.selection_no;
+
+    </select>
+
+    <select id="readSelectionAll" resultMap="SelectDto">
+        SELECT DISTINCT
+            u.user_nickname,
+            wt.user_nickname AS survey_writer,
+            s.survey_no,
+            s.survey_title,
+            s.survey_post_at,
+            s.survey_closing_at,
+            MAX(sa.survey_attend_no) OVER (PARTITION BY s.survey_no) AS total_attend,
+            sq.survey_question_no,
+            sq.survey_question_title,
+            qt.question_type_no,
+            se.selection_no,
+            COUNT(se.selection_no) AS selection_count,
+            COUNT(survey_subjective_answer) AS survey_subjective_answer_count,
+            CASE
+                WHEN qt.question_type_no IN (4, 5) THEN saa.survey_subjective_answer
+                ELSE NULL
+                END AS survey_subjective_answer,
+            se.selection_value
+        FROM user AS u
+                 JOIN survey_attend AS sa ON u.user_no = sa.user_no
+                 JOIN survey AS s ON sa.survey_no = s.survey_no
+                 LEFT JOIN user AS wt ON wt.user_no = s.user_no
+                 LEFT JOIN survey_question AS sq ON s.survey_no = sq.survey_no
+                 LEFT JOIN survey_answer AS saa ON sa.survey_attend_no = saa.survey_attend_no
+                 LEFT JOIN survey_answer_selection AS sas ON saa.survey_answer_no = sas.survey_answer_no
+                 LEFT JOIN selection AS se ON se.survey_question_no = sq.survey_question_no AND sas.selection_no = se.selection_no
+                 LEFT JOIN question_type AS qt ON sq.question_type_no = qt.question_type_no
+        WHERE s.survey_no = 1 and (((qt.question_type_no=4 or qt.question_type_no=5) and saa.survey_subjective_answer is not null) or se.selection_no is not null )
+        GROUP BY
+            u.user_nickname,
+            s.survey_no,
+            survey_writer,
+            s.survey_title,
+            s.survey_post_at,
+            s.survey_closing_at,
+            sq.survey_question_no,
+            sq.survey_question_title,
+            qt.question_type_no,
+            se.selection_no,
+            survey_subjective_answer,
+            se.selection_value;
+
+    </select>
+
+</mapper>
