@@ -3,7 +3,6 @@ package com.douzone.surveymanagement.statistics.controller;
 import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.statistics.dto.SelectDto;
 import com.douzone.surveymanagement.statistics.service.SelectService;
-import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,10 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/survey")
-public class SelectController {
+public class SelectionController {
 
     private SelectService selectService;
-    public SelectController(SelectService selectService) {
+    public SelectionController(SelectService selectService) {
         this.selectService = selectService;
     }
 
