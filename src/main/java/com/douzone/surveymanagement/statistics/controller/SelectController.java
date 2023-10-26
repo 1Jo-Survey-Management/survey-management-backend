@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/survey")
+@RequestMapping("/api/survey")
 public class SelectController {
 
     private SelectService selectService;
