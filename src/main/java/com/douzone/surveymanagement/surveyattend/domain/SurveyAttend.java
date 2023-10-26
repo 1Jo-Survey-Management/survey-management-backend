@@ -1,4 +1,4 @@
-package com.douzone.surveymanagement.survetyattend.domain;
+package com.douzone.surveymanagement.surveyattend.domain;
 
 import java.time.LocalDateTime;
 import lombok.Getter;
