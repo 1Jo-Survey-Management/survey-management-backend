@@ -104,7 +104,15 @@ public class CommandSurveyServiceImpl implements CommandSurveyService {
             surveyInfoUpdateDto.getSurveyNo(),
             surveyQuestionCreateDtoList
         );
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Transactional
+    @Override
+    public boolean updateSurveyStatusToPostInProgress(long surveyNo) {
+        return commandSurveyMapper.updateSurveyStatusToPostFromInProgress(surveyNo) != 0;
     }
 }
 
