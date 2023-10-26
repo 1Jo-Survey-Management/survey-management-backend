@@ -15,11 +15,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/survey")
 public class SelectController {
+
+    private SelectService selectService;
     public SelectController(SelectService selectService) {
         this.selectService = selectService;
     }
-
-    private SelectService selectService;
 
     @GetMapping("/result")
     public ResponseEntity<List<SelectDto>> findSelectionList(@RequestParam(value = "surveyno") int surveyNo,@RequestParam(value = "questionno") int surveyQuestionNo){
