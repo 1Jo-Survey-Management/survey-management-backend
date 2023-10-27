@@ -48,7 +48,7 @@
     </select>
 
     <select id="readSelectionAll" resultMap="SelectDto">
-        SELECT DISTINCT
+        SELECT
             u.user_nickname,
             wt.user_nickname AS survey_writer,
             s.survey_no,
@@ -56,7 +56,7 @@
             s.survey_post_at,
             s.survey_closing_at,
             MAX(sa.survey_attend_no) OVER (PARTITION BY s.survey_no) AS total_attend,
-            sq.survey_question_no,
+                sq.survey_question_no,
             sq.survey_question_title,
             qt.question_type_no,
             se.selection_no,
@@ -89,7 +89,9 @@
             qt.question_type_no,
             se.selection_no,
             survey_subjective_answer,
-            se.selection_value;
+            se.selection_value,
+            sa.survey_attend_no;
+
 
     </select>
 

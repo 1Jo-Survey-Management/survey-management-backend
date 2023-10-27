@@ -4,7 +4,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.douzone.surveymanagement.survey.mapper.QuerySurveyMapper">
-
     <resultMap id="surveyDetailsResultMap" type="com.douzone.surveymanagement.survey.dto.response.SurveyDetailsDto">
         <id property="surveyNo" column="survey_no" />
         <result property="surveyTitle" column="survey_title" />
@@ -34,6 +33,36 @@
         <result property="selectionValue" column="selection_value" />
         <result property="isMovable" column="is_movable" />
         <result property="isEndOfSurvey" column="is_end_of_survey" />
+    </resultMap>
+
+
+    <resultMap id="surveyDetailInfoDto" type="com.douzone.surveymanagement.survey.dto.response.SurveyDetailInfoDto">
+    <result property="surveyNo" column="survey_no"/>
+    <result property="surveyTitle" column="survey_title"/>
+    <result property="surveyDescription" column="survey_description"/>
+    <result property="surveyImage" column="survey_image"/>
+    <result property="surveyPostAt" column="survey_post_at"/>
+    <result property="surveyClosingAt" column="survey_closing_at"/>
+    <result property="userNickName" column="user_nickname"/>
+        <result property="userNo" column="user_no"/>
+    <result property="userImage" column="user_image"/>
+    <result property="surveyStatusName" column="survey_status_name"/>
+    <result property="openStatusName" column="open_status_name"/>
+    <result property="surveyAttendCount" column="attend_count"/>
+    <result property="isDeleted" column="is_deleted"/>
+        <collection property="tag" javaType="list" resultMap="tagDto"></collection>
+        <collection property="attendUserList" javaType="list" resultMap="AttendUserDto"></collection>
+        <collection property="attendCheckList" javaType="list" resultMap="AttendCheckDto"></collection>
+</resultMap>
+    <resultMap id="tagDto" type="string">
+        <result property="tagName" column="tag_name"/>
+    </resultMap>
+
+    <resultMap id="AttendUserDto" type="long">
+        <result property="attendUserNo" column="attend_user_no"/>
+    </resultMap>
+    <resultMap id="AttendCheckDto" type="boolean">
+        <result property="attendCheck" column="attend_check"/>
     </resultMap>
 
     <select id="selectSurveyDetailsBySurveyNo"  resultMap="surveyDetailsResultMap">
@@ -86,5 +115,205 @@
             survey_no = #{surveyNo}
     </select>
 
+    <select id="selectRecentSurvey" resultMap="surveyDetailInfoDto">
+        SELECT * , survey_attend.user_no as attend_user_no, if(survey_attend.user_no =1, false, true) as attend_check FROM (SELECT survey.survey_no,
+                                                                                                                          survey_title,
+                                                                                                                          survey_description,
+                                                                                                                          survey_image,
+                                                                                                                          survey_post_at,
+                                                                                                                          survey_closing_at,
+                                                                                                                          user.user_no,
+                                                                                                                          user.user_nickname,
+                                                                                                                          user.user_image,
+                                                                                                                          survey_status.survey_status_name,
+                                                                                                                          os.open_status_name,
+                                                                                                                          count(survey_attend.survey_no) AS attend_count,
+                                                                                                                          is_deleted
+                                                                                                                   FROM survey
+                                                                                                                            LEFT JOIN survey_status ON survey.survey_status_no = survey_status.survey_status_no
+                                                                                                                            LEFT JOIN user ON user.user_no = survey.user_no
+                                                                                                                            LEFT JOIN open_status os ON survey.open_status_no = os.open_status_no
+                                                                                                                            LEFT JOIN survey_attend ON survey.survey_no = survey_attend.survey_no
+                                                                                                                   WHERE is_deleted = 0
+                                                                                                                     AND survey_status.survey_status_no = 2
+
+                                                                                                                   GROUP BY survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
+                                                                                                                            os.open_status_no, survey.survey_no, survey_attend.survey_no
+                                                                                                                   ORDER BY survey_closing_at DESC
+                                                                                                                       limit 10) a
+                                                                                                                      LEFT JOIN survey_attend ON a.survey_no = survey_attend.survey_no
+                                                                                                                      LEFT JOIN survey_tag ON a.survey_no = survey_tag.survey_no
+                                                                                                                      LEFT JOIN tag ON survey_tag.tag_no = tag.tag_no
+        GROUP BY survey_tag.survey_tag_no, a.survey_no,survey_attend.user_no,
+                 survey_attend.survey_attend_no;
+</select>
+
+    <select id="closingSurvey" resultMap="surveyDetailInfoDto">
+        SELECT * , survey_attend.user_no as attend_user_no, if(survey_attend.user_no = 1, false, true) as attend_check FROM (SELECT survey.survey_no,
+                                                                                                                          survey_title,
+                                                                                                                          survey_description,
+                                                                                                                          survey_image,
+                                                                                                                          survey_post_at,
+                                                                                                                          survey_closing_at,
+                                                                                                                          user.user_no,
+                                                                                                                          user.user_nickname,
+                                                                                                                          user.user_image,
+                                                                                                                          survey_status.survey_status_name,
+                                                                                                                          os.open_status_name,
+                                                                                                                          count(survey_attend.survey_no) AS attend_count,
+                                                                                                                          is_deleted
+                                                                                                                   FROM survey
+                                                                                                                            LEFT JOIN survey_status ON survey.survey_status_no = survey_status.survey_status_no
+                                                                                                                            LEFT JOIN user ON user.user_no = survey.user_no
+                                                                                                                            LEFT JOIN open_status os ON survey.open_status_no = os.open_status_no
+                                                                                                                            LEFT JOIN survey_attend ON survey.survey_no = survey_attend.survey_no
+                                                                                                                   WHERE is_deleted = 0
+                                                                                                                     AND survey_status.survey_status_no = 3
+
+                                                                                                                   GROUP BY survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
+                                                                                                                            os.open_status_no, survey.survey_no, survey_attend.survey_no
+                                                                                                                   ORDER BY survey_closing_at DESC
+                                                                                                                       LIMIT 10) a
+                                                                                                                      LEFT JOIN survey_attend ON a.survey_no = survey_attend.survey_no
+                                                                                                                      LEFT JOIN survey_tag ON a.survey_no = survey_tag.survey_no
+                                                                                                                      LEFT JOIN tag ON survey_tag.tag_no = tag.tag_no
+        GROUP BY survey_tag.survey_tag_no, a.survey_no,survey_attend.user_no,
+                 survey_attend.survey_attend_no;
+    </select>
+
+    <select id="selectAllSurvey" resultMap="surveyDetailInfoDto" parameterType="int">
+        SELECT * , survey_attend.user_no as attend_user_no, if(survey_attend.user_no = 1, false, true) as attend_check FROM (SELECT survey.survey_no,
+                                                                                                                  survey_title,
+                                                                                                                  survey_description,
+                                                                                                                  survey_image,
+                                                                                                                  survey_post_at,
+                                                                                                                  survey_closing_at,
+                                                                                                                  user.user_no,
+                                                                                                                  user.user_nickname,
+                                                                                                                  user.user_image,
+                                                                                                                  survey_status.survey_status_name,
+                                                                                                                  os.open_status_name,
+                                                                                                                  count(survey_attend.survey_no) AS attend_count,
+                                                                                                                  is_deleted
+
+                                                                                                           FROM survey
+                                                                                                                    LEFT JOIN survey_status ON survey.survey_status_no = survey_status.survey_status_no
+                                                                                                                    LEFT JOIN user ON user.user_no = survey.user_no
+                                                                                                                    LEFT JOIN open_status os ON survey.open_status_no = os.open_status_no
+                                                                                                                    LEFT JOIN survey_attend ON survey.survey_no = survey_attend.survey_no
+                                                                                                           WHERE is_deleted = 0
+                                                                                                             AND survey.survey_status_no != 1
+
+                                                                                                           GROUP BY survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
+                                                                                                               os.open_status_no, survey.survey_no, survey_attend.survey_no
+                                                                                                           ORDER BY survey_post_at DESC
+                                                                                                               LIMIT 20 OFFSET #{nextPage}) a
+                                                                                                              LEFT JOIN survey_attend ON a.survey_no = survey_attend.survey_no
+                                                                                                              LEFT JOIN survey_tag ON a.survey_no = survey_tag.survey_no
+                                                                                                              LEFT JOIN tag ON survey_tag.tag_no = tag.tag_no
+        GROUP BY survey_tag.survey_tag_no, a.survey_no,survey_attend.user_no,
+                 survey_attend.survey_attend_no;
+
+    </select>
+    
+    <select id="selectWeeklySurvey" resultMap="surveyDetailInfoDto">
+        SELECT * , survey_attend.user_no as attend_user_no, if(survey_attend.user_no = 1, false, true) as attend_check FROM (SELECT survey.survey_no,
+                                                                                                                          survey_title,
+                                                                                                                          survey_description,
+                                                                                                                          survey_image,
+                                                                                                                          survey_post_at,
+                                                                                                                          survey_closing_at,
+                                                                                                                          user.user_no,
+                                                                                                                          user.user_nickname,
+                                                                                                                          user.user_image,
+                                                                                                                          survey_status.survey_status_name,
+                                                                                                                          os.open_status_name,
+                                                                                                                          count(survey_attend.survey_no) AS attend_count,
+                                                                                                                          is_deleted
+                                                                                                                   FROM survey
+                                                                                                                            LEFT JOIN survey_status ON survey.survey_status_no = survey_status.survey_status_no
+                                                                                                                            LEFT JOIN user ON user.user_no = survey.user_no
+                                                                                                                            LEFT JOIN open_status os ON survey.open_status_no = os.open_status_no
+                                                                                                                            LEFT JOIN survey_attend ON survey.survey_no = survey_attend.survey_no
+                                                                                                                   WHERE survey_post_at >= DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY) + INTERVAL 1 DAY
+                                                                                                                     AND is_deleted = 0
+                                                                                                                     AND survey_status.survey_status_no = 2
+
+                                                                                                                   GROUP BY survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
+                                                                                                                       os.open_status_no, survey.survey_no, survey_attend.survey_no
+                                                                                                                   ORDER BY survey_closing_at DESC
+                                                                                                                       LIMIT 10) a
+                                                                                                                      LEFT JOIN survey_attend ON a.survey_no = survey_attend.survey_no
+                                                                                                                      LEFT JOIN survey_tag ON a.survey_no = survey_tag.survey_no
+                                                                                                                      LEFT JOIN tag ON survey_tag.tag_no = tag.tag_no
+        GROUP BY survey_tag.survey_tag_no, a.survey_no,survey_attend.user_no,
+                 survey_attend.survey_attend_no;
+    </select>
+
+    <select id="selectClosingSurvey" resultMap="surveyDetailInfoDto" parameterType="int">
+        SELECT * , survey_attend.user_no as attend_user_no, if(survey_attend.user_no = 1, false, true) as attend_check FROM (SELECT survey.survey_no,
+                                                                                                                          survey_title,
+                                                                                                                          survey_description,
+                                                                                                                          survey_image,
+                                                                                                                          survey_post_at,
+                                                                                                                          survey_closing_at,
+                                                                                                                          user.user_no,
+                                                                                                                          user.user_nickname,
+                                                                                                                          user.user_image,
+                                                                                                                          survey_status.survey_status_name,
+                                                                                                                          os.open_status_name,
+                                                                                                                          count(survey_attend.survey_no) AS attend_count,
+                                                                                                                          is_deleted
+                                                                                                                   FROM survey
+                                                                                                                            LEFT JOIN survey_status ON survey.survey_status_no = survey_status.survey_status_no
+                                                                                                                            LEFT JOIN user ON user.user_no = survey.user_no
+                                                                                                                            LEFT JOIN open_status os ON survey.open_status_no = os.open_status_no
+                                                                                                                            LEFT JOIN survey_attend ON survey.survey_no = survey_attend.survey_no
+                                                                                                                   WHERE is_deleted = 0
+                                                                                                                     AND survey_status.survey_status_no = 3
+
+                                                                                                                   GROUP BY survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
+                                                                                                                            os.open_status_no, survey.survey_no, survey_attend.survey_no
+                                                                                                                   ORDER BY survey_closing_at DESC
+                                                                                                                       LIMIT 20 OFFSET #{nextPage}) a
+                                                                                                                      LEFT JOIN survey_attend ON a.survey_no = survey_attend.survey_no
+                                                                                                                      LEFT JOIN survey_tag ON a.survey_no = survey_tag.survey_no
+                                                                                                                      LEFT JOIN tag ON survey_tag.tag_no = tag.tag_no
+        GROUP BY survey_tag.survey_tag_no, a.survey_no,survey_attend.user_no,
+                 survey_attend.survey_attend_no;
+    </select>
+
+    <select id="selectPostSurvey" resultMap="surveyDetailInfoDto" parameterType="int">
+        SELECT * , survey_attend.user_no as attend_user_no, if(survey_attend.user_no = 1, false, true) as attend_check FROM (SELECT survey.survey_no,
+                                                                                                                          survey_title,
+                                                                                                                          survey_description,
+                                                                                                                          survey_image,
+                                                                                                                          survey_post_at,
+                                                                                                                          survey_closing_at,
+                                                                                                                          user.user_no,
+                                                                                                                          user.user_nickname,
+                                                                                                                          user.user_image,
+                                                                                                                          survey_status.survey_status_name,
+                                                                                                                          os.open_status_name,
+                                                                                                                          count(survey_attend.survey_no) AS attend_count,
+                                                                                                                          is_deleted
+                                                                                                                   FROM survey
+                                                                                                                            LEFT JOIN survey_status ON survey.survey_status_no = survey_status.survey_status_no
+                                                                                                                            LEFT JOIN user ON user.user_no = survey.user_no
+                                                                                                                            LEFT JOIN open_status os ON survey.open_status_no = os.open_status_no
+                                                                                                                            LEFT JOIN survey_attend ON survey.survey_no = survey_attend.survey_no
+                                                                                                                   WHERE is_deleted = 0
+                                                                                                                     AND survey_status.survey_status_no = 2
+
+                                                                                                                   GROUP BY survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
+                                                                                                                            os.open_status_no, survey.survey_no, survey_attend.survey_no
+                                                                                                                   ORDER BY survey_closing_at DESC
+                                                                                                                       LIMIT 20 OFFSET #{nextPage}) a
+                                                                                                                      LEFT JOIN survey_attend ON a.survey_no = survey_attend.survey_no
+                                                                                                                      LEFT JOIN survey_tag ON a.survey_no = survey_tag.survey_no
+                                                                                                                      LEFT JOIN tag ON survey_tag.tag_no = tag.tag_no
+        GROUP BY survey_tag.survey_tag_no, a.survey_no,survey_attend.user_no,
+                 survey_attend.survey_attend_no;
+    </select>
 
 </mapper>
