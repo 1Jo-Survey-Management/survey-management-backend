@@ -115,7 +115,7 @@ public class SurveyAttendServiceImpl implements SurveyAttendService {
      * @throws SurveyAttendException 저장에 실패한 경우
      */
     private void saveObjectiveAnswer(List<SurveyAttendSubmitDTO> list, SurveyAttendSubmitDTO dto, long surveyAttendNo, long currentQuestionNo) {
-        if (dto.getQuestionTypeNo() == 1 || dto.getQuestionTypeNo() == 2) {
+        if (dto.getQuestionTypeNo() == 1 || dto.getQuestionTypeNo() == 2 || dto.getQuestionTypeNo() == 3) {
             dto.setSurveyAttendNo(surveyAttendNo);
             int rowCount = surveyAttendMapper.insertObjectiveAnswer(dto);
             if (rowCount == 0) {
