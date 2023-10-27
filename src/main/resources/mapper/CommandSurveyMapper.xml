@@ -56,13 +56,5 @@
         WHERE survey_no = #{surveyNo};
     </update>
 
-    <update id="updateSurveyStatusToPostFromInProgress" parameterType="long" >
-        UPDATE survey
-        SET survey_status_no = 2
-        WHERE survey_no = #{surveyNo}
-          AND survey_status_no = 1
-          AND survey_closing_at >= CURDATE()
-    </update>
-
 
 </mapper>

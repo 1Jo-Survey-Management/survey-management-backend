@@ -74,6 +74,7 @@ public class SurveyQuestionServiceImpl implements SurveyQuestionService {
     @Override
     public void updateQuestion(long surveyNo,
                                List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList) {
+        log.info("updateQuestion surveyNo {}", surveyNo);
         selectionService.deleteAllSelection(surveyNo);
         surveyQuestionMapper.deleteAllSurveyQuestionsBySurveyNo(surveyNo);
         insertQuestionList(surveyNo, surveyQuestionCreateDtoList);
