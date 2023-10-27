@@ -1,15 +1,19 @@
 package com.douzone.surveymanagement.survey.controller;
 
+import com.douzone.surveymanagement.common.exception.BadRequestException;
 import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoCreateDto;
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoUpdateDto;
 import com.douzone.surveymanagement.survey.service.CommandSurveyService;
+import com.douzone.surveymanagement.survey.service.QuerySurveyService;
 import com.douzone.surveymanagement.surveyquestion.dto.request.SurveyQuestionCreateDto;
+import com.douzone.surveymanagement.user.util.CustomUserDetails;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class CommandSurveyController {
 
     private final CommandSurveyService commandSurveyService;
+    private final QuerySurveyService querySurveyService;
 
     /**
      * 섦문을 등록하는 REST API 입니다.
@@ -45,13 +50,11 @@ public class CommandSurveyController {
     public ResponseEntity<CommonResponse<String>> surveyCreate(
         @RequestPart SurveyInfoCreateDto surveyInfoCreateDto,
         @RequestPart List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList,
-        @RequestPart MultipartFile surveyImage
+        @RequestPart MultipartFile surveyImage,
+        @AuthenticationPrincipal CustomUserDetails userDetails
         ) {
 
-        /**
-         * FIXME: 유저 번호 테스트 데이터
-         */
-        surveyInfoCreateDto.setUserNo(1L);
+        surveyInfoCreateDto.setUserNo(userDetails.getUserNo());
 
         commandSurveyService.insertSurvey(
             surveyInfoCreateDto,
@@ -62,16 +65,31 @@ public class CommandSurveyController {
         return new ResponseEntity<>(CommonResponse.success(), HttpStatus.CREATED);
     }
 
+    /**
+     * 설문을 수정하는 API 입니다.
+     *
+     * @param surveyInfoUpdateDto 수정할 설문의 정보
+     * @param surveyQuestionCreateDtoList 수정된 설문 문항, 선택지 리스트
+     * @param surveyImage 설문 이미지
+     * @param userDetails 인가된 사용자
+     * @return 공용 응답객체
+     * @author : 강명관
+     */
     @PutMapping
     public ResponseEntity<CommonResponse<String>> surveyUpdate(
         @RequestPart SurveyInfoUpdateDto surveyInfoUpdateDto,
         @RequestPart List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList,
-        @RequestPart(required = false) MultipartFile surveyImage
+        @RequestPart(required = false) MultipartFile surveyImage,
+        @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
 
-        /**
-         * FIXME: 로그인 유저와 해당 설문 작성자가 같은지 확인하는 로직 추가
-         */
+        if (!querySurveyService.isSurveyCreatedByUser(
+            userDetails.getUserNo(),
+            surveyInfoUpdateDto.getSurveyNo()
+        )) {
+            throw new BadRequestException("선택한 설문을 수정할 수 없습니다.");
+        }
+
         commandSurveyService.updateSurvey(
             surveyInfoUpdateDto,
             surveyImage,
@@ -81,13 +99,26 @@ public class CommandSurveyController {
         return ResponseEntity.ok(CommonResponse.success());
     }
 
+    /**
+     * 작성된 설문의 상태를 게시하는 API 입니다.
+     *
+     * @param surveyNo 설문 번호
+     * @param userDetails 인가된 사용자
+     * @return 공용응답 객체
+     * @author : 강명관
+     */
     @PutMapping("/{surveyNo}/post")
     public ResponseEntity<CommonResponse<String>> surveyStatusToPostFromInProgress(
-        @PathVariable(value = "surveyNo") long surveyNo
+        @PathVariable(value = "surveyNo") long surveyNo,
+        @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        /**
-         * FIXME: 로그인 유저와 해당 설문 작성자가 같은지 확인하는 로직 추가
-         */
+
+        if (!querySurveyService.isSurveyCreatedByUser(
+            userDetails.getUserNo(),
+            surveyNo
+        )) {
+            throw new BadRequestException("선택한 설문을 삭제할 수 없습니다.");
+        }
 
         if (!commandSurveyService.updateSurveyStatusToPostInProgress(surveyNo)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

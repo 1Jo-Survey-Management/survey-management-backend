@@ -28,9 +28,20 @@ public class QuerySurveyServiceImpl implements QuerySurveyService {
         return querySurveyMapper.selectSurveyDetailsBySurveyNo(surveyNo);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String findSurveyImageBySurveyNo(long surveyNo) {
         return querySurveyMapper.selectSurveyImageBySurveyNo(surveyNo);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isSurveyCreatedByUser(long userNo, long surveyNo) {
+        return querySurveyMapper.selectSurveyCreatedByUser(userNo, surveyNo);
     }
 }
 
