@@ -19,6 +19,7 @@ public class SurveyDetailInfoDto {
     private  String surveyImage;
     private  LocalDateTime surveyPostAt;
     private LocalDate surveyClosingAt;
+    private  int userNo;
     private  String userNickName;
     private  String userImage;
     private  String surveyStatusName;
@@ -28,6 +29,7 @@ public class SurveyDetailInfoDto {
     private  boolean isDeleted;
     private List<String> tag;
 
-    private List<Long> userNo;
+    private List<Long> attendUserList;
 
+    private List<Boolean> attendCheckList;
 }

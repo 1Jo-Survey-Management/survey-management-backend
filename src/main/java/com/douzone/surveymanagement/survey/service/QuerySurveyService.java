@@ -1,6 +1,9 @@
 package com.douzone.surveymanagement.survey.service;
 
 import com.douzone.surveymanagement.survey.dto.response.SurveyDetailsDto;
+import com.douzone.surveymanagement.survey.dto.response.SurveyDetailInfoDto;
+
+import java.util.List;
 
 /**
  * 설문 조회에 대한 비즈니스 로직 메서드를 정의하는 인터페이스 입니다.
@@ -39,4 +42,17 @@ public interface QuerySurveyService {
      */
     boolean isSurveyCreatedByUser(long userNo, long surveyNo);
 
+    List<SurveyDetailInfoDto> readWeeklySurvey();
+
+    List<SurveyDetailInfoDto> readRecentSurvey();
+
+    List<SurveyDetailInfoDto> readClosingSurvey();
+
+    List<SurveyDetailInfoDto> getSurveyAll(int page);
+
+    List<SurveyDetailInfoDto> selectClosing(int page);
+
+    List<SurveyDetailInfoDto> selectPost(int page);
 }
+
+

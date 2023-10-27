@@ -29,7 +29,7 @@ public class SelectController {
         System.out.println("들어옴" + surveyQuestionNo);
 
 
-    List<SelectDto> selectList = selectService.readSelection(surveyNo, surveyQuestionNo);
+    List<SelectDto> selectList = selectService.readSelection(surveyNo,surveyQuestionNo);
 
         System.out.println("selectList : " + selectList.get(0).getSurveyNo());
 

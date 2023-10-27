@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class AttendUserDto {
-    private long attendUserNo;
+public class AttendCheckDto {
+
+    private boolean attendCheck;
 }
