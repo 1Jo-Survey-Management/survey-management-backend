@@ -1,5 +1,6 @@
 package com.douzone.surveymanagement.statistics.controller;
 
+import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.statistics.dto.SelectDto;
 import com.douzone.surveymanagement.statistics.service.SelectService;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/survey")
+@RequestMapping("/api/survey")
 public class SelectController {
     public SelectController(SelectService selectService) {
         this.selectService = selectService;
@@ -28,7 +29,7 @@ public class SelectController {
         System.out.println("들어옴" + surveyQuestionNo);
 
 
-    List<SelectDto> selectList = selectService.readSelection(surveyNo, surveyQuestionNo);
+    List<SelectDto> selectList = selectService.readSelection(surveyNo,surveyQuestionNo);
 
         System.out.println("selectList : " + selectList.get(0).getSurveyNo());
 
