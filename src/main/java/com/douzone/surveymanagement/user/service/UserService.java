@@ -1,8 +1,9 @@
 package com.douzone.surveymanagement.user.service;
-
 import com.douzone.surveymanagement.user.dto.request.UserDTO;
 import com.douzone.surveymanagement.user.dto.request.UserModifyDTO;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import com.douzone.surveymanagement.user.dto.UserInfo;
 
 /**
  * 유저 서비스 인터페이스입니다.
@@ -10,6 +11,40 @@ import org.springframework.web.multipart.MultipartFile;
 public interface UserService {
 
     /**
+     * 회원가입 전 미완료 회원 등록
+     * @param userInfo
+     * @return 성공 여부
+     */
+    int beforeRegistUser(UserInfo userInfo);
+
+    /**
+     * 회원 가입
+     * @param userInfo
+     */
+    void registUser(UserInfo userInfo);
+
+    /**
+     * 토큰 갱신
+     * @param userInfo
+     * @return 갱신 성공 여부
+     */
+    int updateAccessToken(UserInfo userInfo);
+
+    /**
+     * 토큰으로 유저 정보 조회
+     * @param accessToken
+     * @return 유저 정보
+     */
+    UserInfo findUserByUserAccessToken(String accessToken);
+
+    /**
+     * 이메일로 유저 정보 조회
+     * @param userEmail
+     * @return 유저 정보
+     */
+    UserInfo findUserByUserEmail(String userEmail);
+
+    /*
      * 유저의 닉네임을 변경합니다.
      *
      * @param userModifyDTO 유저 닉네임 수정 DTO
@@ -56,4 +91,14 @@ public interface UserService {
      * @param userNo 삭제 및 업데이트를 수행할 사용자의 고유 번호
      */
     void deletePreviousUserImage(long userNo);
+
+    /**
+     * 유저 번호를 통해 유저 이미지 저장 경로를 가져오는 메서드입니다.
+     *
+     * @param userNo 유저 번호
+     * @return 유저 이미지가 저장되어 있는 경로
+     * @author : 강명관
+     */
+    String findUserImageByUserNo(long userNo);
+
 }

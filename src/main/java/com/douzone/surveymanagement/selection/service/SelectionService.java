@@ -25,4 +25,12 @@ public interface SelectionService {
                              List<Long> questionNoList,
                              long surveyQuestionNo,
                              List<SelectionCreateDto> selectionCreateDtoList);
+
+    /**
+     * 설문 번호에 해당하는 모든 선택지를 삭제하는 메서드 입니다.
+     *
+     * @param surveyNo 설문 번호
+     * @author : 강명관
+     */
+    void deleteAllSelection(long surveyNo);
 }
