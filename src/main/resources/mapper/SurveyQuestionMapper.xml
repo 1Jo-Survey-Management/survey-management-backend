@@ -32,4 +32,11 @@
 
     </insert>
 
+    <delete id="deleteAllSurveyQuestionsBySurveyNo" parameterType="long">
+        DELETE
+        FROM
+            survey_question
+        WHERE survey_no = #{surveyNo};
+    </delete>
+
 </mapper>

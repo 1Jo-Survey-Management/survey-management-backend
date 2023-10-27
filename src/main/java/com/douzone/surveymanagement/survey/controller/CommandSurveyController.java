@@ -2,6 +2,7 @@ package com.douzone.surveymanagement.survey.controller;
 
 import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoCreateDto;
+import com.douzone.surveymanagement.survey.dto.request.SurveyInfoUpdateDto;
 import com.douzone.surveymanagement.survey.service.CommandSurveyService;
 import com.douzone.surveymanagement.surveyquestion.dto.request.SurveyQuestionCreateDto;
 import java.util.List;
@@ -9,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
  **/
 @Slf4j
 @RestController
-@RequestMapping("/v1/survey")
+@RequestMapping("/api/surveys")
 @RequiredArgsConstructor
 public class CommandSurveyController {
 
@@ -39,11 +42,16 @@ public class CommandSurveyController {
      * @author : 강명관
      */
     @PostMapping
-    public ResponseEntity<CommonResponse<String>> surveyRegister(
-        @RequestPart(required = false) SurveyInfoCreateDto surveyInfoCreateDto,
-        @RequestPart(required = false) List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList,
-        @RequestPart(required = false) MultipartFile surveyImage
+    public ResponseEntity<CommonResponse<String>> surveyCreate(
+        @RequestPart SurveyInfoCreateDto surveyInfoCreateDto,
+        @RequestPart List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList,
+        @RequestPart MultipartFile surveyImage
         ) {
+
+        /**
+         * FIXME: 유저 번호 테스트 데이터
+         */
+        surveyInfoCreateDto.setUserNo(1L);
 
         commandSurveyService.insertSurvey(
             surveyInfoCreateDto,
@@ -52,5 +60,40 @@ public class CommandSurveyController {
         );
 
         return new ResponseEntity<>(CommonResponse.success(), HttpStatus.CREATED);
+    }
+
+    @PutMapping
+    public ResponseEntity<CommonResponse<String>> surveyUpdate(
+        @RequestPart SurveyInfoUpdateDto surveyInfoUpdateDto,
+        @RequestPart List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList,
+        @RequestPart(required = false) MultipartFile surveyImage
+    ) {
+
+        /**
+         * FIXME: 로그인 유저와 해당 설문 작성자가 같은지 확인하는 로직 추가
+         */
+        commandSurveyService.updateSurvey(
+            surveyInfoUpdateDto,
+            surveyImage,
+            surveyQuestionCreateDtoList
+        );
+
+        return ResponseEntity.ok(CommonResponse.success());
+    }
+
+    @PutMapping("/{surveyNo}/post")
+    public ResponseEntity<CommonResponse<String>> surveyStatusToPostFromInProgress(
+        @PathVariable(value = "surveyNo") long surveyNo
+    ) {
+        /**
+         * FIXME: 로그인 유저와 해당 설문 작성자가 같은지 확인하는 로직 추가
+         */
+
+        if (!commandSurveyService.updateSurveyStatusToPostInProgress(surveyNo)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(CommonResponse.fail());
+        }
+
+        return ResponseEntity.ok(CommonResponse.success());
     }
 }

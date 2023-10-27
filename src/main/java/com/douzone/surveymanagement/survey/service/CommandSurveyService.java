@@ -1,6 +1,7 @@
 package com.douzone.surveymanagement.survey.service;
 
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoCreateDto;
+import com.douzone.surveymanagement.survey.dto.request.SurveyInfoUpdateDto;
 import com.douzone.surveymanagement.surveyquestion.dto.request.SurveyQuestionCreateDto;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,4 +37,43 @@ public interface CommandSurveyService {
                       List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList,
                       MultipartFile surveyImage);
 
+
+    /**
+     * 설문의 상태가 진행중이고, 마감일이 오늘(00시 00분)보다 이전일 경우에 해당 설문을 마감 상태로 변경시키는 메서드 입니다.
+     *
+     * @author : 강명관
+     */
+    void updateSurveyStatusToDeadline();
+
+
+    /**
+     * 설문에 대한 정보를 수정하는 메서드 입니다.
+     *
+     * @param surveyInfoUpdateDto 설문 정보 수정에 필요한 데이터를 담은 Dto
+     * @author : 강명관
+     */
+    void updateSurveyInfo(SurveyInfoUpdateDto surveyInfoUpdateDto, MultipartFile surveyImage);
+
+    /**
+     * 설문을 수정하는 메서드 입니다.
+     * 기존 설문에 등록되어 있던 문항, 선택지들을 삭제하고
+     * 새롭게 새로운 문항들을 등록합니다.
+     *
+     * @param surveyInfoUpdateDto 설문에 대한 정보를 담은 Dto
+     * @param surveyImage 설문의 이미지 파일
+     * @param surveyQuestionCreateDtoList 설문의 문항과 선택지 리스트
+     * @author : 강명관
+     */
+    void updateSurvey(SurveyInfoUpdateDto surveyInfoUpdateDto,
+                      MultipartFile surveyImage,
+                      List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList);
+
+    /**
+     * 설문의 상태를 설문의 번호를 통해 게시 상태로 변경하는 메서드 입니다.
+     *
+     * @param surveyNo 설문 번호
+     * @return 설문의 상태가 변경되었을 경우 true, 변경되지 않았을 경우 false를 반환합니다.
+     * @author : 강명관
+     */
+    boolean updateSurveyStatusToPostInProgress(long surveyNo);
 }

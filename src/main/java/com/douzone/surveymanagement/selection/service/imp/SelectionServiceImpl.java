@@ -28,6 +28,7 @@ public class SelectionServiceImpl implements SelectionService {
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void insertSelectionList(QuestionTypeEnum questionTypeEnum,
                                     List<Long> questionNoList,
@@ -46,6 +47,15 @@ public class SelectionServiceImpl implements SelectionService {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Transactional
+    @Override
+    public void deleteAllSelection(long surveyNo) {
+        selectionMapper.deleteSelectionsBySurveyNo(surveyNo);
+    }
+
+    /**
      * 설문이동 번호를 계산하고 넣어주기 위한 메서드 입니다.
      *
      * @param questionNoList 문항들이 저장되고 나온 문항 PK 번호 리스트 입니다.
@@ -61,7 +71,6 @@ public class SelectionServiceImpl implements SelectionService {
             }
 
             int moveQuestionIndex = (int) (selectionCreateDto.getSurveyQuestionMoveNo() - 1);
-            log.info("moveQuestionIndex {}",moveQuestionIndex);
             selectionCreateDto.setSurveyQuestionMoveNo(
                 questionNoList.get(moveQuestionIndex)
             );

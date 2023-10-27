@@ -6,30 +6,6 @@
 <mapper namespace="com.douzone.surveymanagement.selection.mapper.SelectionMapper">
 
 
-    <insert id="insertSelection"
-            parameterType="com.douzone.surveymanagement.selection.dto.reqeust.SelectionCreateDto">
-        INSERT INTO selection (
-            `survey_question_no`,
-            `survey_question_move_no`,
-            `selection_value`,
-            `is_movable`
-        )
-        VALUES (
-                   #{surveyQuestionNo},
-                    <choose>
-                        <when test="surveyQuestionMoveNo == 0">
-                            NULL
-                        </when>
-                        <otherwise>
-                            #{surveyQuestionMoveNo}
-                        </otherwise>
-                    </choose>,
-                   #{selectionValue},
-                   #{isMovable}
-               );
-
-    </insert>
-
     <insert id="insertSelectionList" parameterType="java.util.List">
         INSERT INTO selection (
         `survey_question_no`,
@@ -56,5 +32,14 @@
             )
         </foreach>
     </insert>
+
+    <delete id="deleteSelectionsBySurveyNo" parameterType="long">
+        DELETE se
+        FROM
+        selection AS se
+            INNER JOIN survey_question AS sq
+                ON se.survey_question_no = sq.survey_question_no
+        WHERE sq.survey_no = #{surveyNo};
+    </delete>
 
 </mapper>
