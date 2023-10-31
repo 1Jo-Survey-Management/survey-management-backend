@@ -40,9 +40,6 @@ public class SelectionController {
 
         List<SelectDto> selectList = selectService.readSelectionAll(surveyNo);
 
-        System.out.println("resultAll 들어옴 : " + surveyNo);
-        System.out.println("selectList : " + selectList.get(0).getUserNickname());
-
         return ResponseEntity
                 .ok()
                 .body(CommonResponse.successOf(selectList));

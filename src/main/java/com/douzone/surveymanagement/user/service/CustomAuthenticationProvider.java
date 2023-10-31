@@ -67,7 +67,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             ZonedDateTime parsedInstant = null;
             if (expiresCheck != null) {
                 expiresCheck = expiresCheck.replace(' ', 'T');
-                expiresCheck = expiresCheck + "+09:00";
+//                expiresCheck = expiresCheck + "+09:00";
                 parsedInstant = ZonedDateTime.parse(expiresCheck);
                 log.debug("유효시간 : " + parsedInstant);
             } else {

@@ -40,6 +40,7 @@ public class UserServiceImpl implements UserService {
      * @author 김선규
      */
     @Override
+    @Transactional
     public int beforeRegistUser(UserInfo userInfo){
         int flag ;
 
