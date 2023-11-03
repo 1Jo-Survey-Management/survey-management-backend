@@ -3,7 +3,14 @@ package com.douzone.surveymanagement.statistics.controller;
 import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.statistics.dto.SelectDto;
 import com.douzone.surveymanagement.statistics.service.SelectService;
+import com.douzone.surveymanagement.user.util.CustomAuthentication;
+import com.douzone.surveymanagement.user.util.CustomAuthenticationToken;
+import com.douzone.surveymanagement.user.util.CustomUserDetails;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,11 +45,27 @@ public class SelectionController {
     @GetMapping("/resultall")
     public ResponseEntity<CommonResponse>  findSelectionListAll(@RequestParam(value = "surveyno") int surveyNo){
 
+        System.out.println("resultAll에 안들어온다고????");
+
+        Authentication authenticationCheck = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authenticationCheck!=null){
+            System.out.println("토큰 확인 : " + authenticationCheck.getCredentials());
+        }else{
+            System.out.println("토큰이 null임 ?? : " + authenticationCheck);
+        }
+
         List<SelectDto> selectList = selectService.readSelectionAll(surveyNo);
+
+        String accessToken = null;
+        if(authenticationCheck!=null){
+            accessToken = (String) authenticationCheck.getCredentials();
+        }
+        CommonResponse commonResponse = CommonResponse.successOf(selectList, accessToken);
 
         return ResponseEntity
                 .ok()
-                .body(CommonResponse.successOf(selectList));
+                .body(commonResponse);
 
     }
 }

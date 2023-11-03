@@ -6,10 +6,12 @@ import com.douzone.surveymanagement.user.dto.request.UserDTO;
 import com.douzone.surveymanagement.user.dto.request.UserModifyDTO;
 import com.douzone.surveymanagement.user.exception.DuplicateUsernameException;
 import com.douzone.surveymanagement.user.service.impl.UserServiceImpl;
+import com.douzone.surveymanagement.user.util.CustomAuthenticationToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,14 +41,14 @@ public class UserApi {
      */
     @PutMapping("/{userNo}/nickname")
     public ResponseEntity<CommonResponse> userNickNameUpdate(
-            @PathVariable("userNo") long userNo, @Valid @RequestBody UserModifyDTO userModifyDTO) {
+            @PathVariable("userNo") long userNo, @Valid @RequestBody UserModifyDTO userModifyDTO,  @AuthenticationPrincipal CustomAuthenticationToken token) {
 
         try {
             userServiceImpl.updateUserNickName(userModifyDTO);
 
             return ResponseEntity
                     .ok()
-                    .body(CommonResponse.<String>successOf("NickName updated successfully"));
+                    .body(CommonResponse.<String>successOf("NickName updated successfully", token.getCustomToken()));
         } catch (DuplicateUsernameException e) {
             String errorMessage = "Duplicate username: " + e.getMessage();
             return ResponseEntity
@@ -59,20 +61,20 @@ public class UserApi {
      * 유저 이미지 업데이트 엔드포인트
      *
      * @param userNo 유저 번호
-     * @param file   이미지 파일
+     * @param File   이미지 파일
      * @return 업데이트 결과
      */
     @PutMapping("/{userNo}/image")
     public ResponseEntity<CommonResponse> updateUserImage(
             @PathVariable long userNo,
-            @RequestParam("file") MultipartFile File) {
+            @RequestParam("file") MultipartFile File,  @AuthenticationPrincipal CustomAuthenticationToken token) {
 
         boolean updated = userServiceImpl.updateUserImage(userNo, File);
 
         if (updated) {
             return ResponseEntity
                     .ok()
-                    .body(CommonResponse.<String>successOf("Image updated successfully"));
+                    .body(CommonResponse.<String>successOf("Image updated successfully", token.getCustomToken()));
         } else {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)

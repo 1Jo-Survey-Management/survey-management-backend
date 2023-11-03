@@ -88,6 +88,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
                 // 유효 시간을 넘었기 때문에 토큰 갱신
                 if (koreaTime.isAfter(expiresTime)) {
+                    System.out.println("유효시간 넘어서 토큰 자동 갱신");
                     String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=refresh_token&client_id=" + clientId +
                             "&client_secret=" + clientSecret + "&refresh_token=" + refreshToken;
 

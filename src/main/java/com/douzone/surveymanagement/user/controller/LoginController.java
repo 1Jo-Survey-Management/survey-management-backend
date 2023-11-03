@@ -53,7 +53,7 @@ public class LoginController {
 
         UserInfo returnUser = userService.findUserByUserAccessToken(accessToken);
 
-        CommonResponse commonResponse = CommonResponse.successOf(returnUser);
+        CommonResponse commonResponse = CommonResponse.successOf(returnUser,null);
         commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
         return commonResponseResponseEntity;
     }
@@ -126,7 +126,7 @@ public class LoginController {
 
         authenticateUserAfterRegistration(registUser);
 
-        return CommonResponse.successOf(registUser);
+        return CommonResponse.successOf(registUser, null);
     }
 
     /**
@@ -299,7 +299,7 @@ public class LoginController {
                 userCheck.setExpiresIn(userCheck.getExpiresIn());
                 userCheck.setRefreshToken(params.get("refresh_token"));
 
-                commonResponse = CommonResponse.successOf(userCheck);
+                commonResponse = CommonResponse.successOf(userCheck, null);
 
                 return commonResponse;
             }
@@ -314,7 +314,7 @@ public class LoginController {
                 System.out.println("유효기간 이색기 확인해보자 : " + params.get("expires_in"));
 
 
-                commonResponse = CommonResponse.successOf(userIncompletedCheck);
+                commonResponse = CommonResponse.successOf(userIncompletedCheck, null);
 
                 return commonResponse;
             }
@@ -339,13 +339,13 @@ public class LoginController {
             userRegist.setExpiresIn(koreaTime);
             userRegist.setRefreshToken(params.get("refresh_token"));
 
-            int flag = userService.beforeRegistUser(userRegist);
+            userService.beforeRegistUser(userRegist);
 
             System.out.println("미완료 회원 accessToken : " + params.get("access_token"));
 
-            log.debug("미완료 회원 등록 : " + flag);
+            UserInfo respUserInfo = userService.findUserByUserAccessToken(params.get("access_token"));
 
-            commonResponse = CommonResponse.successOf(userRegist);
+            commonResponse = CommonResponse.successOf(respUserInfo,null);
         }
         return commonResponse;
     }

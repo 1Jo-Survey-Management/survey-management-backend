@@ -3,9 +3,11 @@ package com.douzone.surveymanagement.survey.controller;
 import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.survey.dto.response.SurveyDetailsDto;
 import com.douzone.surveymanagement.survey.service.QuerySurveyService;
+import com.douzone.surveymanagement.user.util.CustomAuthenticationToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +28,9 @@ public class QuerySurveyController {
     private final QuerySurveyService querySurveyService;
 
     @GetMapping("/{surveyNo}")
-    public ResponseEntity surveyDetails(@PathVariable(value = "surveyNo") long surveyNo) {
+    public ResponseEntity surveyDetails(@PathVariable(value = "surveyNo") long surveyNo, @AuthenticationPrincipal CustomAuthenticationToken token) {
         SurveyDetailsDto surveyDetails = querySurveyService.findSurveyDetails(surveyNo);
-        return ResponseEntity.ok(CommonResponse.successOf(surveyDetails));
+        return ResponseEntity.ok(CommonResponse.successOf(surveyDetails, token.getCustomToken()));
     }
 
 
