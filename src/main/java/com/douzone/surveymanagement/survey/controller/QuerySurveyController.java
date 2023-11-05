@@ -9,10 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Some description here.
@@ -31,6 +30,9 @@ public class QuerySurveyController {
     @GetMapping("/{surveyNo}")
     public ResponseEntity surveyDetails(@PathVariable(value = "surveyNo") long surveyNo, @AuthenticationPrincipal CustomAuthenticationToken token) {
         SurveyDetailsDto surveyDetails = querySurveyService.findSurveyDetails(surveyNo);
+
+        log.debug("여기서 토큰 못뽑을걸? : " + token.getCustomToken());
+
         return ResponseEntity.ok(CommonResponse.successOf(surveyDetails, token.getCustomToken()));
     }
   
@@ -83,7 +85,7 @@ public class QuerySurveyController {
         List<SurveyDetailInfoDto> allSurvey = querySurveyService.getSurveyAll(page);
         return ResponseEntity.ok(allSurvey);
     }
-
+    /**
      *
      * 검색에서 마감을 선택할 시 마감된 설문을 20개씩 끊어 가져오는 API입니다.
      *
