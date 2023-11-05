@@ -48,7 +48,7 @@
     </select>
 
     <select id="readSelectionAll" resultMap="SelectDto">
-        SELECT DISTINCT
+        SELECT
             u.user_nickname,
             wt.user_nickname AS survey_writer,
             s.survey_no,
@@ -89,7 +89,8 @@
             qt.question_type_no,
             se.selection_no,
             survey_subjective_answer,
-            se.selection_value;
+            se.selection_value,
+            sa.survey_attend_no;
     </select>
 
 </mapper>
