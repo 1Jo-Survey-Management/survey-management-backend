@@ -53,7 +53,7 @@ public class LoginController {
 
         UserInfo returnUser = userService.findUserByUserAccessToken(accessToken);
 
-        CommonResponse commonResponse = CommonResponse.successOf(returnUser,null);
+        CommonResponse commonResponse = CommonResponse.successOf(returnUser);
         commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
         return commonResponseResponseEntity;
     }
@@ -126,7 +126,7 @@ public class LoginController {
 
         authenticateUserAfterRegistration(registUser);
 
-        return CommonResponse.successOf(registUser, null);
+        return CommonResponse.successOf(registUser);
     }
 
     /**
@@ -252,7 +252,7 @@ public class LoginController {
             System.out.println("로그아웃된 회원 다시 로그인");
 
             NTPTimeFetcher ntpTimeFetcher = new NTPTimeFetcher();
-            ZonedDateTime koreaTime = ZonedDateTime.parse(ntpTimeFetcher.getFormattedKoreaTimeWithExpiration(50));
+            ZonedDateTime koreaTime = ZonedDateTime.parse(ntpTimeFetcher.getFormattedKoreaTime());
 
             // 토큰 발급 받은 만료시간 설정 (버퍼 시간 고려 50분으로 설정)
             ZonedDateTime newExpiresTime = koreaTime.plusMinutes(50);
@@ -299,7 +299,7 @@ public class LoginController {
                 userCheck.setExpiresIn(userCheck.getExpiresIn());
                 userCheck.setRefreshToken(params.get("refresh_token"));
 
-                commonResponse = CommonResponse.successOf(userCheck, null);
+                commonResponse = CommonResponse.successOf(userCheck);
 
                 return commonResponse;
             }
@@ -311,10 +311,7 @@ public class LoginController {
                 userIncompletedCheck.setExpiresIn(params.get("expires_in"));
                 userIncompletedCheck.setRefreshToken(params.get("refresh_token"));
 
-                System.out.println("유효기간 이색기 확인해보자 : " + params.get("expires_in"));
-
-
-                commonResponse = CommonResponse.successOf(userIncompletedCheck, null);
+                commonResponse = CommonResponse.successOf(userIncompletedCheck);
 
                 return commonResponse;
             }
@@ -345,7 +342,7 @@ public class LoginController {
 
             UserInfo respUserInfo = userService.findUserByUserAccessToken(params.get("access_token"));
 
-            commonResponse = CommonResponse.successOf(respUserInfo,null);
+            commonResponse = CommonResponse.successOf(respUserInfo);
         }
         return commonResponse;
     }

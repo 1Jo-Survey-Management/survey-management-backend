@@ -28,12 +28,9 @@ public class QuerySurveyController {
     private final QuerySurveyService querySurveyService;
 
     @GetMapping("/{surveyNo}")
-    public ResponseEntity surveyDetails(@PathVariable(value = "surveyNo") long surveyNo, @AuthenticationPrincipal CustomAuthenticationToken token) {
+    public ResponseEntity surveyDetails(@PathVariable(value = "surveyNo") long surveyNo) {
         SurveyDetailsDto surveyDetails = querySurveyService.findSurveyDetails(surveyNo);
-
-        log.debug("여기서 토큰 못뽑을걸? : " + token.getCustomToken());
-
-        return ResponseEntity.ok(CommonResponse.successOf(surveyDetails, token.getCustomToken()));
+        return ResponseEntity.ok(CommonResponse.successOf(surveyDetails));
     }
   
     /**

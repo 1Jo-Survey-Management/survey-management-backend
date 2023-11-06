@@ -41,14 +41,14 @@ public class UserApi {
      */
     @PutMapping("/{userNo}/nickname")
     public ResponseEntity<CommonResponse> userNickNameUpdate(
-            @PathVariable("userNo") long userNo, @Valid @RequestBody UserModifyDTO userModifyDTO,  @AuthenticationPrincipal CustomAuthenticationToken token) {
+            @PathVariable("userNo") long userNo, @Valid @RequestBody UserModifyDTO userModifyDTO) {
 
         try {
             userServiceImpl.updateUserNickName(userModifyDTO);
 
             return ResponseEntity
                     .ok()
-                    .body(CommonResponse.<String>successOf("NickName updated successfully", token.getCustomToken()));
+                    .body(CommonResponse.<String>successOf("NickName updated successfully"));
         } catch (DuplicateUsernameException e) {
             String errorMessage = "Duplicate username: " + e.getMessage();
             return ResponseEntity
@@ -67,14 +67,14 @@ public class UserApi {
     @PutMapping("/{userNo}/image")
     public ResponseEntity<CommonResponse> updateUserImage(
             @PathVariable long userNo,
-            @RequestParam("file") MultipartFile File,  @AuthenticationPrincipal CustomAuthenticationToken token) {
+            @RequestParam("file") MultipartFile File) {
 
         boolean updated = userServiceImpl.updateUserImage(userNo, File);
 
         if (updated) {
             return ResponseEntity
                     .ok()
-                    .body(CommonResponse.<String>successOf("Image updated successfully", token.getCustomToken()));
+                    .body(CommonResponse.<String>successOf("Image updated successfully"));
         } else {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
