@@ -58,6 +58,16 @@ public class LoginController {
         return commonResponseResponseEntity;
     }
 
+    @GetMapping("cancel")
+    public ResponseEntity<CommonResponse> loginCancel(@RequestParam(name = "userNo") String userNo) {
+
+        int cancelCheck = userService.loginCancel(userNo);
+
+//        CommonResponse commonResponse = CommonResponse.successOf(cancelCheck);
+//        commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
+        return null;
+    }
+
     /**
      * 회원 가입하는 메서드입니다.
      * @param userInfo
@@ -91,7 +101,16 @@ public class LoginController {
      */
     @GetMapping("oauth2/code/naver")
     public ResponseEntity<CommonResponse> naverCallback(@RequestParam(name = "code", required = false) String code,
-                                                        @RequestParam(name = "state", required = false) String state) {
+                                                        @RequestParam(name = "state", required = false) String state,
+                                                        @RequestParam(name = "userNo", required = false) String userNo) {
+
+        if(userNo!=null){
+            CommonResponse commonResponse = CommonResponse.fail();
+            commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
+            return commonResponseResponseEntity;
+        }
+
+
         log.debug("Naver CallBack Uri");
         System.out.println("Naver CallBack Uri");
         ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("naver");
