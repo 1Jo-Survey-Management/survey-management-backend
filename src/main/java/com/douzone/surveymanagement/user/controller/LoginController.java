@@ -119,9 +119,28 @@ public class LoginController {
 
         Map<String, String> parms = getAccessTokenUsingCode(clientId, clientSecret, code, state);
 
-        log.debug("params accessToken : " + parms.get("access_token"));
-        System.out.println("params accessToken : " + parms.get("access_token"));
-        NaverUserInfoResponse userInfo = getNaverUserInfo(parms.get("access_token"));
+        String accessToken = parms.get("access_token");
+
+        UserInfo aleadyExistCheck = userService.findUserByUserAccessToken(accessToken);
+
+        if(aleadyExistCheck!=null){
+            // 이미 회원이 있는데 완료되지 않은 회원이 있으니 모달창 띄워야함
+            log.debug("(회원가입 중)미완료 회원번호 : " + aleadyExistCheck.getUserNo());
+            System.out.println("(회원가입 중)미완료 회원번호 : " + aleadyExistCheck.getUserNo());
+
+            aleadyExistCheck.setExpiresIn(parms.get("expires_in"));
+            aleadyExistCheck.setRefreshToken(parms.get("refresh_token"));
+
+            CommonResponse commonResponse = CommonResponse.successOf(aleadyExistCheck);
+
+            commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
+            return commonResponseResponseEntity;
+        }
+
+        log.debug("params accessToken : " + accessToken);
+        System.out.println("params accessToken : " + accessToken);
+
+        NaverUserInfoResponse userInfo = getNaverUserInfo(accessToken);
 
         CommonResponse commonResponse = handleUserRegistration(userInfo, parms);
 
@@ -296,11 +315,8 @@ public class LoginController {
         log.debug("userExistcheck : " + userExistCheck);
         System.out.println("컨트롤러 userExistcheck : " + userExistCheck);
 
-        // 완료되지 않은 회원가입 정보 확인
-        UserInfo userIncompletedCheck = userService.findUserByUserAccessToken(params.get("access_token"));
-
-        // 반환할 객체
-        CommonResponse commonResponse;
+//        // 완료되지 않은 회원가입 정보 확인
+//        UserInfo userIncompletedCheck = userService.findUserByUserAccessToken(params.get("access_token"));
 
 
         // db에 회원이 존재할때
@@ -318,22 +334,22 @@ public class LoginController {
                 userCheck.setExpiresIn(userCheck.getExpiresIn());
                 userCheck.setRefreshToken(params.get("refresh_token"));
 
-                commonResponse = CommonResponse.successOf(userCheck);
+                CommonResponse commonResponse = CommonResponse.successOf(userCheck);
 
                 return commonResponse;
             }
             // 완료되지 않은 회원이라면(프로필 정보 필요함)
-            else {
-                log.debug("(회원가입 중)미완료 회원번호 : " + userIncompletedCheck.getUserNo());
-                System.out.println("(회원가입 중)미완료 회원번호 : " + userIncompletedCheck.getUserNo());
-
-                userIncompletedCheck.setExpiresIn(params.get("expires_in"));
-                userIncompletedCheck.setRefreshToken(params.get("refresh_token"));
-
-                commonResponse = CommonResponse.successOf(userIncompletedCheck);
-
-                return commonResponse;
-            }
+//            else {
+//                log.debug("(회원가입 중)미완료 회원번호 : " + userIncompletedCheck.getUserNo());
+//                System.out.println("(회원가입 중)미완료 회원번호 : " + userIncompletedCheck.getUserNo());
+//
+//                userIncompletedCheck.setExpiresIn(params.get("expires_in"));
+//                userIncompletedCheck.setRefreshToken(params.get("refresh_token"));
+//
+//                commonResponse = CommonResponse.successOf(userIncompletedCheck);
+//
+//                return commonResponse;
+//            }
 
         }
         // db에 회원이 존재하지 않을때(db에 accessToken 기준 미완료 회원도 없을때)
@@ -361,9 +377,11 @@ public class LoginController {
 
             UserInfo respUserInfo = userService.findUserByUserAccessToken(params.get("access_token"));
 
-            commonResponse = CommonResponse.successOf(respUserInfo);
+            CommonResponse commonResponse = CommonResponse.successOf(respUserInfo);
+            return commonResponse;
         }
-        return commonResponse;
+
+        return null;
     }
 
 }
