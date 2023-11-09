@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -25,7 +26,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/for-attend/surveys")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000/survey/Attend")
 public class SurveyAttendAPI {
 
     private final SurveyAttendServiceImpl surveyAttendServiceImpl;
@@ -67,6 +67,25 @@ public class SurveyAttendAPI {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(CommonResponse.error(ErrorResponse.of("ERROR_SAVING_SURVEY")));
+        }
+    }
+
+    /**
+     * 주어진 설문 번호에 대한 마감일을 클라이언트에 제공합니다.
+     *
+     * @param surveyNo 설문 번호
+     * @return 마감일 정보를 담은 ResponseEntity
+     */
+    @GetMapping("/closing-time/{surveyNo}")
+    public ResponseEntity<CommonResponse> getSurveyClosingTime(@PathVariable long surveyNo) {
+        try {
+            LocalDateTime closingTime = surveyAttendServiceImpl.getSurveyClosingTime(surveyNo);
+            return ResponseEntity.ok().body(CommonResponse.successOf(closingTime));
+        } catch (Exception e) {
+            log.error("마감일 정보 조회 중 오류 발생: {}", e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(CommonResponse.error(ErrorResponse.of("ERROR_RETRIEVING_CLOSING_TIME")));
         }
     }
 }

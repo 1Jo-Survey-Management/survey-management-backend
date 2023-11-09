@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,6 +53,14 @@ public class SurveyAttendServiceImpl implements SurveyAttendService {
     public void saveSurveyAndAnswers(List<SurveyAttendSubmitDTO> surveyAttendDTOList) {
         if (surveyAttendDTOList.isEmpty()) {
             throw new SurveyAttendException("No data to save.");
+        }
+
+        // 첫 번째 'DTO' 에서 설문 번호 가져오기
+        long surveyNo = surveyAttendDTOList.get(0).getSurveyNo();
+
+        // 마감 시간 검사
+        if (!isBeforeClosingTime(surveyNo)) {
+            throw new SurveyAttendException("The survey has already closed.");
         }
 
         // 설문 참여 데이터 저장
@@ -134,5 +143,27 @@ public class SurveyAttendServiceImpl implements SurveyAttendService {
                         }
                     });
         }
+    }
+
+    /**
+     * 주어진 설문 번호에 대해 설문 마감 시간을 검사하고, 현재 시간이 마감 시간 이전인지 확인합니다.
+     *
+     * @param surveyNo 검사할 설문의 번호입니다.
+     * @return 현재 시간이 설문 마감 시간 이전인 경우 true, 그렇지 않은 경우 false를 반환합니다.
+     */
+    private boolean isBeforeClosingTime(long surveyNo) {
+        LocalDateTime closingTime = surveyAttendMapper.surveyForbidSubmit(surveyNo);
+        LocalDateTime currentTime = LocalDateTime.now();
+        return currentTime.isBefore(closingTime);
+    }
+
+    /**
+     * 주어진 설문 번호에 대한 마감일을 반환합니다.
+     *
+     * @param surveyNo 설문 번호
+     * @return 설문의 마감일
+     */
+    public LocalDateTime getSurveyClosingTime(long surveyNo) {
+        return surveyAttendMapper.surveyForbidSubmit(surveyNo);
     }
 }

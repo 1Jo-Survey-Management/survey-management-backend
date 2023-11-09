@@ -75,4 +75,12 @@
         VALUES (#{surveyAnswerNo}, #{selectionNo})
     </insert>
 
+    <!-- 설문의 마감일 들고옴 -->
+    <select id="surveyForbidSubmit" parameterType="com.douzone.surveymanagement.surveyattend.dto.request.SurveyAttendClosingDTO"
+            resultType="java.time.LocalDateTime">
+        SELECT survey_closing_at
+        FROM survey
+        WHERE survey_no = #{surveyNo}
+    </select>
+
 </mapper>
