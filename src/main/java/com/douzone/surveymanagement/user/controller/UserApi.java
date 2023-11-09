@@ -26,7 +26,6 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000/survey/Mypage")
 public class UserApi {
     private final UserServiceImpl userServiceImpl;
 
@@ -59,7 +58,7 @@ public class UserApi {
      * 유저 이미지 업데이트 엔드포인트
      *
      * @param userNo 유저 번호
-     * @param file   이미지 파일
+     * @param File   이미지 파일
      * @return 업데이트 결과
      */
     @PutMapping("/{userNo}/image")
