@@ -58,13 +58,17 @@ public class LoginController {
         return commonResponseResponseEntity;
     }
 
+    /**
+     * 회원가입 중간 취소에 따른 가입 미완료 회원 삭제
+     * @param userNo
+     * @return void
+     * @author 김선규
+     */
     @GetMapping("cancel")
     public ResponseEntity<CommonResponse> loginCancel(@RequestParam(name = "userNo") String userNo) {
 
-        int cancelCheck = userService.loginCancel(userNo);
+        userService.loginCancel(userNo);
 
-//        CommonResponse commonResponse = CommonResponse.successOf(cancelCheck);
-//        commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
         return null;
     }
 
@@ -315,10 +319,6 @@ public class LoginController {
         log.debug("userExistcheck : " + userExistCheck);
         System.out.println("컨트롤러 userExistcheck : " + userExistCheck);
 
-//        // 완료되지 않은 회원가입 정보 확인
-//        UserInfo userIncompletedCheck = userService.findUserByUserAccessToken(params.get("access_token"));
-
-
         // db에 회원이 존재할때
         if (userExistCheck != null) {
             String userNickname = userExistCheck.getUserNickname();
@@ -338,18 +338,6 @@ public class LoginController {
 
                 return commonResponse;
             }
-            // 완료되지 않은 회원이라면(프로필 정보 필요함)
-//            else {
-//                log.debug("(회원가입 중)미완료 회원번호 : " + userIncompletedCheck.getUserNo());
-//                System.out.println("(회원가입 중)미완료 회원번호 : " + userIncompletedCheck.getUserNo());
-//
-//                userIncompletedCheck.setExpiresIn(params.get("expires_in"));
-//                userIncompletedCheck.setRefreshToken(params.get("refresh_token"));
-//
-//                commonResponse = CommonResponse.successOf(userIncompletedCheck);
-//
-//                return commonResponse;
-//            }
 
         }
         // db에 회원이 존재하지 않을때(db에 accessToken 기준 미완료 회원도 없을때)

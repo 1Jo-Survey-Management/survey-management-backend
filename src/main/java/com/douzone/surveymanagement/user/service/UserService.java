@@ -31,7 +31,7 @@ public interface UserService {
     int updateAccessToken(UserInfo userInfo);
 
     @Transactional
-    int loginCancel(String accessToken);
+    void loginCancel(String accessToken);
 
     /**
      * 토큰으로 유저 정보 조회

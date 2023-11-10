@@ -79,12 +79,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public int loginCancel(String userNo){
-        int flag = 0 ;
+    public void loginCancel(String userNo){
+        userMapper.loginCancel(userNo);
 
-        flag = userMapper.loginCancel(userNo);
-
-        return flag;
     }
 
     /**
