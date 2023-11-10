@@ -3,6 +3,7 @@
 
 ### properties ###
 *.properties
+application-dev.yml
 
 ### idea ###
 .idea
