@@ -26,7 +26,7 @@ jobs:
       run: echo $PROD_APPLICATION_YML | base64 --decode > $PROD_APPLICATION_YML_DIR/$PROD_APPLICATION_YML_FILE_NAME
 
     - name: Build with Maven
-      run: mvn -B package --file pom.xml -DskipTests
+      run: mvn -B package --file pom.xml
 
     - name : Upload Jar File to Instance Server
       uses: appleboy/scp-action@master
