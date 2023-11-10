@@ -20,6 +20,13 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
+    - name: Setting Production Profile Properties
+      env:
+        PROD_APPLICATION_YML: ${{ secrets.PROD_APPLICATION_YML }}
+        PROD_APPLICATION_YML_DIR: src/main/resources
+        PROD_APPLICATION_YML_FILE_NAME: application-prod.yml
+      run: echo $PROD_APPLICATION_YML | base64 --decode > $PROD_APPLICATION_YML_DIR/$PROD_APPLICATION_YML_FILE_NAME
+
     - name: Build with Maven
       run: mvn -B package --file pom.xml -DskipTests
 
