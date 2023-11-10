@@ -3,6 +3,7 @@ package com.douzone.surveymanagement.survey.mapper;
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoCreateDto;
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoUpdateDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 설문에 대한 mybatis 매퍼 인터페이스 입니다.
@@ -35,4 +36,13 @@ public interface CommandSurveyMapper {
      * @author : 강명관
      */
     void updateSurvey(SurveyInfoUpdateDto surveyUpdateDto);
+
+
+    /**
+     * 설문의 번호를 통해 설문 상태를 작성 -> 게시 상태로 변경하는 쿼리 입니다.
+     *
+     * @param surveyNo 설문 번호
+     * @author : 강명관
+     */
+    int updateSurveyStatusToPostFromInProgress(@Param("surveyNo") long surveyNo);
 }

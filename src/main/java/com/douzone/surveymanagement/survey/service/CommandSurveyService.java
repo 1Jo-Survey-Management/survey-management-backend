@@ -54,8 +54,26 @@ public interface CommandSurveyService {
      */
     void updateSurveyInfo(SurveyInfoUpdateDto surveyInfoUpdateDto, MultipartFile surveyImage);
 
+    /**
+     * 설문을 수정하는 메서드 입니다.
+     * 기존 설문에 등록되어 있던 문항, 선택지들을 삭제하고
+     * 새롭게 새로운 문항들을 등록합니다.
+     *
+     * @param surveyInfoUpdateDto 설문에 대한 정보를 담은 Dto
+     * @param surveyImage 설문의 이미지 파일
+     * @param surveyQuestionCreateDtoList 설문의 문항과 선택지 리스트
+     * @author : 강명관
+     */
     void updateSurvey(SurveyInfoUpdateDto surveyInfoUpdateDto,
                       MultipartFile surveyImage,
                       List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList);
 
+    /**
+     * 설문의 상태를 설문의 번호를 통해 게시 상태로 변경하는 메서드 입니다.
+     *
+     * @param surveyNo 설문 번호
+     * @return 설문의 상태가 변경되었을 경우 true, 변경되지 않았을 경우 false를 반환합니다.
+     * @author : 강명관
+     */
+    boolean updateSurveyStatusToPostInProgress(long surveyNo);
 }
