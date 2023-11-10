@@ -47,7 +47,7 @@ public class LoginController {
      * @return 회원정보
      * @author 김선규
      */
-    @PostMapping("user")
+    @GetMapping("user")
     public ResponseEntity<CommonResponse> userProfile(HttpServletRequest request) {
         String accessToken = getAccessTokenFromRequest(request);
 

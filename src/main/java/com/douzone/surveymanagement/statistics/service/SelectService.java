@@ -7,6 +7,6 @@ import java.util.List;
 public interface SelectService {
     List<SelectDto> readSelection(int surveyNo, int surveyQuestionNo);
 
-    List<SelectDto> readSelectionAll(int surveyNo);
+    List<SelectDto> readSelectionAll(long surveyNo);
 
 }

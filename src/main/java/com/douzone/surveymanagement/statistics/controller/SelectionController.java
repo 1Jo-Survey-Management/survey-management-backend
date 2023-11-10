@@ -44,7 +44,7 @@ public class SelectionController {
 //    }
 
     @GetMapping("/resultall")
-    public ResponseEntity<CommonResponse>  findSelectionListAll(@RequestParam(value = "surveyno") int surveyNo){
+    public ResponseEntity<CommonResponse>  findSelectionListAll(@RequestParam(value = "surveyno") long surveyNo){
 
         Authentication authenticationCheck = SecurityContextHolder.getContext().getAuthentication();
         HttpHeaders headers = new HttpHeaders();
