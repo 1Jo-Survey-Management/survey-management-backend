@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,6 +39,7 @@ public class UserServiceImpl implements UserService {
      * @author 김선규
      */
     @Override
+    @Transactional
     public int beforeRegistUser(UserInfo userInfo){
         int flag ;
 
@@ -75,6 +75,13 @@ public class UserServiceImpl implements UserService {
         flag = userMapper.updateAccessToken(userInfo);
 
         return flag;
+    }
+
+    @Override
+    @Transactional
+    public void loginCancel(String userNo){
+        userMapper.loginCancel(userNo);
+
     }
 
     /**

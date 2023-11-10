@@ -20,4 +20,5 @@ public interface UserMapper {
 
     int updateAccessToken(UserInfo userInfo);
 
+    int loginCancel(String userNo);
 }

@@ -42,7 +42,7 @@ private final CustomAuthenticationProvider customAuthenticationProvider;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors()
+                .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .httpBasic().disable()
                 .csrf().disable()
