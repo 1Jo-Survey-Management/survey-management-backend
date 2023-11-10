@@ -81,7 +81,7 @@ public class QuerySurveyController {
         return ResponseEntity.ok(allSurvey);
     }
 
-     /**
+    /**
      * 검색에서 마감을 선택할 시 마감된 설문을 20개씩 끊어 가져오는 API입니다.
      *
      * @param page
