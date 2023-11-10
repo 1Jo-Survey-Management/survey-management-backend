@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
      * @return 성공여부
      * @author 김선규
      */
+    @Transactional
     @Override
     @Transactional
     public int beforeRegistUser(UserInfo userInfo){
