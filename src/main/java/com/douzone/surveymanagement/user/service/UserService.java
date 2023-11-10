@@ -30,6 +30,9 @@ public interface UserService {
      */
     int updateAccessToken(UserInfo userInfo);
 
+    @Transactional
+    void loginCancel(String accessToken);
+
     /**
      * 토큰으로 유저 정보 조회
      * @param accessToken
