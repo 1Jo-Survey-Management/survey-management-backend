@@ -10,6 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+<<<<<<< HEAD
+=======
+import java.time.LocalDateTime;
+>>>>>>> parent of cfdb337 (Revert "Merge branch 'develop' of https://github.com/1Jo-Survey-Management/survey-management-backend into feature/mergeTest")
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -54,6 +58,17 @@ public class SurveyAttendServiceImpl implements SurveyAttendService {
             throw new SurveyAttendException("No data to save.");
         }
 
+<<<<<<< HEAD
+=======
+        // 첫 번째 'DTO' 에서 설문 번호 가져오기
+        long surveyNo = surveyAttendDTOList.get(0).getSurveyNo();
+
+        // 마감 시간 검사
+        if (!isBeforeClosingTime(surveyNo)) {
+            throw new SurveyAttendException("The survey has already closed.");
+        }
+
+>>>>>>> parent of cfdb337 (Revert "Merge branch 'develop' of https://github.com/1Jo-Survey-Management/survey-management-backend into feature/mergeTest")
         // 설문 참여 데이터 저장
         SurveyAttendSubmitDTO firstDto = surveyAttendDTOList.get(0);
         int surveyAttendRowCount = surveyAttendMapper.insertSurveyAttend(firstDto);
@@ -135,4 +150,29 @@ public class SurveyAttendServiceImpl implements SurveyAttendService {
                     });
         }
     }
+<<<<<<< HEAD
+=======
+
+    /**
+     * 주어진 설문 번호에 대해 설문 마감 시간을 검사하고, 현재 시간이 마감 시간 이전인지 확인합니다.
+     *
+     * @param surveyNo 검사할 설문의 번호입니다.
+     * @return 현재 시간이 설문 마감 시간 이전인 경우 true, 그렇지 않은 경우 false를 반환합니다.
+     */
+    private boolean isBeforeClosingTime(long surveyNo) {
+        LocalDateTime closingTime = surveyAttendMapper.surveyForbidSubmit(surveyNo);
+        LocalDateTime currentTime = LocalDateTime.now();
+        return currentTime.isBefore(closingTime);
+    }
+
+    /**
+     * 주어진 설문 번호에 대한 마감일을 반환합니다.
+     *
+     * @param surveyNo 설문 번호
+     * @return 설문의 마감일
+     */
+    public LocalDateTime getSurveyClosingTime(long surveyNo) {
+        return surveyAttendMapper.surveyForbidSubmit(surveyNo);
+    }
+>>>>>>> parent of cfdb337 (Revert "Merge branch 'develop' of https://github.com/1Jo-Survey-Management/survey-management-backend into feature/mergeTest")
 }
