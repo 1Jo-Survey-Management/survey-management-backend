@@ -2,7 +2,7 @@ name: Java CI With Maven
 
 on:
   pull-request:
-    branches: ["develop"]
+    branches: [ "main", "develop" ]
 
 jobs:
   build:
