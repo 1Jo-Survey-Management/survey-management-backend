@@ -4,10 +4,8 @@ import com.douzone.surveymanagement.surveyattend.dto.request.SurveyAttendDTO;
 import com.douzone.surveymanagement.surveyattend.dto.request.SurveyAttendSubmitDTO;
 import org.apache.ibatis.annotations.Mapper;
 
-<<<<<<< HEAD
-=======
+
 import java.time.LocalDateTime;
->>>>>>> parent of cfdb337 (Revert "Merge branch 'develop' of https://github.com/1Jo-Survey-Management/survey-management-backend into feature/mergeTest")
 import java.util.List;
 
 /**
@@ -57,8 +55,6 @@ public interface SurveyAttendMapper {
      * @return 영향을 받은 행의 수를 반환합니다.
      */
     int insertSurveyAnswerSelection(SurveyAttendSubmitDTO dto);
-<<<<<<< HEAD
-=======
 
     /**
      * 주어진 설문 번호에 대해 설문 마감 시간을 검색합니다.
@@ -68,5 +64,4 @@ public interface SurveyAttendMapper {
      * @return 설문의 마감 시간을 {@link LocalDateTime}으로 반환합니다.
      */
     LocalDateTime surveyForbidSubmit(long surveyNo);
->>>>>>> parent of cfdb337 (Revert "Merge branch 'develop' of https://github.com/1Jo-Survey-Management/survey-management-backend into feature/mergeTest")
 }

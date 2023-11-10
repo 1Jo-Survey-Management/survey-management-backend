@@ -11,11 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-<<<<<<< HEAD
-=======
 import java.time.LocalDateTime;
->>>>>>> parent of cfdb337 (Revert "Merge branch 'develop' of https://github.com/1Jo-Survey-Management/survey-management-backend into feature/mergeTest")
 import java.util.List;
 
 /**
@@ -29,10 +25,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/for-attend/surveys")
 @RequiredArgsConstructor
-<<<<<<< HEAD
-@CrossOrigin(origins = "http://localhost:3000/survey/Attend")
-=======
->>>>>>> parent of cfdb337 (Revert "Merge branch 'develop' of https://github.com/1Jo-Survey-Management/survey-management-backend into feature/mergeTest")
 public class SurveyAttendAPI {
 
     private final SurveyAttendServiceImpl surveyAttendServiceImpl;
@@ -76,8 +68,6 @@ public class SurveyAttendAPI {
                     .body(CommonResponse.error(ErrorResponse.of("ERROR_SAVING_SURVEY")));
         }
     }
-<<<<<<< HEAD
-=======
 
     /**
      * 주어진 설문 번호에 대한 마감일을 클라이언트에 제공합니다.
@@ -97,5 +87,4 @@ public class SurveyAttendAPI {
                     .body(CommonResponse.error(ErrorResponse.of("ERROR_RETRIEVING_CLOSING_TIME")));
         }
     }
->>>>>>> parent of cfdb337 (Revert "Merge branch 'develop' of https://github.com/1Jo-Survey-Management/survey-management-backend into feature/mergeTest")
 }

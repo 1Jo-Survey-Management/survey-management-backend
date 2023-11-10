@@ -10,10 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-<<<<<<< HEAD
-=======
+
 import java.time.LocalDateTime;
->>>>>>> parent of cfdb337 (Revert "Merge branch 'develop' of https://github.com/1Jo-Survey-Management/survey-management-backend into feature/mergeTest")
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,8 +56,6 @@ public class SurveyAttendServiceImpl implements SurveyAttendService {
             throw new SurveyAttendException("No data to save.");
         }
 
-<<<<<<< HEAD
-=======
         // 첫 번째 'DTO' 에서 설문 번호 가져오기
         long surveyNo = surveyAttendDTOList.get(0).getSurveyNo();
 
@@ -68,7 +64,6 @@ public class SurveyAttendServiceImpl implements SurveyAttendService {
             throw new SurveyAttendException("The survey has already closed.");
         }
 
->>>>>>> parent of cfdb337 (Revert "Merge branch 'develop' of https://github.com/1Jo-Survey-Management/survey-management-backend into feature/mergeTest")
         // 설문 참여 데이터 저장
         SurveyAttendSubmitDTO firstDto = surveyAttendDTOList.get(0);
         int surveyAttendRowCount = surveyAttendMapper.insertSurveyAttend(firstDto);
@@ -150,8 +145,6 @@ public class SurveyAttendServiceImpl implements SurveyAttendService {
                     });
         }
     }
-<<<<<<< HEAD
-=======
 
     /**
      * 주어진 설문 번호에 대해 설문 마감 시간을 검사하고, 현재 시간이 마감 시간 이전인지 확인합니다.
@@ -174,5 +167,4 @@ public class SurveyAttendServiceImpl implements SurveyAttendService {
     public LocalDateTime getSurveyClosingTime(long surveyNo) {
         return surveyAttendMapper.surveyForbidSubmit(surveyNo);
     }
->>>>>>> parent of cfdb337 (Revert "Merge branch 'develop' of https://github.com/1Jo-Survey-Management/survey-management-backend into feature/mergeTest")
 }

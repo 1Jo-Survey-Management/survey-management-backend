@@ -21,34 +21,34 @@
     </resultMap>
 
     <select id="selectSurveyAttendData" resultMap="surveyAttendDataResultMap">
-            SELECT
-                s.survey_title,
-                s.survey_image,
-                sq.survey_question_no,
-                s.survey_no,
-                sq.question_type_no,
-                sq.survey_question_title,
-                sq.survey_question_description,
-                sq.is_required,
-                se.selection_no,
-                se.survey_question_move_no,
-                se.selection_value,
-                se.is_movable,
-                se.is_end_of_survey
-            FROM survey s
-            JOIN survey_question sq ON s.survey_no = sq.survey_no
-            LEFT JOIN question_type qt ON sq.question_type_no = qt.question_type_no
-            LEFT JOIN (
-                SELECT
-                    selection_no,
-                    survey_question_no,
-                    survey_question_move_no,
-                    selection_value,
-                    is_movable,
-                    is_end_of_survey
-                FROM selection
-            ) se ON sq.survey_question_no = se.survey_question_no
-            WHERE s.open_status_no = 2
+        SELECT
+        s.survey_title,
+        s.survey_image,
+        sq.survey_question_no,
+        s.survey_no,
+        sq.question_type_no,
+        sq.survey_question_title,
+        sq.survey_question_description,
+        sq.is_required,
+        se.selection_no,
+        se.survey_question_move_no,
+        se.selection_value,
+        se.is_movable,
+        se.is_end_of_survey
+        FROM survey s
+        JOIN survey_question sq ON s.survey_no = sq.survey_no
+        LEFT JOIN question_type qt ON sq.question_type_no = qt.question_type_no
+        LEFT JOIN (
+        SELECT
+        selection_no,
+        survey_question_no,
+        survey_question_move_no,
+        selection_value,
+        is_movable,
+        is_end_of_survey
+        FROM selection
+        ) se ON sq.survey_question_no = se.survey_question_no
+        WHERE s.open_status_no = 2
     </select>
 
     <!-- 설문 참여 저장 -->
