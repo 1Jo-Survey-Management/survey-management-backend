@@ -4,10 +4,12 @@ import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.common.response.ErrorResponse;
 import com.douzone.surveymanagement.mysurvey.dto.request.MySurveyDTO;
 import com.douzone.surveymanagement.mysurvey.service.impl.MySurveyServiceImpl;
+import com.douzone.surveymanagement.user.util.CustomAuthenticationToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,7 +38,7 @@ public class MySurveyApi {
      * @return 설문 목록과 상태 정보를 포함한 응답
      */
     @GetMapping("/{userNo}/write-surveys")
-    public ResponseEntity<CommonResponse<List<MySurveyDTO>>> selectMySurvey(@PathVariable long userNo) {
+    public ResponseEntity<CommonResponse<List<MySurveyDTO>>> selectMySurvey(@PathVariable long userNo ) {
         List<MySurveyDTO> myWriteSurveys = mySurveyServiceImpl.selectMySurveysWithSorting(userNo);
         return ResponseEntity
                 .ok()

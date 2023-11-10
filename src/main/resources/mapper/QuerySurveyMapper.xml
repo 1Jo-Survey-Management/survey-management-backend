@@ -135,7 +135,7 @@
                                                                                                                             LEFT JOIN open_status os ON survey.open_status_no = os.open_status_no
                                                                                                                             LEFT JOIN survey_attend ON survey.survey_no = survey_attend.survey_no
                                                                                                                    WHERE is_deleted = 0
-                                                                                                                     AND survey_status.survey_status_no = 2
+                                                                                                                     AND survey_status.survey_status_no = 1
 
                                                                                                                    GROUP BY survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
                                                                                                                             os.open_status_no, survey.survey_no, survey_attend.survey_no
@@ -168,7 +168,7 @@
                                                                                                                             LEFT JOIN open_status os ON survey.open_status_no = os.open_status_no
                                                                                                                             LEFT JOIN survey_attend ON survey.survey_no = survey_attend.survey_no
                                                                                                                    WHERE is_deleted = 0
-                                                                                                                     AND survey_status.survey_status_no = 3
+                                                                                                                     AND survey_status.survey_status_no = 1
 
                                                                                                                    GROUP BY survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
                                                                                                                             os.open_status_no, survey.survey_no, survey_attend.survey_no
@@ -237,7 +237,7 @@
                                                                                                                             LEFT JOIN survey_attend ON survey.survey_no = survey_attend.survey_no
                                                                                                                    WHERE survey_post_at >= DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY) + INTERVAL 1 DAY
                                                                                                                      AND is_deleted = 0
-                                                                                                                     AND survey_status.survey_status_no = 2
+                                                                                                                     AND survey_status.survey_status_no = 1
 
                                                                                                                    GROUP BY survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
                                                                                                                        os.open_status_no, survey.survey_no, survey_attend.survey_no
@@ -270,7 +270,7 @@
                                                                                                                             LEFT JOIN open_status os ON survey.open_status_no = os.open_status_no
                                                                                                                             LEFT JOIN survey_attend ON survey.survey_no = survey_attend.survey_no
                                                                                                                    WHERE is_deleted = 0
-                                                                                                                     AND survey_status.survey_status_no = 3
+                                                                                                                     AND survey_status.survey_status_no = 1
 
                                                                                                                    GROUP BY survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
                                                                                                                             os.open_status_no, survey.survey_no, survey_attend.survey_no
@@ -303,7 +303,7 @@
                                                                                                                             LEFT JOIN open_status os ON survey.open_status_no = os.open_status_no
                                                                                                                             LEFT JOIN survey_attend ON survey.survey_no = survey_attend.survey_no
                                                                                                                    WHERE is_deleted = 0
-                                                                                                                     AND survey_status.survey_status_no = 2
+                                                                                                                     AND survey_status.survey_status_no = 1
 
                                                                                                                    GROUP BY survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
                                                                                                                             os.open_status_no, survey.survey_no, survey_attend.survey_no
