@@ -28,6 +28,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000/survey/Mypage")
 public class UserApi {
     private final UserServiceImpl userServiceImpl;
 

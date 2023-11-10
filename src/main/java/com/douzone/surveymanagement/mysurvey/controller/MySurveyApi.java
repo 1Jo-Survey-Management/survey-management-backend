@@ -26,6 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/my-surveys")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000/survey/MypageWrite")
 public class MySurveyApi {
 
     private final MySurveyServiceImpl mySurveyServiceImpl;
