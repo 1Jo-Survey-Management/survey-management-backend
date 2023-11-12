@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -47,11 +48,13 @@ public class LoginController {
      * @return 회원정보
      * @author 김선규
      */
-    @GetMapping("user")
-    public ResponseEntity<CommonResponse> userProfile(HttpServletRequest request) {
+    @PostMapping("user")
+    public ResponseEntity<CommonResponse> userProfile(HttpServletRequest request, HttpServletResponse response) {
         String accessToken = getAccessTokenFromRequest(request);
 
         UserInfo returnUser = userService.findUserByUserAccessToken(accessToken);
+
+        System.out.println("Response 돌아가나 : " + response.getHeader("Access-Token"));
 
         CommonResponse commonResponse = CommonResponse.successOf(returnUser);
         commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
@@ -124,18 +127,31 @@ public class LoginController {
         Map<String, String> parms = getAccessTokenUsingCode(clientId, clientSecret, code, state);
 
         String accessToken = parms.get("access_token");
+        UserInfo alreadyExistCheck = userService.findUserByUserAccessToken(accessToken);
 
-        UserInfo aleadyExistCheck = userService.findUserByUserAccessToken(accessToken);
+        if(alreadyExistCheck!=null){
+            log.debug("(회원 존재시) 회원번호 : " + alreadyExistCheck.getUserNo());
+            System.out.println("(회원 존재시) 회원번호 : " + alreadyExistCheck.getUserNo());
 
-        if(aleadyExistCheck!=null){
-            // 이미 회원이 있는데 완료되지 않은 회원이 있으니 모달창 띄워야함
-            log.debug("(회원가입 중)미완료 회원번호 : " + aleadyExistCheck.getUserNo());
-            System.out.println("(회원가입 중)미완료 회원번호 : " + aleadyExistCheck.getUserNo());
+            NTPTimeFetcher ntpTimeFetcher = new NTPTimeFetcher();
+            ZonedDateTime koreaTime = ZonedDateTime.parse(ntpTimeFetcher.getFormattedKoreaTime());
 
-            aleadyExistCheck.setExpiresIn(parms.get("expires_in"));
-            aleadyExistCheck.setRefreshToken(parms.get("refresh_token"));
+            // 토큰 발급 받은 만료시간 설정 (버퍼 시간 고려 50분으로 설정)
+            ZonedDateTime newExpiresTime = koreaTime.plusMinutes(50);
 
-            CommonResponse commonResponse = CommonResponse.successOf(aleadyExistCheck);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedStringExpiresIn = newExpiresTime.format(formatter);
+
+            alreadyExistCheck.setExpiresIn(formattedStringExpiresIn);
+            int updateComplete = userService.updateAccessToken(alreadyExistCheck);
+
+            System.out.println("유효시간 업데이트 완료 : " + updateComplete);
+
+            alreadyExistCheck.setExpiresIn(formattedStringExpiresIn);
+
+            System.out.println("(LoginController) 토큰 유효 시간 : " + formattedStringExpiresIn);
+
+            CommonResponse commonResponse = CommonResponse.successOf(alreadyExistCheck);
 
             commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
             return commonResponseResponseEntity;
