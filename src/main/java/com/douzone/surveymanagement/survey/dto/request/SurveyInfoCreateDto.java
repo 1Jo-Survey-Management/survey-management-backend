@@ -61,4 +61,8 @@ public class SurveyInfoCreateDto {
     public void setSurveyImagePath(String surveyImagePath) {
         this.surveyImagePath = surveyImagePath;
     }
+
+    public void setSurveyPostAt(LocalDateTime surveyPostAt) {
+        this.surveyPostAt = surveyPostAt;
+    }
 }
