@@ -7,8 +7,10 @@ import com.douzone.surveymanagement.survey.mapper.CommandSurveyMapper;
 import com.douzone.surveymanagement.survey.service.CommandSurveyService;
 import com.douzone.surveymanagement.surveyquestion.dto.request.SurveyQuestionCreateDto;
 import com.douzone.surveymanagement.surveyquestion.service.SurveyQuestionService;
+import com.douzone.surveymanagement.surveystatus.enums.SurveyStatusEnum;
 import com.douzone.surveymanagement.surveytag.dto.request.SurveyTagCreateDto;
 import com.douzone.surveymanagement.surveytag.service.SurveyTagService;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +46,7 @@ public class CommandSurveyServiceImpl implements CommandSurveyService {
         String saveFilePath = FileUploadUtil.uploadFile(surveyImage);
         surveyInfoCreateDto.setSurveyImagePath(saveFilePath);
 
+        checkSurveyPostAndInjectPostAt(surveyInfoCreateDto);
         commandSurveyMapper.insertSurveyInfo(surveyInfoCreateDto);
 
         long surveyNo = surveyInfoCreateDto.getSurveyNo();
@@ -113,6 +116,19 @@ public class CommandSurveyServiceImpl implements CommandSurveyService {
     @Override
     public boolean updateSurveyStatusToPostInProgress(long surveyNo) {
         return commandSurveyMapper.updateSurveyStatusToPostFromInProgress(surveyNo) != 0;
+    }
+
+    /**
+     * 설문등록시 설문의 상태(작성, 진행, 마감) 상태를 체크하고 진행상태일 경우 설문의 등록일을 현재 시간으로 넣어주는 메서드 입니다.
+     *
+     * @param surveyInfoCreateDto 설문을 등록하기 위한 dto
+     * @author : 강명관
+     */
+    private static void checkSurveyPostAndInjectPostAt(SurveyInfoCreateDto surveyInfoCreateDto) {
+        if (surveyInfoCreateDto.getSurveyStatusNo() ==
+            SurveyStatusEnum.PROGRESS.getSurveyStatusNo()) {
+            surveyInfoCreateDto.setSurveyPostAt(LocalDateTime.now());
+        }
     }
 }
 
