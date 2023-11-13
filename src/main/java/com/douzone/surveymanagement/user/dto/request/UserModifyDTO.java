@@ -14,6 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 public class UserModifyDTO {
     private long userNo;
     @NotBlank(message = "중복되는 닉네임입니다.")
