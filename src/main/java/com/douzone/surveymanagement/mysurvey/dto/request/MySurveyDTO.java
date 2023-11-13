@@ -1,12 +1,8 @@
 package com.douzone.surveymanagement.mysurvey.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
-import lombok.Setter;
 
 /**
  * 설문 정보 DTO 클래스입니다.
@@ -16,6 +12,8 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@ToString
 public class MySurveyDTO {
     private Long surveyNo;
     private Long userNo;

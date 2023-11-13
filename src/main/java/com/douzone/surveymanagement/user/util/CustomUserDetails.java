@@ -14,16 +14,16 @@ import java.util.Optional;
 public class CustomUserDetails implements UserDetails {
     private final long userNo;
     private final String userEmail; // 수정: userEmail 추가
-    private final String nickname;
+    private final String userNickName;
     private final String userGender;
     private final Date userBirth;
     private final String userImage;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetails(Long userNo, String userEmail, String nickname, String userGender, Date userBirth, String userImage, Collection<? extends GrantedAuthority> authorities) {
+    public CustomUserDetails(Long userNo, String userEmail, String userNickName, String userGender, Date userBirth, String userImage, Collection<? extends GrantedAuthority> authorities) {
         this.userNo = Optional.ofNullable(userNo).orElse(0L);
         this.userEmail = Optional.ofNullable(userEmail).orElse("");
-        this.nickname = Optional.ofNullable(nickname).orElse("");
+        this.userNickName = Optional.ofNullable(userNickName).orElse("");
         this.userGender = userGender;
         this.userBirth = userBirth;
         this.userImage = userImage;
@@ -55,5 +55,7 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true; // 계정 활성화 여부를 설정 (기본적으로 true)
     }
+
+
 }
 
