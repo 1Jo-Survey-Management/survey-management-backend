@@ -28,21 +28,6 @@ public class SelectionController {
         this.selectService = selectService;
     }
 
-//    @GetMapping("/result")
-//    public ResponseEntity<List<SelectDto>> findSelectionList(@RequestParam(value = "surveyno") int surveyNo,@RequestParam(value = "questionno") int surveyQuestionNo){
-//
-//
-//        System.out.println("들어옴" + surveyNo);
-//        System.out.println("들어옴" + surveyQuestionNo);
-//
-//
-//    List<SelectDto> selectList = selectService.readSelection(surveyNo,surveyQuestionNo);
-//
-//        System.out.println("selectList : " + selectList.get(0).getSurveyNo());
-//
-//        return null;
-//    }
-
     @GetMapping("/resultall")
     public ResponseEntity<CommonResponse>  findSelectionListAll(@RequestParam(value = "surveyno") long surveyNo){
 
@@ -52,7 +37,7 @@ public class SelectionController {
         if (authenticationCheck != null) {
             String accessToken = (String) authenticationCheck.getCredentials();
             System.out.println("토큰 확인 : " + accessToken);
-            headers.add("Authorization", "Bearer whatth fuck");
+            headers.add("Authorization", "");
         } else {
             System.out.println("토큰이 null : " + authenticationCheck);
         }
