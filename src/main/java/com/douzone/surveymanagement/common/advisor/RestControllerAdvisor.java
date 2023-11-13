@@ -1,6 +1,7 @@
 package com.douzone.surveymanagement.common.advisor;
 
 
+import com.douzone.surveymanagement.common.exception.BadRequestException;
 import com.douzone.surveymanagement.common.exception.NotAcceptableFileException;
 import com.douzone.surveymanagement.common.exception.NotFoundElementException;
 import com.douzone.surveymanagement.common.response.CommonResponse;
@@ -54,6 +55,15 @@ public class RestControllerAdvisor {
                 ErrorResponse.ofMethodArgumentValidError(methodArgumentValidErrors)
                 )
             );
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<CommonResponse<ErrorResponse>> badRequestExceptionHandler(
+        BadRequestException e) {
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(CommonResponse.error(ErrorResponse.of(e.getMessage())));
     }
 
     /**
