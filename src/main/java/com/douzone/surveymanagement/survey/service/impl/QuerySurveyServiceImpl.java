@@ -7,9 +7,9 @@ import com.douzone.surveymanagement.survey.service.QuerySurveyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -34,11 +34,22 @@ public class QuerySurveyServiceImpl implements QuerySurveyService {
         return querySurveyMapper.selectSurveyDetailsBySurveyNo(surveyNo);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String findSurveyImageBySurveyNo(long surveyNo) {
         return querySurveyMapper.selectSurveyImageBySurveyNo(surveyNo);
     }
-  
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isSurveyCreatedByUser(long userNo, long surveyNo) {
+        return querySurveyMapper.selectSurveyCreatedByUser(userNo, surveyNo);
+    }
+
     @Override
     public List<SurveyDetailInfoDto> readWeeklySurvey() {
         return querySurveyMapper.selectWeeklySurvey();
@@ -68,7 +79,7 @@ public class QuerySurveyServiceImpl implements QuerySurveyService {
     public List<SurveyDetailInfoDto> selectPost(int page) {
         return querySurveyMapper.selectPostSurvey(showNextPage(page));
     }
-  
+
     private int showNextPage(int page) {
         int nextPage = page * 20;
         return nextPage;

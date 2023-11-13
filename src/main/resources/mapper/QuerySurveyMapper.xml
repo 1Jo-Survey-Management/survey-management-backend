@@ -215,7 +215,7 @@
                  survey_attend.survey_attend_no;
 
     </select>
-    
+
     <select id="selectWeeklySurvey" resultMap="surveyDetailInfoDto">
         SELECT * , survey_attend.user_no as attend_user_no, if(survey_attend.user_no = 1, false, true) as attend_check FROM (SELECT survey.survey_no,
                                                                                                                           survey_title,
@@ -315,5 +315,11 @@
         GROUP BY survey_tag.survey_tag_no, a.survey_no,survey_attend.user_no,
                  survey_attend.survey_attend_no;
     </select>
+    <select id="selectSurveyCreatedByUser" resultType="boolean" parameterType="long">
+        SELECT COUNT(*)
+        FROM survey
+        WHERE survey_no = #{surveyNo} AND user_no = #{userNo}
+    </select>
+
 
 </mapper>
