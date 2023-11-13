@@ -3,6 +3,7 @@ package com.douzone.surveymanagement.user.filter;
 import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.user.util.CustomAuthentication;
 import com.douzone.surveymanagement.user.util.CustomAuthenticationToken;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -20,6 +21,7 @@ import java.io.IOException;
  * CustomOAuth2Filter 입니다.
  * @author 김선규
  */
+@Slf4j
 public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
 
     public CustomOAuth2Filter(String defaultFilterProcessesUrl) {
@@ -30,23 +32,36 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
     public CustomAuthentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException {
 
+        Authentication authenticationCheck = SecurityContextHolder.getContext().getAuthentication();
+        if (authenticationCheck != null && authenticationCheck.isAuthenticated()) {
+            System.out.println("(OAuth2Filter)이미 인증된 Authentication OAuth2Filter");
+            return (CustomAuthentication) authenticationCheck;
+        }
+
         String accessToken = extractAccessTokenFromRequest(request);
 
         String naverCodeTokenCheck = request.getServletPath();
 
+        System.out.println("OAuth2Filter accessToken : " + accessToken);
+        System.out.println("OAuth2Filter naverPath : " + naverCodeTokenCheck);
+
+        // 토큰도 없고 첫 회원가입도 아니면 접근 거부
         if (accessToken == null && !naverCodeTokenCheck.equals("/login/oauth2/code/naver")) {
+            log.error("부적절한 접근!");
             return null;
-        } else if (naverCodeTokenCheck.equals("/login/oauth2/code/naver") ) {
-
-            CustomAuthenticationToken authRequest = new CustomAuthenticationToken(null, null, naverCodeTokenCheck);
-
-            CustomAuthentication authentication = (CustomAuthentication) getAuthenticationManager().authenticate(authRequest);
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            return authentication;
         }
+//        // 첫 회원가입 접근
+//        else if (naverCodeTokenCheck.equals("/login/oauth2/code/naver") ) {
+//
+//            CustomAuthenticationToken authRequest = new CustomAuthenticationToken(null, null, naverCodeTokenCheck);
+//
+//            CustomAuthentication authentication = (CustomAuthentication) getAuthenticationManager().authenticate(authRequest);
+//
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            return authentication;
+//        }
 
-        CustomAuthenticationToken authRequest = new CustomAuthenticationToken(accessToken, null, null);
+        CustomAuthenticationToken authRequest = new CustomAuthenticationToken(accessToken, null, naverCodeTokenCheck);
 
         CustomAuthentication authentication = (CustomAuthentication) getAuthenticationManager().authenticate(authRequest);
 

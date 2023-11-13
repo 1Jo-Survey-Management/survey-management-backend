@@ -43,4 +43,8 @@
         SET access_token = null, refresh_token = null
         WHERE user_no = #{userNo};
     </update>
+
+    <delete id="loginCancel">
+        DELETE FROM user WHERE user_no = #{userNo}
+    </delete>
 </mapper>

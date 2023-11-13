@@ -2,6 +2,7 @@ package com.douzone.surveymanagement.statistics.mapper;
 
 import com.douzone.surveymanagement.statistics.dto.SelectDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -9,6 +10,6 @@ import java.util.List;
 public interface SelectMapper {
     List<SelectDto> findSelection(int surveyNo, int surveyQuestionNo);
 
-    List<SelectDto> readSelectionAll(int surveyNo);
+    List<SelectDto> readSelectionAll(@Param(value= "surveyNo") long surveyNo);
 
 }

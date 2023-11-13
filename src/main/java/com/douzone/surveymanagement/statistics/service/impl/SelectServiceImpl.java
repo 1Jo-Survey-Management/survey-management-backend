@@ -9,18 +9,20 @@ import java.util.List;
 
 @Service
 public class SelectServiceImpl implements SelectService {
+
+    private final SelectMapper selectMapper;
+
     public SelectServiceImpl(SelectMapper selectMapper) {
         this.selectMapper = selectMapper;
     }
 
-    private SelectMapper selectMapper;
     @Override
     public List<SelectDto> readSelection(int surveyNo, int surveyQuestionNo) {
         return selectMapper.findSelection(surveyNo,surveyQuestionNo);
     }
 
     @Override
-    public List<SelectDto> readSelectionAll(int surveyNo) {
+    public List<SelectDto> readSelectionAll(long surveyNo) {
         return selectMapper.readSelectionAll(surveyNo);
     }
 }

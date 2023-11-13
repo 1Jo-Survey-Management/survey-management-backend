@@ -6,10 +6,12 @@ import com.douzone.surveymanagement.user.dto.request.UserDTO;
 import com.douzone.surveymanagement.user.dto.request.UserModifyDTO;
 import com.douzone.surveymanagement.user.exception.DuplicateUsernameException;
 import com.douzone.surveymanagement.user.service.impl.UserServiceImpl;
+import com.douzone.surveymanagement.user.util.CustomAuthenticationToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,7 +28,6 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000/survey/Mypage")
 public class UserApi {
     private final UserServiceImpl userServiceImpl;
 
@@ -59,7 +60,7 @@ public class UserApi {
      * 유저 이미지 업데이트 엔드포인트
      *
      * @param userNo 유저 번호
-     * @param file   이미지 파일
+     * @param File   이미지 파일
      * @return 업데이트 결과
      */
     @PutMapping("/{userNo}/image")
