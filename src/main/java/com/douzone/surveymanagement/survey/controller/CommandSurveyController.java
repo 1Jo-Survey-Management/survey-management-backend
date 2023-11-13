@@ -88,8 +88,6 @@ public class CommandSurveyController {
             surveyInfoUpdateDto.getSurveyNo()
         );
 
-        log.info("surveyCreatedByUser {}", surveyCreatedByUser);
-
         if (!surveyCreatedByUser) {
             throw new BadRequestException("선택한 설문을 수정할 수 없습니다.");
         }
