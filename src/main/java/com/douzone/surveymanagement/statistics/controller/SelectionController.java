@@ -31,23 +31,12 @@ public class SelectionController {
     @GetMapping("/resultall")
     public ResponseEntity<CommonResponse>  findSelectionListAll(@RequestParam(value = "surveyno") long surveyNo){
 
-        Authentication authenticationCheck = SecurityContextHolder.getContext().getAuthentication();
-        HttpHeaders headers = new HttpHeaders();
-
-        if (authenticationCheck != null) {
-            String accessToken = (String) authenticationCheck.getCredentials();
-            System.out.println("토큰 확인 : " + accessToken);
-            headers.add("Authorization", "");
-        } else {
-            System.out.println("토큰이 null : " + authenticationCheck);
-        }
 
         List<SelectDto> selectList = selectService.readSelectionAll(surveyNo);
         CommonResponse commonResponse = CommonResponse.successOf(selectList);
 
         return ResponseEntity
                 .ok()
-                .headers(headers)
                 .body(commonResponse);
     }
 }
