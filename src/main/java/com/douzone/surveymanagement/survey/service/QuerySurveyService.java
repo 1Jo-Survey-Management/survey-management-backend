@@ -26,22 +26,33 @@ public interface QuerySurveyService {
      * 해당 설문 번호에 대한 설문 대표 이미지가 저장된 Path를 가져오는 메서드 입니다.
      *
      * @param surveyNo 설문 번호
-     * @return
+     * @return 설문 이미지 저장 경로
      * @author : 강명관
      */
     String findSurveyImageBySurveyNo(long surveyNo);
 
-    List<SurveyDetailInfoDto> readWeeklySurvey();
 
-    List<SurveyDetailInfoDto> readRecentSurvey();
+    /**
+     * 설문의 작성자와 userNo의 유저와 동일한지 비교하는 메서드 입니다.
+     *
+     * @param userNo 유저 번호
+     * @param surveyNo 설문 번호
+     * @return 일치할 경우 true, 일치하지 않을 경우 false
+     * @author : 강명관
+     */
+    boolean isSurveyCreatedByUser(long userNo, long surveyNo);
 
-    List<SurveyDetailInfoDto> readClosingSurvey();
+    List<SurveyDetailInfoDto> readWeeklySurvey(long userNo);
 
-    List<SurveyDetailInfoDto> getSurveyAll(int page);
+    List<SurveyDetailInfoDto> readRecentSurvey(long userNo);
 
-    List<SurveyDetailInfoDto> selectClosing(int page);
+    List<SurveyDetailInfoDto> readClosingSurvey(long userNo);
 
-    List<SurveyDetailInfoDto> selectPost(int page);
+    List<SurveyDetailInfoDto> getSurveyAll(int page, long userNo);
+
+    List<SurveyDetailInfoDto> selectClosing(int page, long userNo);
+
+    List<SurveyDetailInfoDto> selectPost(int page,long userNo);
 }
 
 

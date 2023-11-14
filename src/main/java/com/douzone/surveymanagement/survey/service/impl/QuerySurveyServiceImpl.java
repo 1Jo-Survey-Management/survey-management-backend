@@ -7,9 +7,10 @@ import com.douzone.surveymanagement.survey.service.QuerySurveyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -34,43 +35,60 @@ public class QuerySurveyServiceImpl implements QuerySurveyService {
         return querySurveyMapper.selectSurveyDetailsBySurveyNo(surveyNo);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String findSurveyImageBySurveyNo(long surveyNo) {
         return querySurveyMapper.selectSurveyImageBySurveyNo(surveyNo);
     }
-  
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<SurveyDetailInfoDto> readWeeklySurvey() {
-        return querySurveyMapper.selectWeeklySurvey();
+    public boolean isSurveyCreatedByUser(long userNo, long surveyNo) {
+        return querySurveyMapper.selectSurveyCreatedByUser(userNo, surveyNo);
     }
 
     @Override
-    public List<SurveyDetailInfoDto> readRecentSurvey() {
-        return querySurveyMapper.selectRecentSurvey();
+    public List<SurveyDetailInfoDto> readWeeklySurvey(long userNo) {
+        return querySurveyMapper.selectWeeklySurvey(userNo);
     }
 
     @Override
-    public List<SurveyDetailInfoDto> readClosingSurvey() {
-        return querySurveyMapper.closingSurvey();
+    public List<SurveyDetailInfoDto> readRecentSurvey(long userNo) {
+        return querySurveyMapper.selectRecentSurvey(userNo);
     }
 
     @Override
-    public List<SurveyDetailInfoDto> getSurveyAll(int page) {
-        return querySurveyMapper.selectAllSurvey(showNextPage(page));
+    public List<SurveyDetailInfoDto> readClosingSurvey(long userNo) {
+        return querySurveyMapper.closingSurvey(userNo);
     }
 
     @Override
-    public List<SurveyDetailInfoDto> selectClosing(int page) {
-        return querySurveyMapper.selectClosingSurvey(showNextPage(page));
+    public List<SurveyDetailInfoDto> getSurveyAll(int page, long userNo) {
+        return querySurveyMapper.selectAllSurvey(pageAndUserNo(page, userNo));
     }
 
     @Override
-    public List<SurveyDetailInfoDto> selectPost(int page) {
-        return querySurveyMapper.selectPostSurvey(showNextPage(page));
+    public List<SurveyDetailInfoDto> selectClosing(int page, long userNo) {
+        return querySurveyMapper.selectClosingSurvey(pageAndUserNo(page, userNo));
     }
-  
+
+    @Override
+    public List<SurveyDetailInfoDto> selectPost(int page, long userNo) {
+        return querySurveyMapper.selectPostSurvey(pageAndUserNo(page, userNo));
+    }
+
     private int showNextPage(int page) {
         int nextPage = page * 20;
         return nextPage;
+    }
+
+    private HashMap<Integer, Long> pageAndUserNo(int page, long userNo){
+        HashMap<Integer, Long> pageUser = new HashMap<>();
+        pageUser.put(showNextPage(page), userNo);
+        return pageUser;
     }
 }
