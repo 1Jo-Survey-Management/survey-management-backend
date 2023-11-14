@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -45,16 +46,16 @@ public interface QuerySurveyMapper {
      */
     boolean selectSurveyCreatedByUser(@Param("userNo") long userNo, @Param("surveyNo") long surveyNo);
 
-    List<SurveyDetailInfoDto> selectWeeklySurvey();
+    List<SurveyDetailInfoDto> selectWeeklySurvey(long userNo);
 
-    List<SurveyDetailInfoDto> selectRecentSurvey();
+    List<SurveyDetailInfoDto> selectRecentSurvey(long userNo);
 
-    List<SurveyDetailInfoDto> closingSurvey();
+    List<SurveyDetailInfoDto> closingSurvey(long userNo);
 
-    List<SurveyDetailInfoDto> selectAllSurvey(int nextPage);
+    List<SurveyDetailInfoDto> selectAllSurvey(HashMap<Integer, Long> pageUserNo);
 
-    List<SurveyDetailInfoDto> selectClosingSurvey(int nextPage);
+    List<SurveyDetailInfoDto> selectClosingSurvey(HashMap<Integer, Long> pageUserNo);
 
-    List<SurveyDetailInfoDto> selectPostSurvey(int nextPage);
+    List<SurveyDetailInfoDto> selectPostSurvey(HashMap<Integer, Long> pageUserNo);
 
 }

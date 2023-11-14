@@ -115,7 +115,7 @@
         survey_no = #{surveyNo}
     </select>
 
-    <select id="selectRecentSurvey" resultMap="surveyDetailInfoDto">
+    <select id="selectRecentSurvey" resultMap="surveyDetailInfoDto" parameterType="long">
         SELECT * , survey_attend.user_no as attend_user_no, if(survey_attend.user_no = #{userNo}, false, true) as attend_check FROM (SELECT survey.survey_no,
         survey_title,
         survey_description,
@@ -139,7 +139,7 @@
 
         GROUP BY survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
         os.open_status_no, survey.survey_no, survey_attend.survey_no
-        ORDER BY survey_closing_at DESC
+        ORDER BY survey_post_at DESC
         limit 10) a
         LEFT JOIN survey_attend ON a.survey_no = survey_attend.survey_no
         LEFT JOIN survey_tag ON a.survey_no = survey_tag.survey_no
@@ -148,7 +148,7 @@
         survey_attend.survey_attend_no;
     </select>
 
-    <select id="closingSurvey" resultMap="surveyDetailInfoDto">
+    <select id="closingSurvey" resultMap="surveyDetailInfoDto" parameterType="long">
         SELECT * , survey_attend.user_no as attend_user_no, if(survey_attend.user_no = #{userNo}, false, true) as attend_check FROM (SELECT survey.survey_no,
         survey_title,
         survey_description,
@@ -181,7 +181,7 @@
         survey_attend.survey_attend_no;
     </select>
 
-    <select id="selectAllSurvey" resultMap="surveyDetailInfoDto" parameterType="int">
+    <select id="selectAllSurvey" resultMap="surveyDetailInfoDto" parameterType="HashMap">
         SELECT * , survey_attend.user_no as attend_user_no, if(survey_attend.user_no = #{userNo}, false, true) as attend_check FROM (SELECT survey.survey_no,
         survey_title,
         survey_description,
@@ -216,7 +216,7 @@
 
     </select>
 
-    <select id="selectWeeklySurvey" resultMap="surveyDetailInfoDto">
+    <select id="selectWeeklySurvey" resultMap="surveyDetailInfoDto" parameterType="long">
         SELECT * , survey_attend.user_no as attend_user_no, if(survey_attend.user_no = #{userNo}, false, true) as attend_check FROM (SELECT survey.survey_no,
         survey_title,
         survey_description,
@@ -250,7 +250,7 @@
         survey_attend.survey_attend_no;
     </select>
 
-    <select id="selectClosingSurvey" resultMap="surveyDetailInfoDto" parameterType="int">
+    <select id="selectClosingSurvey" resultMap="surveyDetailInfoDto" parameterType="HashMap">
         SELECT * , survey_attend.user_no as attend_user_no, if(survey_attend.user_no = #{userNo}, false, true) as attend_check FROM (SELECT survey.survey_no,
         survey_title,
         survey_description,
@@ -283,7 +283,7 @@
         survey_attend.survey_attend_no;
     </select>
 
-    <select id="selectPostSurvey" resultMap="surveyDetailInfoDto" parameterType="int">
+    <select id="selectPostSurvey" resultMap="surveyDetailInfoDto" parameterType="HashMap">
         SELECT * , survey_attend.user_no as attend_user_no, if(survey_attend.user_no = #{userNo}, false, true) as attend_check FROM (SELECT survey.survey_no,
         survey_title,
         survey_description,
