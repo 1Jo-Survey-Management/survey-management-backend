@@ -51,7 +51,6 @@ private final CustomAuthenticationProvider customAuthenticationProvider;
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http    .authorizeHttpRequests(authorize -> authorize
-//                      .antMatchers("/login/**").permitAll()
                       .anyRequest().authenticated());
         http        .addFilterBefore(customOAuth2Filter(authenticationManager()),
                         UsernamePasswordAuthenticationFilter.class);
