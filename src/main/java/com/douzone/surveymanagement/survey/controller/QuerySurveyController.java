@@ -4,9 +4,11 @@ import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.survey.dto.response.SurveyDetailsDto;
 import com.douzone.surveymanagement.survey.dto.response.SurveyDetailInfoDto;
 import com.douzone.surveymanagement.survey.service.QuerySurveyService;
+import com.douzone.surveymanagement.user.util.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,8 +41,9 @@ public class QuerySurveyController {
      */
 
     @GetMapping("/weekly")
-    public ResponseEntity<List<SurveyDetailInfoDto>> weeklySurveyList() {
-        List<SurveyDetailInfoDto> weeklySurvey = querySurveyService.readWeeklySurvey();
+    public ResponseEntity<List<SurveyDetailInfoDto>> weeklySurveyList(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        long userNo = userDetails.getUserNo();
+        List<SurveyDetailInfoDto> weeklySurvey = querySurveyService.readWeeklySurvey(userNo);
         return ResponseEntity.ok(weeklySurvey);
     }
 
@@ -51,8 +54,9 @@ public class QuerySurveyController {
      *
      */
     @GetMapping("/recent")
-    public ResponseEntity<List<SurveyDetailInfoDto>> recentSurveyList () {
-        List<SurveyDetailInfoDto> recentSurvey = querySurveyService.readRecentSurvey();
+    public ResponseEntity<List<SurveyDetailInfoDto>> recentSurveyList (@AuthenticationPrincipal CustomUserDetails userDetails) {
+        long userNo = userDetails.getUserNo();
+        List<SurveyDetailInfoDto> recentSurvey = querySurveyService.readRecentSurvey(userNo);
         return ResponseEntity.ok(recentSurvey);
     }
 
@@ -63,8 +67,9 @@ public class QuerySurveyController {
      *
      */
     @GetMapping("/closing")
-    public ResponseEntity<List<SurveyDetailInfoDto>> closingSurveyList () {
-        List<SurveyDetailInfoDto> closingSurvey = querySurveyService.readClosingSurvey();
+    public ResponseEntity<List<SurveyDetailInfoDto>> closingSurveyList (@AuthenticationPrincipal CustomUserDetails userDetails) {
+        long userNo = userDetails.getUserNo();
+        List<SurveyDetailInfoDto> closingSurvey = querySurveyService.readClosingSurvey(userNo);
         return ResponseEntity.ok(closingSurvey);
     }
 
@@ -76,8 +81,9 @@ public class QuerySurveyController {
      *
      */
     @GetMapping("/surveyall")
-    public ResponseEntity<List<SurveyDetailInfoDto>> getAllSurvey(@RequestParam("page") int page){
-        List<SurveyDetailInfoDto> allSurvey = querySurveyService.getSurveyAll(page);
+    public ResponseEntity<List<SurveyDetailInfoDto>> getAllSurvey(@RequestParam("page") int page, @AuthenticationPrincipal CustomUserDetails userDetails){
+        long userNo = userDetails.getUserNo();
+        List<SurveyDetailInfoDto> allSurvey = querySurveyService.getSurveyAll(page, userNo);
         return ResponseEntity.ok(allSurvey);
     }
 
@@ -89,8 +95,9 @@ public class QuerySurveyController {
      *
      */
     @GetMapping("/select-closing")
-    public ResponseEntity<List<SurveyDetailInfoDto>> selectClosingSurveyList(@RequestParam("page") int page){
-        List<SurveyDetailInfoDto> closeSurvey = querySurveyService.selectClosing(page);
+    public ResponseEntity<List<SurveyDetailInfoDto>> selectClosingSurveyList(@RequestParam("page") int page,@AuthenticationPrincipal CustomUserDetails userDetails){
+        long userNo = userDetails.getUserNo();
+        List<SurveyDetailInfoDto> closeSurvey = querySurveyService.selectClosing(page, userNo);
         return ResponseEntity.ok(closeSurvey);
     }
 
@@ -102,8 +109,9 @@ public class QuerySurveyController {
      *
      */
     @GetMapping("/select-post")
-    public ResponseEntity<List<SurveyDetailInfoDto>> selectPostSurveyList(@RequestParam("page") int page) {
-        List<SurveyDetailInfoDto> postSurvey = querySurveyService.selectPost(page);
+    public ResponseEntity<List<SurveyDetailInfoDto>> selectPostSurveyList(@RequestParam("page") int page, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        long userNo = userDetails.getUserNo();
+        List<SurveyDetailInfoDto> postSurvey = querySurveyService.selectPost(page, userNo);
         return ResponseEntity.ok(postSurvey);
     }
 }

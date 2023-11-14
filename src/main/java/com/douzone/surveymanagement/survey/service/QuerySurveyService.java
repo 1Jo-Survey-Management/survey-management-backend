@@ -42,17 +42,17 @@ public interface QuerySurveyService {
      */
     boolean isSurveyCreatedByUser(long userNo, long surveyNo);
 
-    List<SurveyDetailInfoDto> readWeeklySurvey();
+    List<SurveyDetailInfoDto> readWeeklySurvey(long userNo);
 
-    List<SurveyDetailInfoDto> readRecentSurvey();
+    List<SurveyDetailInfoDto> readRecentSurvey(long userNo);
 
-    List<SurveyDetailInfoDto> readClosingSurvey();
+    List<SurveyDetailInfoDto> readClosingSurvey(long userNo);
 
-    List<SurveyDetailInfoDto> getSurveyAll(int page);
+    List<SurveyDetailInfoDto> getSurveyAll(int page, long userNo);
 
-    List<SurveyDetailInfoDto> selectClosing(int page);
+    List<SurveyDetailInfoDto> selectClosing(int page, long userNo);
 
-    List<SurveyDetailInfoDto> selectPost(int page);
+    List<SurveyDetailInfoDto> selectPost(int page,long userNo);
 }
 
 
