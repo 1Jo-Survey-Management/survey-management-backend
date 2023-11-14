@@ -163,11 +163,27 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                     }
                 }
                 else {
+
                     // 1. accessToken이 없는 이유 중 가장 처음 회원가입으로 접근 하는 경우가 있다. 이럴땐 url 체크해서 임시 인가 해준다
                     if (((CustomAuthenticationToken) authentication).getCallBackUri().equals("/login/oauth2/code/naver")) {
                         log.debug("CallBack Authentication");
                         System.out.println("첫 회원가입 provider 지나감");
 
+                        CustomAuthentication customAuthentication = new CustomAuthentication(
+                                new CustomUserDetails(null, null, null, null, null, null, customToken.getAuthorities()),
+                                null
+                        );
+
+                        return customAuthentication;
+                    }
+
+                    //2. 메인의 카드들은 비회원도 접근 가능하다.
+                    if(((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/weekly")
+                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/recent")
+                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/closing")){
+
+                        System.out.println("(Provider)weekly 비회원 데이터");
+                        
                         CustomAuthentication customAuthentication = new CustomAuthentication(
                                 new CustomUserDetails(null, null, null, null, null, null, customToken.getAuthorities()),
                                 null

@@ -40,18 +40,39 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
         }else{
             String accessToken = extractAccessTokenFromRequest(request);
 
-            String naverCodeTokenCheck = request.getServletPath();
+            String requestServletPath = request.getServletPath();
 
             System.out.println("OAuth2Filter accessToken : " + accessToken);
-            System.out.println("OAuth2Filter naverPath : " + naverCodeTokenCheck);
+            System.out.println("OAuth2Filter requestServletPath : " + requestServletPath);
 
-            // 토큰도 없고 첫 회원가입도 아니면 접근 거부
-            if (accessToken == null && !naverCodeTokenCheck.equals("/login/oauth2/code/naver")) {
-                log.error("부적절한 접근!");
-                return null;
+
+            // 비회원에 관한 접근 허가
+            if(requestServletPath.equals("/api/surveys/weekly")
+                    || requestServletPath.equals("/api/surveys/recent")
+                    || requestServletPath.equals("/login/oauth2/code/naver")
+                    || requestServletPath.equals("/api/surveys/closing")){
+
+                System.out.println("비회원 접근, 메인 weekly 카드");
+                CustomAuthenticationToken authRequest = new CustomAuthenticationToken(null, null, requestServletPath);
+
+                CustomAuthentication authentication = (CustomAuthentication) getAuthenticationManager().authenticate(authRequest);
+
+                if (authentication==null) {
+                    return null;
+                }
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                return authentication;
+
             }
+//            // 토큰도 없고 첫 회원가입도 아니면 접근 거부
+//            if (accessToken == null && !requestServletPath.equals("/login/oauth2/code/naver")) {
+//                log.error("부적절한 접근!");
+//                return null;
+//            }
 
-            CustomAuthenticationToken authRequest = new CustomAuthenticationToken(accessToken, null, naverCodeTokenCheck);
+            CustomAuthenticationToken authRequest = new CustomAuthenticationToken(accessToken, null, requestServletPath);
 
             CustomAuthentication authentication = (CustomAuthentication) getAuthenticationManager().authenticate(authRequest);
 
@@ -91,8 +112,12 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                               AuthenticationException failed) throws IOException{
 
+        System.out.println("인증 실패!!");
+
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.getWriter().write("Authentication failed");
+
+//        response.sendRedirect("http://localhost:3000/");
     }
 
     private String extractAccessTokenFromRequest(HttpServletRequest request) {
