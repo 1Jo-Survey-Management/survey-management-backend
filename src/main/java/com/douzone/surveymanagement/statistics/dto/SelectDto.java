@@ -28,4 +28,4 @@ public class SelectDto {
         private final String surveySubjectiveAnswer;
         private final int surveySubjectiveAnswerCount;
 
-        }
+}
