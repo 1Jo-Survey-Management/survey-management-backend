@@ -48,7 +48,7 @@
         is_end_of_survey
         FROM selection
         ) se ON sq.survey_question_no = se.survey_question_no
-        WHERE s.open_status_no = 2
+        WHERE s.open_status_no = 1
     </select>
 
     <!-- 설문 참여 저장 -->

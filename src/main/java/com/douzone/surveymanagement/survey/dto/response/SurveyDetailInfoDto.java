@@ -27,7 +27,7 @@ public class SurveyDetailInfoDto {
 
     private  long surveyAttendCount;
     private  boolean isDeleted;
-    private List<String> tag;
+    private List<String> tagName;
 
     private List<Long> attendUserList;
 
