@@ -3,7 +3,7 @@
 
 ### properties ###
 *.properties
-
+*.yml
 ### idea ###
 .idea
 .idea/*
