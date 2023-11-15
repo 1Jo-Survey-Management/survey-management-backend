@@ -3,7 +3,9 @@
 
 ### properties ###
 *.properties
-*.yml
+application-dev.yml
+application-prod.yml
+
 ### idea ###
 .idea
 .idea/*
