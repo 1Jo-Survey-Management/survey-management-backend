@@ -86,9 +86,10 @@ public class QuerySurveyServiceImpl implements QuerySurveyService {
         return nextPage;
     }
 
-    private HashMap<Integer, Long> pageAndUserNo(int page, long userNo){
-        HashMap<Integer, Long> pageUser = new HashMap<>();
-        pageUser.put(showNextPage(page), userNo);
+    private HashMap<String, Object> pageAndUserNo(int page, long userNo){
+        HashMap<String, Object> pageUser = new HashMap<>();
+        pageUser.put("page", showNextPage(page));
+        pageUser.put("userNo", userNo);
         return pageUser;
     }
 }
