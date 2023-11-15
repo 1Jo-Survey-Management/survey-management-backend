@@ -25,7 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/for-attend/surveys")
 @RequiredArgsConstructor
-public class SurveyAttendAPI {
+public class SurveyAttendController {
 
     private final SurveyAttendServiceImpl surveyAttendServiceImpl;
 

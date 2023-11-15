@@ -4,7 +4,6 @@ import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.common.response.ErrorResponse;
 import com.douzone.surveymanagement.mysurvey.dto.request.MySurveyDTO;
 import com.douzone.surveymanagement.mysurvey.service.impl.MySurveyServiceImpl;
-import com.douzone.surveymanagement.user.util.CustomAuthenticationToken;
 import com.douzone.surveymanagement.user.util.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/my-surveys")
 @RequiredArgsConstructor
-public class MySurveyApi {
+public class MySurveyController {
 
     private final MySurveyServiceImpl mySurveyServiceImpl;
 
