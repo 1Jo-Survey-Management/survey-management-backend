@@ -115,6 +115,12 @@
         survey_no = #{surveyNo}
     </select>
 
+    <select id="selectSurveyCreatedByUser" resultType="boolean" parameterType="long">
+        SELECT COUNT(*)
+        FROM survey
+        WHERE survey_no = #{surveyNo} AND user_no = #{userNo}
+    </select>
+
     <select id="selectRecentSurvey" resultMap="surveyDetailInfoDto" parameterType="long">
         SELECT * , survey_attend.user_no as attend_user_no, if(survey_attend.user_no = #{userNo}, false, true) as attend_check FROM (SELECT survey.survey_no,
         survey_title,
@@ -207,7 +213,7 @@
         GROUP BY survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
         os.open_status_no, survey.survey_no, survey_attend.survey_no
         ORDER BY survey_post_at DESC
-        LIMIT 20 OFFSET #{nextPage}) a
+        LIMIT 20 OFFSET #{page}) a
         LEFT JOIN survey_attend ON a.survey_no = survey_attend.survey_no
         LEFT JOIN survey_tag ON a.survey_no = survey_tag.survey_no
         LEFT JOIN tag ON survey_tag.tag_no = tag.tag_no
@@ -277,7 +283,7 @@
         GROUP BY survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
         os.open_status_no, survey.survey_no, survey_attend.survey_no
         ORDER BY survey_closing_at DESC
-        LIMIT 20 OFFSET #{nextPage}) a
+        LIMIT 20 OFFSET #{page}) a
         LEFT JOIN survey_attend ON a.survey_no = survey_attend.survey_no
         LEFT JOIN survey_tag ON a.survey_no = survey_tag.survey_no
         LEFT JOIN tag ON survey_tag.tag_no = tag.tag_no
@@ -310,7 +316,7 @@
         GROUP BY survey_status.survey_status_no, user.user_no, survey.survey_closing_at,
         os.open_status_no, survey.survey_no, survey_attend.survey_no
         ORDER BY survey_closing_at DESC
-        LIMIT 20 OFFSET #{nextPage}) a
+        LIMIT 20 OFFSET #{page}) a
         LEFT JOIN survey_attend ON a.survey_no = survey_attend.survey_no
         LEFT JOIN survey_tag ON a.survey_no = survey_tag.survey_no
         LEFT JOIN tag ON survey_tag.tag_no = tag.tag_no

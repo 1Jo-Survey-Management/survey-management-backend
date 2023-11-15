@@ -52,10 +52,10 @@ public interface QuerySurveyMapper {
 
     List<SurveyDetailInfoDto> closingSurvey(long userNo);
 
-    List<SurveyDetailInfoDto> selectAllSurvey(HashMap<Integer, Long> pageUserNo);
+    List<SurveyDetailInfoDto> selectAllSurvey(HashMap<String, Object> pageUserNo);
 
-    List<SurveyDetailInfoDto> selectClosingSurvey(HashMap<Integer, Long> pageUserNo);
+    List<SurveyDetailInfoDto> selectClosingSurvey(HashMap<String, Object> pageUserNo);
 
-    List<SurveyDetailInfoDto> selectPostSurvey(HashMap<Integer, Long> pageUserNo);
+    List<SurveyDetailInfoDto> selectPostSurvey(HashMap<String, Object> pageUserNo);
 
 }
