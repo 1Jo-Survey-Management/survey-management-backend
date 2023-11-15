@@ -5,6 +5,7 @@ import com.douzone.surveymanagement.user.util.CustomAuthenticationToken;
 import com.douzone.surveymanagement.user.util.CustomUserDetails;
 import com.douzone.surveymanagement.user.util.GetAccessToken;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -25,12 +26,12 @@ import com.douzone.surveymanagement.user.util.NTPTimeFetcher;
  */
 @Component
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private final ClientRegistrationRepository clientRegistrationRepository;
 
-    UserService userService;
+    private final UserService userService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
