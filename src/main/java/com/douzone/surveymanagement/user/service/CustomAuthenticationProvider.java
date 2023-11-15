@@ -180,7 +180,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                     //2. 메인의 카드들은 비회원도 접근 가능하다.
                     if(((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/weekly")
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/recent")
-                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/closing")){
+                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/closing")
+                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/surveyAll")){
 
                         System.out.println("(Provider)weekly 비회원 데이터");
                         
