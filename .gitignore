@@ -3,6 +3,8 @@
 
 ### properties ###
 *.properties
+application-dev.yml
+application-prod.yml
 
 ### idea ###
 .idea
