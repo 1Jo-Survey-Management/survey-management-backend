@@ -25,6 +25,7 @@ public class SelectionCreateDto {
     @Length(min = 1, max = 255, message = "선택지 내용은 최소 1자보다 크고 255자 보다 작아야 합니다.")
     private String selectionValue;
 
+    @JsonProperty("isMoveable")
     @NotNull(message = "이동 여부는 null일 수 없습니다.")
     private boolean isMovable;
 
