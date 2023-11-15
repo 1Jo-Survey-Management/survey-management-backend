@@ -27,7 +27,7 @@
     </resultMap>
 
     <!-- user_no가 유저가 작성한 설문 목록을 가져오는 쿼리 -->
-    <select id="selectMySurveysWithSorting" resultMap="surveyResultMap">
+    <select id="selectMySurveysWithSorting" parameterType="long" resultMap="surveyResultMap">
         SELECT
             s.*,
             t.tag_name AS tagNames,
@@ -55,7 +55,7 @@
     </select>
 
     <!-- user_no가 참여한 설문 목록을 가져오는 쿼리 -->
-    <select id="selectMyParticipatedSurveys" resultMap="surveyResultMap">
+    <select id="selectMyParticipatedSurveys" parameterType="long" resultMap="surveyResultMap">
         SELECT
             s.survey_no,
             sa.user_no,

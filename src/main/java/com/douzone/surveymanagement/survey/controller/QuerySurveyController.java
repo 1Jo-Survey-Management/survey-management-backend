@@ -32,16 +32,18 @@ public class QuerySurveyController {
         SurveyDetailsDto surveyDetails = querySurveyService.findSurveyDetails(surveyNo);
         return ResponseEntity.ok(CommonResponse.successOf(surveyDetails));
     }
-  
+
     /**
      * 이번 주 내에 등록된 설문 중 참여자가 많은 설문 10개를 가져오는 API입니다.
      *
      * @return 인기 설문 10개
-     *
      */
 
     @GetMapping("/weekly")
-    public ResponseEntity<List<SurveyDetailInfoDto>> weeklySurveyList(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<List<SurveyDetailInfoDto>> weeklySurveyList(
+        @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> weeklySurvey = querySurveyService.readWeeklySurvey(userNo);
         return ResponseEntity.ok(weeklySurvey);
@@ -54,7 +56,9 @@ public class QuerySurveyController {
      *
      */
     @GetMapping("/recent")
-    public ResponseEntity<List<SurveyDetailInfoDto>> recentSurveyList (@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<List<SurveyDetailInfoDto>> recentSurveyList (
+        @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> recentSurvey = querySurveyService.readRecentSurvey(userNo);
         return ResponseEntity.ok(recentSurvey);
@@ -67,7 +71,9 @@ public class QuerySurveyController {
      *
      */
     @GetMapping("/closing")
-    public ResponseEntity<List<SurveyDetailInfoDto>> closingSurveyList (@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<List<SurveyDetailInfoDto>> closingSurveyList (
+        @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> closingSurvey = querySurveyService.readClosingSurvey(userNo);
         return ResponseEntity.ok(closingSurvey);
@@ -81,7 +87,10 @@ public class QuerySurveyController {
      *
      */
     @GetMapping("/surveyall")
-    public ResponseEntity<List<SurveyDetailInfoDto>> getAllSurvey(@RequestParam("page") int page, @AuthenticationPrincipal CustomUserDetails userDetails){
+    public ResponseEntity<List<SurveyDetailInfoDto>> getAllSurvey(
+        @RequestParam("page") int page,
+        @AuthenticationPrincipal CustomUserDetails userDetails
+    ){
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> allSurvey = querySurveyService.getSurveyAll(page, userNo);
         return ResponseEntity.ok(allSurvey);
@@ -95,7 +104,10 @@ public class QuerySurveyController {
      *
      */
     @GetMapping("/select-closing")
-    public ResponseEntity<List<SurveyDetailInfoDto>> selectClosingSurveyList(@RequestParam("page") int page,@AuthenticationPrincipal CustomUserDetails userDetails){
+    public ResponseEntity<List<SurveyDetailInfoDto>> selectClosingSurveyList(
+        @RequestParam("page") int page,
+        @AuthenticationPrincipal CustomUserDetails userDetails
+    ){
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> closeSurvey = querySurveyService.selectClosing(page, userNo);
         return ResponseEntity.ok(closeSurvey);
@@ -109,7 +121,10 @@ public class QuerySurveyController {
      *
      */
     @GetMapping("/select-post")
-    public ResponseEntity<List<SurveyDetailInfoDto>> selectPostSurveyList(@RequestParam("page") int page, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<List<SurveyDetailInfoDto>> selectPostSurveyList(
+        @RequestParam("page") int page,
+        @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> postSurvey = querySurveyService.selectPost(page, userNo);
         return ResponseEntity.ok(postSurvey);

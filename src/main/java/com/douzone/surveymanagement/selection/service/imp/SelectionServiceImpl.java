@@ -62,7 +62,7 @@ public class SelectionServiceImpl implements SelectionService {
      * @param selectionCreateDtoList 선택지를 저장하기 위한 Dto 리스트 입니다.
      * @author : 강명관
      */
-    private static void calcMovedQuestionNo(List<Long> questionNoList,
+    private void calcMovedQuestionNo(List<Long> questionNoList,
                                             List<SelectionCreateDto> selectionCreateDtoList) {
         for (SelectionCreateDto selectionCreateDto : selectionCreateDtoList) {
 

@@ -3,9 +3,8 @@ package com.douzone.surveymanagement.statistics.controller;
 import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.statistics.dto.SelectDto;
 import com.douzone.surveymanagement.statistics.service.SelectService;
-import com.douzone.surveymanagement.user.util.CustomAuthentication;
-import com.douzone.surveymanagement.user.util.CustomAuthenticationToken;
 import com.douzone.surveymanagement.user.util.CustomUserDetails;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,12 +20,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/survey")
+@RequiredArgsConstructor
 public class SelectionController {
 
-    private SelectService selectService;
-    public SelectionController(SelectService selectService) {
-        this.selectService = selectService;
-    }
+    private final SelectService selectService;
 
     @GetMapping("/resultall")
     public ResponseEntity<CommonResponse>  findSelectionListAll(@RequestParam(value = "surveyno") long surveyNo){
