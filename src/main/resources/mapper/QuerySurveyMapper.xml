@@ -115,6 +115,12 @@
         survey_no = #{surveyNo}
     </select>
 
+    <select id="selectSurveyCreatedByUser" resultType="boolean" parameterType="long">
+        SELECT COUNT(*)
+        FROM survey
+        WHERE survey_no = #{surveyNo} AND user_no = #{userNo}
+    </select>
+
     <select id="selectRecentSurvey" resultMap="surveyDetailInfoDto" parameterType="long">
         SELECT * , survey_attend.user_no as attend_user_no, if(survey_attend.user_no = #{userNo}, false, true) as attend_check FROM (SELECT survey.survey_no,
         survey_title,
