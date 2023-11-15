@@ -3,6 +3,7 @@ package com.douzone.surveymanagement.mysurvey.controller;
 import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.common.response.ErrorResponse;
 import com.douzone.surveymanagement.mysurvey.dto.request.MySurveyDTO;
+import com.douzone.surveymanagement.mysurvey.service.MySurveyService;
 import com.douzone.surveymanagement.mysurvey.service.impl.MySurveyServiceImpl;
 import com.douzone.surveymanagement.user.util.CustomAuthenticationToken;
 import com.douzone.surveymanagement.user.util.CustomUserDetails;
@@ -29,7 +30,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MySurveyApi {
 
-    private final MySurveyServiceImpl mySurveyServiceImpl;
+    private final MySurveyService mySurveyServiceImpl;
 
 
 //    /**
