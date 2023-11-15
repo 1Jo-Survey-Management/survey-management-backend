@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.douzone.surveymanagement.user.mapper.UserMapper">
-    <select id="selectAllByUserEmail" >
+    <select id="selectAllByUserEmail" parameterType="string" resultType="com.douzone.surveymanagement.user.dto.UserInfo">
         SELECT *
         FROM user
         WHERE user_email = #{userEmail}
