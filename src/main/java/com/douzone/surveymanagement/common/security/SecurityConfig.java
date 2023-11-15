@@ -2,6 +2,8 @@ package com.douzone.surveymanagement.common.security;
 
 import com.douzone.surveymanagement.user.filter.CustomOAuth2Filter;
 import com.douzone.surveymanagement.user.service.CustomAuthenticationProvider;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,19 +26,19 @@ import java.util.List;
  */
 @Configuration
 @EnableWebSecurity(debug = false)
+@AllArgsConstructor
 public class SecurityConfig {
-private final AuthenticationConfiguration authenticationConfiguration;
-private final CustomAuthenticationProvider customAuthenticationProvider;
-
-
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, CustomAuthenticationProvider customAuthenticationProvider){
-        this.authenticationConfiguration = authenticationConfiguration;
-        this.customAuthenticationProvider = customAuthenticationProvider;
+    private final AuthenticationConfiguration authenticationConfiguration;
+    @Bean
+    public AuthenticationManager authenticationManager() throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager () throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public CustomOAuth2Filter customOAuth2Filter(AuthenticationManager authenticationManager) {
+        CustomOAuth2Filter filter = new CustomOAuth2Filter("/**");
+        filter.setAuthenticationManager(authenticationManager);
+        return filter;
     }
 
     @Bean
@@ -51,29 +53,12 @@ private final CustomAuthenticationProvider customAuthenticationProvider;
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http    .authorizeHttpRequests(authorize -> authorize
-                      .anyRequest().authenticated());
-        http        .addFilterBefore(customOAuth2Filter(authenticationManager()),
-                        UsernamePasswordAuthenticationFilter.class);
+                    .anyRequest().authenticated());
+
+        http.addFilterBefore(customOAuth2Filter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
-    }
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(customAuthenticationProvider);
-    }
-
-    /**
-     * OAuth 로그인에 대한 필터입니다.
-     * @param authenticationManager
-     * @return filter
-     * @author 김선규
-     */
-    @Bean
-    public CustomOAuth2Filter customOAuth2Filter(AuthenticationManager authenticationManager) {
-        CustomOAuth2Filter filter = new CustomOAuth2Filter("/**");
-        filter.setAuthenticationManager(authenticationManager);
-        return filter;
     }
 
     /**
