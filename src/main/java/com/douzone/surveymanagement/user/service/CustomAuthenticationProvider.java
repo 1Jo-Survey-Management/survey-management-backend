@@ -6,6 +6,7 @@ import com.douzone.surveymanagement.user.util.CustomUserDetails;
 import com.douzone.surveymanagement.user.util.GetAccessToken;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -32,6 +33,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     UserService userService;
 
+    @ConfigurationProperties("spring.security.oauth2.client.registration.naver")
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
