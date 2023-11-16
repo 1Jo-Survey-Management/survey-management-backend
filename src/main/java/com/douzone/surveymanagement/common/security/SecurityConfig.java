@@ -29,7 +29,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
-//    private final ClientRegistrationRepository clientRegistrationRepository;
+    private final ClientRegistrationRepository clientRegistrationRepository;
 
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
@@ -46,7 +46,7 @@ public class SecurityConfig {
 //    @Bean
 //    public ClientRegistrationRepository clientRegistrationRepository() {
 //
-//        return new InMemoryClientRegistrationRepository();
+//        return new InMemoryClientRegistrationRepository(clientRegistrationRepository.findByRegistrationId("naver"));
 //    }
 
 
@@ -63,8 +63,8 @@ public class SecurityConfig {
 
         http    .authorizeHttpRequests(authorize -> authorize
                     .anyRequest().authenticated());
-        http    .oauth2Login();
-//                        .clientRegistrationRepository(clientRegistrationRepository());
+        http    .oauth2Login()
+                        .clientRegistrationRepository(new InMemoryClientRegistrationRepository(clientRegistrationRepository.findByRegistrationId("naver")));
 
         http.   addFilterBefore(customOAuth2Filter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
 
