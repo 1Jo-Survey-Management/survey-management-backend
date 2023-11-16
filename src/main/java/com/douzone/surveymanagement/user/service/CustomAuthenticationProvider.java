@@ -1,4 +1,5 @@
 package com.douzone.surveymanagement.user.service;
+import com.douzone.surveymanagement.user.dto.NaverClientProperties;
 import com.douzone.surveymanagement.user.dto.UserInfo;
 import com.douzone.surveymanagement.user.util.CustomAuthentication;
 import com.douzone.surveymanagement.user.util.CustomAuthenticationToken;
@@ -29,11 +30,10 @@ import com.douzone.surveymanagement.user.util.NTPTimeFetcher;
 @AllArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-    private final ClientRegistrationRepository clientRegistrationRepository;
+    private final NaverClientProperties naverClientProperties;
 
     UserService userService;
 
-    @ConfigurationProperties("spring.security.oauth2.client.registration.naver")
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
@@ -46,12 +46,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             // CustomAuthentication 객체가 아닌 객체가 접근시 접근 불가.
             if ((authentication instanceof CustomAuthenticationToken)) {
 //------------------------- 토큰 갱신 api 요청 위한 정보들 모음 -------------------------------------------------
-                ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("naver");
-                String clientId = clientRegistration.getClientId();
-                String clientSecret = clientRegistration.getClientSecret();
+//                ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("naver");
+//                String clientId = clientRegistration.getClientId();
+//                String clientSecret = clientRegistration.getClientSecret();
 
-//                String clientId = "ukwEecKhMrJzOdjwpJfB";
-//                String clientSecret = "au4WnhNLFn";
+                String clientId = naverClientProperties.getClientId();
+                String clientSecret = naverClientProperties.getClientSecret();
                 CustomAuthenticationToken customToken = (CustomAuthenticationToken) authentication;
                 String oldAccessToken = customToken.getCustomToken();
 
