@@ -2,6 +2,7 @@ package com.douzone.surveymanagement.common.security;
 
 import com.douzone.surveymanagement.user.filter.CustomOAuth2Filter;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,11 +14,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 //import org.springframework.security.oauth2.client.registration.ClientRegistration;
 //import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 //import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -43,12 +50,31 @@ public class SecurityConfig {
         return filter;
     }
 
-//    @Bean
-//    public ClientRegistrationRepository clientRegistrationRepository() {
-//
-//        return null;
-//    }
+    @Bean
 
+    public InMemoryClientRegistrationRepository clientRegistrationRepository() {
+//
+//        @Value("${spring.security.oauth2.client.registration.naver.clientId}")
+//        private String naverClientId;
+//        @Value("${spring.security.oauth2.client.registration.naver.clientSecret}")
+//        private String naverClientSecret;
+
+
+        ClientRegistration naverRegistration = ClientRegistration
+                .withRegistrationId("naver")
+                .clientId("ukwEecKhMrJzOdjwpJfB")
+                .clientSecret("au4WnhNLFn")
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .redirectUri("http://localhost:8080/login/oauth2/code/naver")
+                // Naver의 authorizationUri
+                .authorizationUri("https://nid.naver.com/oauth2.0/authorize")
+                .tokenUri("https://nid.naver.com/oauth2.0/token")
+                .scope("openid", "profile", "email")
+                .clientName("Naver")
+                .build();
+
+        return new InMemoryClientRegistrationRepository(naverRegistration);
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -63,8 +89,8 @@ public class SecurityConfig {
 
         http    .authorizeHttpRequests(authorize -> authorize
                     .anyRequest().authenticated());
-//        http    .oauth2Login()
-//                        .clientRegistrationRepository(clientRegistrationRepository());
+		http	.oauth2Login()
+                .clientRegistrationRepository(clientRegistrationRepository());
 
         http.   addFilterBefore(customOAuth2Filter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
 

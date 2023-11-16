@@ -30,8 +30,11 @@ import com.douzone.surveymanagement.user.util.NTPTimeFetcher;
 @AllArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
+
 //    private final NaverClientProperties naverClientProperties;
     private final ClientRegistrationRepository clientRegistrationRepository;
+
+
 
     UserService userService;
 
