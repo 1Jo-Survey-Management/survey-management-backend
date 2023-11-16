@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+//import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
@@ -44,8 +45,8 @@ public class SecurityConfig {
 
 //    @Bean
 //    public ClientRegistrationRepository clientRegistrationRepository() {
-//        ClientRegistrationRepository clientRegistrationRepository = null;
-//        return new InMemoryClientRegistrationRepository(clientRegistrationRepository.findByRegistrationId("naver"));
+//
+//        return new InMemoryClientRegistrationRepository();
 //    }
 
 
@@ -62,7 +63,7 @@ public class SecurityConfig {
 
         http    .authorizeHttpRequests(authorize -> authorize
                     .anyRequest().authenticated());
-//        http    .oauth2Login()
+        http    .oauth2Login();
 //                        .clientRegistrationRepository(clientRegistrationRepository());
 
         http.   addFilterBefore(customOAuth2Filter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
