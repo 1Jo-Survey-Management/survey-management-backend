@@ -27,6 +27,7 @@ import java.util.List;
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final ClientRegistrationRepository clientRegistrationRepository;
+
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
@@ -54,7 +55,8 @@ public class SecurityConfig {
         http    .authorizeHttpRequests(authorize -> authorize
                     .anyRequest().authenticated());
         http    .oauth2Login()
-                        .clientRegistrationRepository(clientRegistrationRepository);
+//                        .clientRegistrationRepository(clientRegistrationRepository());
+                        .clientRegistrationRepository(this.clientRegistrationRepository);
 
         http.   addFilterBefore(customOAuth2Filter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
 
