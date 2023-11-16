@@ -1,10 +1,12 @@
 package com.douzone.surveymanagement.common.security;
 
+import com.douzone.surveymanagement.user.dto.NaverClientProperties;
 import com.douzone.surveymanagement.user.filter.CustomOAuth2Filter;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,12 +33,13 @@ import java.util.List;
  * 시큐리티 필터 설정입니다
  * @author 김선규
  */
-@Configuration
 @EnableWebSecurity(debug = false)
 @AllArgsConstructor
+//@PropertySource("classpath:application-dev.yml")
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
-//    private final ClientRegistrationRepository clientRegistrationRepository;
+
+    NaverClientProperties naverClientProperties;
 
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
@@ -51,22 +54,14 @@ public class SecurityConfig {
     }
 
     @Bean
-
     public InMemoryClientRegistrationRepository clientRegistrationRepository() {
-//
-//        @Value("${spring.security.oauth2.client.registration.naver.clientId}")
-//        private String naverClientId;
-//        @Value("${spring.security.oauth2.client.registration.naver.clientSecret}")
-//        private String naverClientSecret;
-
 
         ClientRegistration naverRegistration = ClientRegistration
                 .withRegistrationId("naver")
-                .clientId("ukwEecKhMrJzOdjwpJfB")
-                .clientSecret("au4WnhNLFn")
+                .clientId(naverClientProperties.getClientId())
+                .clientSecret(naverClientProperties.getClientSecret())
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .redirectUri("http://localhost:8080/login/oauth2/code/naver")
-                // Naver의 authorizationUri
                 .authorizationUri("https://nid.naver.com/oauth2.0/authorize")
                 .tokenUri("https://nid.naver.com/oauth2.0/token")
                 .scope("openid", "profile", "email")
