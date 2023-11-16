@@ -165,7 +165,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 else {
 
                     // 1. accessToken이 없는 이유 중 가장 처음 회원가입으로 접근 하는 경우가 있다. 이럴땐 url 체크해서 임시 인가 해준다
-                    if (((CustomAuthenticationToken) authentication).getCallBackUri().equals("/login/oauth2/code/naver")) {
+                    if (((CustomAuthenticationToken) authentication).getCallBackUri().equals("/oauthLogin/oauth2/code/naver")) {
                         log.debug("CallBack Authentication");
                         System.out.println("첫 회원가입 provider 지나감");
 

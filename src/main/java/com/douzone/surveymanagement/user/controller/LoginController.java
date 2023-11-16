@@ -32,7 +32,7 @@ import java.util.Map;
  * @since 1.0.0
  */
 @Controller
-@RequestMapping("/login")
+@RequestMapping("/oauthLogin")
 @RequiredArgsConstructor
 @Slf4j
 public class LoginController {

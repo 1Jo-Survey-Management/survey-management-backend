@@ -60,6 +60,7 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication authResult) throws IOException, ServletException {
 
+        System.out.println("인증 성공!");
         chain.doFilter(request, response);
 
     }
