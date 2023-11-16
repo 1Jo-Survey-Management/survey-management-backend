@@ -20,5 +20,4 @@ public class NaverClientProperties {
     private String tokenUri;
     private String userInfoUri;
     private String userNameAttribute;
-
 }
