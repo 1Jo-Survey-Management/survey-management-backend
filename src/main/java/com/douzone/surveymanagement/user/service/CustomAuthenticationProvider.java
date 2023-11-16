@@ -10,8 +10,8 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+//import org.springframework.security.oauth2.client.registration.ClientRegistration;
+//import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.stereotype.Component;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -28,7 +28,7 @@ import com.douzone.surveymanagement.user.util.NTPTimeFetcher;
 @AllArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-    private final ClientRegistrationRepository clientRegistrationRepository;
+//    private final ClientRegistrationRepository clientRegistrationRepository;
 
     UserService userService;
 
@@ -44,9 +44,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             // CustomAuthentication 객체가 아닌 객체가 접근시 접근 불가.
             if ((authentication instanceof CustomAuthenticationToken)) {
 //------------------------- 토큰 갱신 api 요청 위한 정보들 모음 -------------------------------------------------
-                ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("naver");
-                String clientId = clientRegistration.getClientId();
-                String clientSecret = clientRegistration.getClientSecret();
+//                ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("naver");
+//                String clientId = clientRegistration.getClientId();
+//                String clientSecret = clientRegistration.getClientSecret();
+
+                String clientId = "ukwEecKhMrJzOdjwpJfB";
+                String clientSecret = "au4WnhNLFn";
                 CustomAuthenticationToken customToken = (CustomAuthenticationToken) authentication;
                 String oldAccessToken = customToken.getCustomToken();
 
