@@ -3,6 +3,8 @@ package com.douzone.surveymanagement.common.security;
 import com.douzone.surveymanagement.user.dto.NaverClientProperties;
 import com.douzone.surveymanagement.user.filter.CustomOAuth2Filter;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -53,19 +55,19 @@ public class SecurityConfig {
         return filter;
     }
 
-//    @Bean
-//    @ConfigurationProperties(prefix = "spring.security.oauth2.client.registration.naver")
-//    public OAuth2ClientProperties naverOAuth2ClientProperties() {
-//        return new OAuth2ClientProperties();
-//    }
+    @Bean
+    public String configureNaverOAuth2Client() {
+        String clientId = naverClientProperties.getClientId();
+//        String clientSecret = naverClientProperties.getClientSecret();
 
+        return clientId;
+    }
     @Bean
     public InMemoryClientRegistrationRepository clientRegistrationRepository() {
 
-
         ClientRegistration naverRegistration = ClientRegistration
                 .withRegistrationId("naver")
-                .clientId("ukwEecKhMrJzOdjwpJfB")
+                .clientId(configureNaverOAuth2Client())
                 .clientSecret("au4WnhNLFn")
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .redirectUri("http://localhost:8080/login/oauth2/code/naver")
