@@ -14,8 +14,8 @@ import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.security.oauth2.client.registration.ClientRegistration;
-//import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -37,7 +37,7 @@ import java.util.Map;
 @Slf4j
 public class LoginController {
 
-//    private final ClientRegistrationRepository clientRegistrationRepository;
+    private final ClientRegistrationRepository clientRegistrationRepository;
     private final UserServiceImpl userService;
 
     public ResponseEntity<CommonResponse> commonResponseResponseEntity;
@@ -120,12 +120,12 @@ public class LoginController {
 
         log.debug("Naver CallBack Uri");
         System.out.println("Naver CallBack Uri");
-//        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("naver");
-//        String clientId = clientRegistration.getClientId();
-//        String clientSecret = clientRegistration.getClientSecret();
+        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("naver");
+        String clientId = clientRegistration.getClientId();
+        String clientSecret = clientRegistration.getClientSecret();
 
-        String clientId = "ukwEecKhMrJzOdjwpJfB";
-        String clientSecret = "au4WnhNLFn";
+//        String clientId = "ukwEecKhMrJzOdjwpJfB";
+//        String clientSecret = "au4WnhNLFn";
 
         Map<String, String> parms = getAccessTokenUsingCode(clientId, clientSecret, code, state);
 
