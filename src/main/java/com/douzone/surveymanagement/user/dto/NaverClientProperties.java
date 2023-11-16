@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-@Configuration
+@Component
 @Getter
 @Setter
 @ConfigurationProperties("spring.security.oauth2.client.registration.naver")

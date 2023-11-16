@@ -43,6 +43,13 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final NaverClientProperties naverClientProperties;
 
+
+//    @Value("${spring.security.oauth2.client.registration.naver.client_id}")
+//    private String naverClientId;
+//
+//    @Value("${spring.security.oauth2.client.registration.naver.client_secret}")
+//    private String naverClientSecret;
+
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
@@ -55,13 +62,18 @@ public class SecurityConfig {
         return filter;
     }
 
-
     @Bean
-    public InMemoryClientRegistrationRepository clientRegistrationRepository() {
+    public String StringTest() {
+        String clientId = naverClientProperties.getClientId();
+
+        return clientId;
+    }
+    @Bean
+    public InMemoryClientRegistrationRepository clientRegistrationRepository(String client_id) {
 
         ClientRegistration naverRegistration = ClientRegistration
                 .withRegistrationId("naver")
-                .clientId(this.naverClientProperties.getClientId())
+                .clientId(client_id)
                 .clientSecret("au4WnhNLFn")
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .redirectUri("http://localhost:8080/login/oauth2/code/naver")
@@ -88,7 +100,7 @@ public class SecurityConfig {
         http    .authorizeHttpRequests(authorize -> authorize
                     .anyRequest().authenticated());
 		http	.oauth2Login()
-                .clientRegistrationRepository(clientRegistrationRepository());
+                .clientRegistrationRepository(clientRegistrationRepository(StringTest()));
 
         http.   addFilterBefore(customOAuth2Filter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
 
