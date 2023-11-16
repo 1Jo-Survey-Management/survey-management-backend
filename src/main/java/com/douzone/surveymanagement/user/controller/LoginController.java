@@ -1,6 +1,7 @@
 package com.douzone.surveymanagement.user.controller;
 
 import com.douzone.surveymanagement.common.response.CommonResponse;
+import com.douzone.surveymanagement.user.dto.NaverClientProperties;
 import com.douzone.surveymanagement.user.dto.NaverUserInfoResponse;
 import com.douzone.surveymanagement.user.dto.UserInfo;
 import com.douzone.surveymanagement.user.service.impl.UserServiceImpl;
@@ -37,8 +38,9 @@ import java.util.Map;
 @Slf4j
 public class LoginController {
 
-    private final ClientRegistrationRepository clientRegistrationRepository;
+//    private final ClientRegistrationRepository clientRegistrationRepository;
     private final UserServiceImpl userService;
+    private final NaverClientProperties naverClientProperties;
 
     public ResponseEntity<CommonResponse> commonResponseResponseEntity;
 
@@ -120,12 +122,12 @@ public class LoginController {
 
         log.debug("Naver CallBack Uri");
         System.out.println("Naver CallBack Uri");
-        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("naver");
-        String clientId = clientRegistration.getClientId();
-        String clientSecret = clientRegistration.getClientSecret();
+//        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("naver");
+//        String clientId = clientRegistration.getClientId();
+//        String clientSecret = clientRegistration.getClientSecret();
 
-//        String clientId = "ukwEecKhMrJzOdjwpJfB";
-//        String clientSecret = "au4WnhNLFn";
+        String clientId = naverClientProperties.getClientId();
+        String clientSecret = naverClientProperties.getClientSecret();
 
         Map<String, String> parms = getAccessTokenUsingCode(clientId, clientSecret, code, state);
 

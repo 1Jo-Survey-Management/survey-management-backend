@@ -41,14 +41,8 @@ import java.util.List;
 @AllArgsConstructor
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
-    private final NaverClientProperties naverClientProperties;
+//    private final NaverClientProperties naverClientProperties;
 
-
-//    @Value("${spring.security.oauth2.client.registration.naver.client_id}")
-//    private String naverClientId;
-//
-//    @Value("${spring.security.oauth2.client.registration.naver.client_secret}")
-//    private String naverClientSecret;
 
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
@@ -62,29 +56,23 @@ public class SecurityConfig {
         return filter;
     }
 
-    @Bean
-    public String StringTest() {
-        String clientId = naverClientProperties.getClientId();
-
-        return clientId;
-    }
-    @Bean
-    public InMemoryClientRegistrationRepository clientRegistrationRepository(String client_id) {
-
-        ClientRegistration naverRegistration = ClientRegistration
-                .withRegistrationId("naver")
-                .clientId(client_id)
-                .clientSecret("au4WnhNLFn")
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .redirectUri("http://localhost:8080/login/oauth2/code/naver")
-                .authorizationUri("https://nid.naver.com/oauth2.0/authorize")
-                .tokenUri("https://nid.naver.com/oauth2.0/token")
-                .scope("openid", "profile", "email")
-                .clientName("Naver")
-                .build();
-
-        return new InMemoryClientRegistrationRepository(naverRegistration);
-    }
+//    @Bean
+//    public InMemoryClientRegistrationRepository clientRegistrationRepository(String client_id) {
+//
+//        ClientRegistration naverRegistration = ClientRegistration
+//                .withRegistrationId("naver")
+//                .clientId(client_id)
+//                .clientSecret("au4WnhNLFn")
+//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+//                .redirectUri("http://localhost:8080/login/oauth2/code/naver")
+//                .authorizationUri("https://nid.naver.com/oauth2.0/authorize")
+//                .tokenUri("https://nid.naver.com/oauth2.0/token")
+//                .scope("openid", "profile", "email")
+//                .clientName("Naver")
+//                .build();
+//
+//        return new InMemoryClientRegistrationRepository(naverRegistration);
+//    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -99,8 +87,8 @@ public class SecurityConfig {
 
         http    .authorizeHttpRequests(authorize -> authorize
                     .anyRequest().authenticated());
-		http	.oauth2Login()
-                .clientRegistrationRepository(clientRegistrationRepository(StringTest()));
+//		http	.oauth2Login()
+//                .clientRegistrationRepository(clientRegistrationRepository());
 
         http.   addFilterBefore(customOAuth2Filter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
 
