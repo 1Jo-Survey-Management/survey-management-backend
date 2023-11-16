@@ -61,7 +61,7 @@ public class SecurityConfig {
 
         ClientRegistration naverRegistration = ClientRegistration
                 .withRegistrationId("naver")
-                .clientId(naverClientProperties.getClientId())
+                .clientId(this.naverClientProperties.getClientId())
                 .clientSecret("au4WnhNLFn")
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .redirectUri("http://localhost:8080/login/oauth2/code/naver")
