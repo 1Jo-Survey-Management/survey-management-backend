@@ -39,7 +39,7 @@ import java.util.List;
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
 
-    NaverClientProperties naverClientProperties;
+    private final NaverClientProperties naverClientProperties;
 
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
