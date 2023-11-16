@@ -35,10 +35,8 @@ import java.util.List;
  */
 @EnableWebSecurity(debug = false)
 @AllArgsConstructor
-//@PropertySource("classpath:application-dev.yml")
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
-
     private final NaverClientProperties naverClientProperties;
 
     @Bean
@@ -55,7 +53,7 @@ public class SecurityConfig {
 
     @Bean
     public InMemoryClientRegistrationRepository clientRegistrationRepository() {
-
+        
         ClientRegistration naverRegistration = ClientRegistration
                 .withRegistrationId("naver")
                 .clientId(naverClientProperties.getClientId())
