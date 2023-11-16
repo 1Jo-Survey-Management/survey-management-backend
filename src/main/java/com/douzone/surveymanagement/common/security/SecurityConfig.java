@@ -55,19 +55,13 @@ public class SecurityConfig {
         return filter;
     }
 
-    @Bean
-    public String configureNaverOAuth2Client() {
-        String clientId = naverClientProperties.getClientId();
-//        String clientSecret = naverClientProperties.getClientSecret();
 
-        return clientId;
-    }
     @Bean
     public InMemoryClientRegistrationRepository clientRegistrationRepository() {
 
         ClientRegistration naverRegistration = ClientRegistration
                 .withRegistrationId("naver")
-                .clientId(configureNaverOAuth2Client())
+                .clientId(naverClientProperties.getClientId())
                 .clientSecret("au4WnhNLFn")
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .redirectUri("http://localhost:8080/login/oauth2/code/naver")
