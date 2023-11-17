@@ -41,10 +41,7 @@ public class CommandSurveyServiceImpl implements CommandSurveyService {
      */
     @Transactional
     @Override
-    public long insertSurveyInfo(SurveyInfoCreateDto surveyInfoCreateDto, MultipartFile surveyImage) {
-
-        String saveFilePath = FileUploadUtil.uploadFile(surveyImage);
-        surveyInfoCreateDto.setSurveyImagePath(saveFilePath);
+    public long insertSurveyInfo(SurveyInfoCreateDto surveyInfoCreateDto) {
 
         checkSurveyPostAndInjectPostAt(surveyInfoCreateDto);
         commandSurveyMapper.insertSurveyInfo(surveyInfoCreateDto);
@@ -66,10 +63,9 @@ public class CommandSurveyServiceImpl implements CommandSurveyService {
     @Transactional
     @Override
     public void insertSurvey(SurveyInfoCreateDto surveyInfoCreateDto,
-                             List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList,
-                             MultipartFile surveyImage) {
+                             List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList) {
 
-        long surveyNo = insertSurveyInfo(surveyInfoCreateDto, surveyImage);
+        long surveyNo = insertSurveyInfo(surveyInfoCreateDto);
 
         surveyQuestionService.insertQuestionList(surveyNo, surveyQuestionCreateDtoList);
     }

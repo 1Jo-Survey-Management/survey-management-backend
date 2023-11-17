@@ -46,8 +46,6 @@ public class SurveyQuestionServiceImpl implements SurveyQuestionService {
             .map(SurveyQuestionCreateDto::getSurveyQuestionNo)
             .collect(Collectors.toList());
 
-        log.info("questionNoList {}", questionNoList);
-
         for (SurveyQuestionCreateDto questionDto : surveyQuestionCreateDtoList) {
             QuestionTypeEnum questionTypeEnum =
                 QuestionTypeEnum.convertTo(questionDto.getQuestionTypeNo());

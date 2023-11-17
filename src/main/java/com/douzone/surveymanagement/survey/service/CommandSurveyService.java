@@ -18,11 +18,10 @@ public interface CommandSurveyService {
      * 섦문에 대한 정보를 등록하는 메서드 입니다.
      *
      * @param surveyInfoCreateDto 설문에 대한 정보를 담은 Dto
-     * @param surveyImage 설문 대표 이미지
      * @return 설문 등록된 PK
      * @author : 강명관
      */
-    long insertSurveyInfo(SurveyInfoCreateDto surveyInfoCreateDto, MultipartFile surveyImage);
+    long insertSurveyInfo(SurveyInfoCreateDto surveyInfoCreateDto);
 
 
     /**
@@ -30,12 +29,10 @@ public interface CommandSurveyService {
      *
      * @param surveyInfoCreateDto 설문에 대한 정보를 갖고 있는 Dto
      * @param surveyQuestionCreateDtoList 설문에 대한 문항들에 대한 정보를 담고 있는 Dto 리스트
-     * @param surveyImage 설문에 대한 대표 이미지
      * @author : 강명관
      */
     void insertSurvey(SurveyInfoCreateDto surveyInfoCreateDto,
-                      List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList,
-                      MultipartFile surveyImage);
+                      List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList);
 
 
     /**
