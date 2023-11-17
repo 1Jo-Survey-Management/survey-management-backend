@@ -94,7 +94,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                     }
                 }
                 else {
-                    if (((CustomAuthenticationToken) authentication).getCallBackUri().equals("/oauthLogin/oauth2/code/naver")) {
+                    if (((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/oauthLogin/oauth2/code/naver")) {
                         CustomAuthentication customAuthentication = new CustomAuthentication(
                                 new CustomUserDetails(null, null, null, null, null, null, customToken.getAuthorities()),
                                 null
