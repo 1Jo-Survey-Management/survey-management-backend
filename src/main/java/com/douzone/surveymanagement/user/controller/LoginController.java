@@ -277,7 +277,7 @@ public class LoginController {
             updateUserToken.setUserNo(dbUserNo);
             userService.updateAccessToken(updateUserToken);
 
-        }     
+        }
         UserInfo userExistCheck = userService.findUserByUserAccessToken(params.get("access_token"));
 
         if (userExistCheck != null) {

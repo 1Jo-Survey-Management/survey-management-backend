@@ -32,7 +32,6 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
 
         Authentication authenticationCheck = SecurityContextHolder.getContext().getAuthentication();
         if (authenticationCheck != null && authenticationCheck.isAuthenticated()) {
-            System.out.println("(OAuth2Filter)이미 인증된 Authentication OAuth2Filter");
             return (CustomAuthentication) authenticationCheck;
         }else{
             String accessToken = extractAccessTokenFromRequest(request);
