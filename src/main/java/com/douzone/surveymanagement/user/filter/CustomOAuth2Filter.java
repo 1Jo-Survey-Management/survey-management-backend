@@ -28,7 +28,7 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
 
     @Override
     public CustomAuthentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationException, IOException {
+            throws AuthenticationException {
 
         Authentication authenticationCheck = SecurityContextHolder.getContext().getAuthentication();
         if (authenticationCheck != null && authenticationCheck.isAuthenticated()) {
