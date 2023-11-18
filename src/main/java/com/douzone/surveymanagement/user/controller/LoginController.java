@@ -1,6 +1,7 @@
 package com.douzone.surveymanagement.user.controller;
 
 import com.douzone.surveymanagement.common.response.CommonResponse;
+import com.douzone.surveymanagement.common.response.ErrorResponse;
 import com.douzone.surveymanagement.user.dto.NaverClientProperties;
 import com.douzone.surveymanagement.user.dto.NaverUserInfoResponse;
 import com.douzone.surveymanagement.user.dto.UserInfo;
@@ -16,6 +17,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +33,7 @@ import java.util.Map;
  * @since 1.0.0
  */
 @Controller
-@RequestMapping("/oauthLogin")
+@RequestMapping("/api/oauthLogin")
 @RequiredArgsConstructor
 @Slf4j
 public class LoginController {
@@ -46,10 +49,20 @@ public class LoginController {
      * @author 김선규
      */
     @PostMapping("user")
-    public ResponseEntity<CommonResponse> userProfile(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<CommonResponse> userProfile(HttpServletRequest request) {
         String accessToken = getAccessTokenFromRequest(request);
         UserInfo returnUser = userService.findUserByUserAccessToken(accessToken);
         CommonResponse commonResponse = CommonResponse.successOf(returnUser);
+        commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
+        return commonResponseResponseEntity;
+    }
+
+    @PostMapping("/nickNameCheck")
+    public ResponseEntity<CommonResponse> nickNameCheck(@RequestBody UserInfo userInfo) {
+
+        String nickName = userInfo.getUserNickname();
+        boolean nicknameDuplicate = userService.isUserNicknameDuplicate(nickName);
+        CommonResponse commonResponse = CommonResponse.successOf(nicknameDuplicate);
         commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
         return commonResponseResponseEntity;
     }
@@ -121,16 +134,27 @@ public class LoginController {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formattedStringExpiresIn = newExpiresTime.format(formatter);
             alreadyExistCheck.setExpiresIn(formattedStringExpiresIn);
-            int updateComplete = userService.updateAccessToken(alreadyExistCheck);
+            userService.updateAccessToken(alreadyExistCheck);
             alreadyExistCheck.setExpiresIn(formattedStringExpiresIn);
             CommonResponse commonResponse = CommonResponse.successOf(alreadyExistCheck);
             commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
             return commonResponseResponseEntity;
         }
         NaverUserInfoResponse userInfo = getNaverUserInfo(accessToken);
-        CommonResponse commonResponse = handleUserRegistration(userInfo, parms);
-        commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.ofNullable(commonResponse));
-        return commonResponseResponseEntity;
+
+        if(userInfo!=null){
+            CommonResponse commonResponse = handleUserRegistration(userInfo, parms);
+
+            return ResponseEntity
+                    .ok()
+                    .body(commonResponse);
+        }else{
+            String errorMessage = "Required AccessCode again!";
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(CommonResponse.<String>error(ErrorResponse.of(errorMessage)));
+        }
+
     }
 
     /**
@@ -231,13 +255,25 @@ public class LoginController {
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
         String userInfoUrl = "https://openapi.naver.com/v1/nid/me";
-        ResponseEntity<NaverUserInfoResponse> response = restTemplate.exchange(
-                userInfoUrl,
-                HttpMethod.GET,
-                entity,
-                NaverUserInfoResponse.class
-        );
+
+        ResponseEntity<NaverUserInfoResponse> response = null;
+        
+        try {
+            response = restTemplate.exchange(
+                    userInfoUrl,
+                    HttpMethod.GET,
+                    entity,
+                    NaverUserInfoResponse.class
+            );
+            
+        } catch (HttpStatusCodeException e) {
+
+            System.out.println("Error: Need new AccessCode");
+            return null;
+        }
+
         return response.getBody();
+
     }
 
     /**
