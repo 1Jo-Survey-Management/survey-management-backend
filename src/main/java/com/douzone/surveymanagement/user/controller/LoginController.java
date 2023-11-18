@@ -1,21 +1,19 @@
 package com.douzone.surveymanagement.user.controller;
 
 import com.douzone.surveymanagement.common.response.CommonResponse;
+import com.douzone.surveymanagement.user.dto.NaverClientProperties;
 import com.douzone.surveymanagement.user.dto.NaverUserInfoResponse;
 import com.douzone.surveymanagement.user.dto.UserInfo;
 import com.douzone.surveymanagement.user.service.impl.UserServiceImpl;
 import com.douzone.surveymanagement.user.util.CustomAuthentication;
 import com.douzone.surveymanagement.user.util.CustomUserDetails;
 import com.douzone.surveymanagement.user.util.GetAccessToken;
-import com.douzone.surveymanagement.user.util.NTPTimeFetcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -32,14 +30,13 @@ import java.util.Map;
  * @since 1.0.0
  */
 @Controller
-@RequestMapping("/login")
+@RequestMapping("/oauthLogin")
 @RequiredArgsConstructor
 @Slf4j
 public class LoginController {
 
-    private final ClientRegistrationRepository clientRegistrationRepository;
     private final UserServiceImpl userService;
-
+    private final NaverClientProperties naverClientProperties;
     public ResponseEntity<CommonResponse> commonResponseResponseEntity;
 
     /**
@@ -51,11 +48,7 @@ public class LoginController {
     @PostMapping("user")
     public ResponseEntity<CommonResponse> userProfile(HttpServletRequest request, HttpServletResponse response) {
         String accessToken = getAccessTokenFromRequest(request);
-
         UserInfo returnUser = userService.findUserByUserAccessToken(accessToken);
-
-        System.out.println("Response 돌아가나 : " + response.getHeader("Access-Token"));
-
         CommonResponse commonResponse = CommonResponse.successOf(returnUser);
         commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
         return commonResponseResponseEntity;
@@ -69,9 +62,7 @@ public class LoginController {
      */
     @GetMapping("cancel")
     public ResponseEntity<CommonResponse> loginCancel(@RequestParam(name = "userNo") String userNo) {
-
         userService.loginCancel(userNo);
-
         return null;
     }
 
@@ -110,19 +101,14 @@ public class LoginController {
     public ResponseEntity<CommonResponse> naverCallback(@RequestParam(name = "code", required = false) String code,
                                                         @RequestParam(name = "state", required = false) String state,
                                                         @RequestParam(name = "userNo", required = false) String userNo) {
-
         if(userNo!=null){
             CommonResponse commonResponse = CommonResponse.fail();
             commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
             return commonResponseResponseEntity;
         }
 
-
-        log.debug("Naver CallBack Uri");
-        System.out.println("Naver CallBack Uri");
-        ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("naver");
-        String clientId = clientRegistration.getClientId();
-        String clientSecret = clientRegistration.getClientSecret();
+        String clientId = naverClientProperties.getClientId();
+        String clientSecret = naverClientProperties.getClientSecret();
 
         Map<String, String> parms = getAccessTokenUsingCode(clientId, clientSecret, code, state);
 
@@ -130,40 +116,19 @@ public class LoginController {
         UserInfo alreadyExistCheck = userService.findUserByUserAccessToken(accessToken);
 
         if(alreadyExistCheck!=null){
-            log.debug("(회원 존재시) 회원번호 : " + alreadyExistCheck.getUserNo());
-            System.out.println("(회원 존재시) 회원번호 : " + alreadyExistCheck.getUserNo());
-
-            NTPTimeFetcher ntpTimeFetcher = new NTPTimeFetcher();
-            ZonedDateTime koreaTime = ZonedDateTime.parse(ntpTimeFetcher.getFormattedKoreaTime());
-
-            // 토큰 발급 받은 만료시간 설정 (버퍼 시간 고려 50분으로 설정)
+            ZonedDateTime koreaTime = ZonedDateTime.now();
             ZonedDateTime newExpiresTime = koreaTime.plusMinutes(50);
-
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formattedStringExpiresIn = newExpiresTime.format(formatter);
-
             alreadyExistCheck.setExpiresIn(formattedStringExpiresIn);
             int updateComplete = userService.updateAccessToken(alreadyExistCheck);
-
-            System.out.println("유효시간 업데이트 완료 : " + updateComplete);
-
             alreadyExistCheck.setExpiresIn(formattedStringExpiresIn);
-
-            System.out.println("(LoginController) 토큰 유효 시간 : " + formattedStringExpiresIn);
-
             CommonResponse commonResponse = CommonResponse.successOf(alreadyExistCheck);
-
             commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
             return commonResponseResponseEntity;
         }
-
-        log.debug("params accessToken : " + accessToken);
-        System.out.println("params accessToken : " + accessToken);
-
         NaverUserInfoResponse userInfo = getNaverUserInfo(accessToken);
-
         CommonResponse commonResponse = handleUserRegistration(userInfo, parms);
-
         commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.ofNullable(commonResponse));
         return commonResponseResponseEntity;
     }
@@ -179,11 +144,8 @@ public class LoginController {
 
         String accessToken = getAccessTokenFromRequest(request);
         UserInfo registUser = createRegisteredUser(userInfo, accessToken);
-
         userService.registUser(registUser);
-
         authenticateUserAfterRegistration(registUser);
-
         return CommonResponse.successOf(registUser);
     }
 
@@ -194,7 +156,6 @@ public class LoginController {
      * @author 김선규
      */
     private String getAccessTokenFromRequest(HttpServletRequest request) {
-
         String authorizationHeader = request.getHeader("Authorization");
         String accessToken = "";
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -300,51 +261,29 @@ public class LoginController {
             dbAccessToken = searchUserInfobyEmail.getAccessToken();
             dbUserNo = searchUserInfobyEmail.getUserNo();
 
-        } else {
-            log.error("이메일로 검색한 회원 존재 하지 않음");
         }
 
         if (dbUserEmail != null && dbUserEmail.equals(userEmail) && (dbAccessToken == null || !dbAccessToken.equals(newAccessToken)) ) {
             UserInfo updateUserToken = new UserInfo();
-            log.debug("로그아웃된 회원 다시 로그인");
-            System.out.println("로그아웃된 회원 다시 로그인");
-
-            NTPTimeFetcher ntpTimeFetcher = new NTPTimeFetcher();
-            ZonedDateTime koreaTime = ZonedDateTime.parse(ntpTimeFetcher.getFormattedKoreaTime());
-
-            // 토큰 발급 받은 만료시간 설정 (버퍼 시간 고려 50분으로 설정)
+            ZonedDateTime koreaTime = ZonedDateTime.now();
             ZonedDateTime newExpiresTime = koreaTime.plusMinutes(50);
-
-            // yyyy-MM-dd HH:mm:ss 형식으로 ZonedDateTime를 문자열로 변환
             DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formattedStringExpiresIn = newExpiresTime.format(formatter2);
-
 
             updateUserToken.setUserEmail(dbUserEmail);
             updateUserToken.setAccessToken(params.get("access_token"));
             updateUserToken.setRefreshToken(params.get("refresh_token"));
             updateUserToken.setExpiresIn(formattedStringExpiresIn);
             updateUserToken.setUserNo(dbUserNo);
-            int flag = userService.updateAccessToken(updateUserToken);
-            log.debug("Update AccessToken : " + flag);
-        }
+            userService.updateAccessToken(updateUserToken);
 
-        // accessToken으로 회원이 존재하고 프로필 모두 등록 되었는지 확인
+        }
         UserInfo userExistCheck = userService.findUserByUserAccessToken(params.get("access_token"));
 
-        log.debug("userExistcheck : " + userExistCheck);
-        System.out.println("컨트롤러 userExistcheck : " + userExistCheck);
-
-        // db에 회원이 존재할때
         if (userExistCheck != null) {
             String userNickname = userExistCheck.getUserNickname();
 
-            // 완료된 회원이라면
             if (userNickname != null) {
-
-                log.debug("유저 확인됨! userEmail : " + userInfo.getResponse().getEmail());
-                System.out.println("유저 확인됨! userEmail : " + userInfo.getResponse().getEmail());
-
                 UserInfo userCheck = userService.findUserByUserAccessToken(params.get("access_token"));
 
                 userCheck.setExpiresIn(userCheck.getExpiresIn());
@@ -356,31 +295,21 @@ public class LoginController {
             }
 
         }
-        // db에 회원이 존재하지 않을때(db에 accessToken 기준 미완료 회원도 없을때)
         else {
-
-            log.debug("미완료 회원도 존재 x");
-            System.out.println("미완료 회원도 존재x");
-
-            // 토큰 발급 받은 만료시간 설정 (버퍼 시간 고려 50분으로 설정)
-            NTPTimeFetcher ntpTimeFetcher = new NTPTimeFetcher();
-            String koreaTime = ntpTimeFetcher.getFormattedKoreaTimeWithExpiration(50);
-
-            System.out.println("파싱된 NTP 타임 : " + koreaTime);
+            ZonedDateTime koreaTime = ZonedDateTime.now();
+            ZonedDateTime newExpiresTime = koreaTime.plusMinutes(50);
+            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedStringExpiresIn = newExpiresTime.format(formatter2);
 
             UserInfo userRegist = new UserInfo();
-
             userRegist.setUserEmail(userEmail);
             userRegist.setAccessToken(params.get("access_token"));
-            userRegist.setExpiresIn(koreaTime);
+            userRegist.setExpiresIn(formattedStringExpiresIn);
             userRegist.setRefreshToken(params.get("refresh_token"));
 
             userService.beforeRegistUser(userRegist);
 
-            System.out.println("미완료 회원 accessToken : " + params.get("access_token"));
-
             UserInfo respUserInfo = userService.findUserByUserAccessToken(params.get("access_token"));
-
             CommonResponse commonResponse = CommonResponse.successOf(respUserInfo);
             return commonResponse;
         }

@@ -27,5 +27,6 @@ public class SelectDto {
         private final int questionAttendCount;
         private final String surveySubjectiveAnswer;
         private final int surveySubjectiveAnswerCount;
+        private final int openStatusNo;
 
 }
