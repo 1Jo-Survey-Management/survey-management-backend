@@ -83,8 +83,6 @@ public class QuerySurveyController {
     @GetMapping("/surveyall")
     public ResponseEntity<List<SurveyDetailInfoDto>> getAllSurvey(@RequestParam("page") int page, @AuthenticationPrincipal CustomUserDetails userDetails){
         long userNo = userDetails.getUserNo();
-
-        System.out.println("suerveyAll userno : " + userNo + "page : " + page);
         List<SurveyDetailInfoDto> allSurvey = querySurveyService.getSurveyAll(page, userNo);
         return ResponseEntity.ok(allSurvey);
     }

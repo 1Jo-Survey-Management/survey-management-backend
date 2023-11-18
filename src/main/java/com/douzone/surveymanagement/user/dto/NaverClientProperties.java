@@ -16,8 +16,4 @@ public class NaverClientProperties {
     private String clientName;
     private String authorizationGrantType;
     private String redirectUri;
-    private String authorizationUri;
-    private String tokenUri;
-    private String userInfoUri;
-    private String userNameAttribute;
 }
