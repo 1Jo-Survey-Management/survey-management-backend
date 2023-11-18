@@ -94,7 +94,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                     }
                 }
                 else {
-                    if (((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/oauthLogin/oauth2/code/naver")) {
+                    if (((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/oauthLogin/oauth2/code/naver")
+                            || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/users/check-duplicate-nickname")) {
                         CustomAuthentication customAuthentication = new CustomAuthentication(
                                 new CustomUserDetails(null, null, null, null, null, null, customToken.getAuthorities()),
                                 null
@@ -104,7 +105,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                     if(((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/weekly")
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/recent")
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/closing")
-                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/surveyAll")){
+                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/surveyall")){
                         CustomAuthentication customAuthentication = new CustomAuthentication(
                                 new CustomUserDetails(null, null, null, null, null, null, customToken.getAuthorities()),
                                 null
