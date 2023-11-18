@@ -64,9 +64,6 @@ public class UserController {
         try {
             userModifyDTO.setUserNo(userDetails.getUserNo());
             userServiceImpl.updateUserNickName(userModifyDTO);
-
-            System.out.println("Sdfsd");
-
             return ResponseEntity
                     .ok()
                     .body(CommonResponse.<String>successOf("NickName updated successfully"));
