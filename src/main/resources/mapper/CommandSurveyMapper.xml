@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.douzone.surveymanagement.survey.mapper.CommandSurveyMapper">
+
+    <insert
+            id="insertSurveyInfo"
+            parameterType="com.douzone.surveymanagement.survey.dto.request.SurveyInfoCreateDto">
+        INSERT INTO survey (user_no,
+                            survey_status_no,
+                            open_status_no,
+                            survey_title,
+                            survey_description,
+                            survey_image,
+                            survey_post_at,
+                            survey_closing_at)
+        VALUES (#{userNo},
+                #{surveyStatusNo},
+                #{openStatusNo},
+                #{surveyTitle},
+                #{surveyDescription},
+                #{surveyImagePath},
+                #{surveyPostAt},
+                #{surveyClosingAt})
+
+        <selectKey keyProperty="surveyNo" keyColumn="survey_no" order="AFTER" resultType="long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+
+    <update id="updateSurveyStatusToDeadline">
+        <![CDATA[
+        UPDATE
+            survey
+        SET
+            survey_status_no = 3
+        WHERE survey_status_no = 2
+          AND survey_closing_at < NOW();
+        ]]>
+    </update>
+
+    <update id="updateSurvey" parameterType="com.douzone.surveymanagement.survey.dto.request.SurveyInfoUpdateDto">
+        UPDATE
+            survey
+        SET
+            survey_title = #{surveyTitle},
+            survey_description = #{surveyDescription},
+            <if test="surveyImage != null">
+            survey_image = #{surveyImage},
+            </if>
+            survey_closing_at = #{surveyClosingAt},
+            open_status_no = #{openStatusNo}
+        WHERE survey_no = #{surveyNo};
+    </update>
+
+    <update id="updateSurveyStatusToPostFromInProgress" parameterType="long" >
+        UPDATE survey
+        SET survey_status_no = 2,
+            survey_post_at = NOW()
+        WHERE survey_no = #{surveyNo}
+          AND survey_status_no = 1
+          AND survey_closing_at >= CURDATE()
+    </update>
+
+
+</mapper>

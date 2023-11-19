@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.douzone.surveymanagement.selection.mapper.SelectionMapper">
+
+
+    <insert id="insertSelectionList" parameterType="java.util.List">
+        INSERT INTO selection (
+        `survey_question_no`,
+        `survey_question_move_no`,
+        `selection_value`,
+        `is_movable`,
+        `is_end_of_survey`
+        )
+        VALUES
+        <foreach collection="selectionCreateDtoList" item="item" separator=",">
+            (
+            #{surveyQuestionNo},
+            <choose>
+                <when test="item.surveyQuestionMoveNo == 0">
+                    NULL
+                </when>
+                <otherwise>
+                    #{item.surveyQuestionMoveNo}
+                </otherwise>
+            </choose>,
+            #{item.selectionValue},
+            #{item.isMovable},
+            #{item.isEndOfSurvey}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteSelectionsBySurveyNo" parameterType="long">
+        DELETE se
+        FROM
+        selection AS se
+            INNER JOIN survey_question AS sq
+                ON se.survey_question_no = sq.survey_question_no
+        WHERE sq.survey_no = #{surveyNo};
+    </delete>
+
+</mapper>
