@@ -64,12 +64,13 @@ public class UserController {
         try {
             userModifyDTO.setUserNo(userDetails.getUserNo());
             userServiceImpl.updateUserNickName(userModifyDTO);
-
             return ResponseEntity
                     .ok()
                     .body(CommonResponse.<String>successOf("NickName updated successfully"));
         } catch (DuplicateUsernameException e) {
             String errorMessage = "Duplicate username: " + e.getMessage();
+
+
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(CommonResponse.<String>error(ErrorResponse.of(errorMessage)));

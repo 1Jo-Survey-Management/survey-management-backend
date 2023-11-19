@@ -10,6 +10,7 @@
         <result property="surveyTitle" column="survey_title"/>
         <result property="surveyWriter" column="survey_writer"/>
         <result property="surveyPostAt" column="survey_post_at"/>
+        <result property="openStatusNo" column="open_status_no"/>
         <result property="surveyClosingAt" column="survey_closing_at"/>
         <result property="surveyQuestionTitle" column="survey_question_title"/>
         <result property="surveyQuestionNo" column="survey_question_no"/>
@@ -28,6 +29,7 @@
             u.user_nickname,
             wt.user_nickname AS survey_writer,
             s.survey_no,
+            s.open_status_no,
             s.survey_title,
             s.survey_post_at,
             s.survey_closing_at,
