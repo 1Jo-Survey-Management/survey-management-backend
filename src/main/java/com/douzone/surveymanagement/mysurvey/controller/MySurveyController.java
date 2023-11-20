@@ -44,8 +44,6 @@ public class MySurveyController {
         }
         List<MySurveyDTO> myWriteSurveys = mySurveyServiceImpl.selectMySurveysWithSorting(userDetails.getUserNo());
 
-        myWriteSurveys.forEach(survey -> System.out.println("write 객체 로깅: " + survey.toString()));
-
 
         return ResponseEntity.ok(CommonResponse.successOf(myWriteSurveys));
     }
