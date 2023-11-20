@@ -5,6 +5,7 @@ import com.douzone.surveymanagement.common.response.ErrorResponse;
 import com.douzone.surveymanagement.user.dto.NaverClientProperties;
 import com.douzone.surveymanagement.user.dto.NaverUserInfoResponse;
 import com.douzone.surveymanagement.user.dto.UserInfo;
+import com.douzone.surveymanagement.user.dto.request.UserModifyDTO;
 import com.douzone.surveymanagement.user.service.impl.UserServiceImpl;
 import com.douzone.surveymanagement.user.util.CustomAuthentication;
 import com.douzone.surveymanagement.user.util.CustomUserDetails;
@@ -18,10 +19,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -57,14 +56,15 @@ public class LoginController {
         return commonResponseResponseEntity;
     }
 
-    @PostMapping("/nickNameCheck")
-    public ResponseEntity<CommonResponse> nickNameCheck(@RequestBody UserInfo userInfo) {
+    @PostMapping("/check-duplicate-nickname")
+    public ResponseEntity<String> getUserByUserNickname(@RequestBody UserModifyDTO userModifyDTO) {
+        boolean isDuplicate = userService.duplicateUsername(userModifyDTO);
+        
+        if(isDuplicate) {
+            return ResponseEntity.ok("Nickname is not available");
+        }
 
-        String nickName = userInfo.getUserNickname();
-        boolean nicknameDuplicate = userService.isUserNicknameDuplicate(nickName);
-        CommonResponse commonResponse = CommonResponse.successOf(nicknameDuplicate);
-        commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
-        return commonResponseResponseEntity;
+        return ResponseEntity.ok("Nickname is available");
     }
 
     /**
@@ -75,8 +75,10 @@ public class LoginController {
      */
     @GetMapping("cancel")
     public ResponseEntity<CommonResponse> loginCancel(@RequestParam(name = "userNo") String userNo) {
-        userService.loginCancel(userNo);
-        return null;
+        boolean isCancelSuccessed = userService.loginCancel(userNo);
+        CommonResponse commonResponse = CommonResponse.successOf(isCancelSuccessed);
+        commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
+        return commonResponseResponseEntity;
     }
 
     /**
@@ -200,9 +202,8 @@ public class LoginController {
         UserInfo userRegist = userService.findUserByUserAccessToken(accessToken);
         userInfo.setUserNo(userRegist.getUserNo());
         userInfo.setUserEmail(userRegist.getUserEmail());
-        userInfo.setRefreshToken(userInfo.getRefreshToken());
         userInfo.setAccessToken(accessToken);
-        userInfo.setExpiresIn(userInfo.getExpiresIn());
+        userInfo.setExpiresIn(userRegist.getExpiresIn());
         userInfo.setCreatedAt(userRegist.getCreatedAt());
         return userInfo;
     }
