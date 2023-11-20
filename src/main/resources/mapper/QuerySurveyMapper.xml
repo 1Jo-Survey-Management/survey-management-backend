@@ -241,7 +241,7 @@
                                                                                                                                      LEFT JOIN user ON user.user_no = survey.user_no
                                                                                                                                      LEFT JOIN open_status os ON survey.open_status_no = os.open_status_no
                                                                                                                                      LEFT JOIN survey_attend ON survey.survey_no = survey_attend.survey_no
-                                                                                                                            WHERE survey_post_at >= DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY) + INTERVAL 1 DAY
+                                                                                                                            WHERE survey_post_at >= DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY)
                                                                                                                               AND is_deleted = 0
                                                                                                                               AND survey_status.survey_status_no = 2
                                                                                                                               and survey_attend_no IS NOT NULL
