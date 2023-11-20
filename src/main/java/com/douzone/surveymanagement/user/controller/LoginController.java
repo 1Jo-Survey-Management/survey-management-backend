@@ -5,6 +5,7 @@ import com.douzone.surveymanagement.common.response.ErrorResponse;
 import com.douzone.surveymanagement.user.dto.NaverClientProperties;
 import com.douzone.surveymanagement.user.dto.NaverUserInfoResponse;
 import com.douzone.surveymanagement.user.dto.UserInfo;
+import com.douzone.surveymanagement.user.dto.request.UserModifyDTO;
 import com.douzone.surveymanagement.user.service.impl.UserServiceImpl;
 import com.douzone.surveymanagement.user.util.CustomAuthentication;
 import com.douzone.surveymanagement.user.util.CustomUserDetails;
@@ -57,14 +58,17 @@ public class LoginController {
         return commonResponseResponseEntity;
     }
 
-    @PostMapping("/nickNameCheck")
-    public ResponseEntity<CommonResponse> nickNameCheck(@RequestBody UserInfo userInfo) {
+    @PostMapping("/check-duplicate-nickname")
+    public ResponseEntity<String> getUserByUserNickname(@RequestBody UserModifyDTO userModifyDTO) {
+        boolean isDuplicate = userService.duplicateUsername(userModifyDTO);
 
-        String nickName = userInfo.getUserNickname();
-        boolean nicknameDuplicate = userService.isUserNicknameDuplicate(nickName);
-        CommonResponse commonResponse = CommonResponse.successOf(nicknameDuplicate);
-        commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
-        return commonResponseResponseEntity;
+        System.out.println("duplicate Check : " + isDuplicate);
+
+        if(isDuplicate) {
+            return ResponseEntity.ok("Nickname is not available");
+        }
+
+        return ResponseEntity.ok("Nickname is available");
     }
 
     /**
@@ -75,8 +79,10 @@ public class LoginController {
      */
     @GetMapping("cancel")
     public ResponseEntity<CommonResponse> loginCancel(@RequestParam(name = "userNo") String userNo) {
-        userService.loginCancel(userNo);
-        return null;
+        boolean isCancelSuccessed = userService.loginCancel(userNo);
+        CommonResponse commonResponse = CommonResponse.successOf(isCancelSuccessed);
+        commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
+        return commonResponseResponseEntity;
     }
 
     /**
