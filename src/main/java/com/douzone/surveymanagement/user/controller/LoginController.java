@@ -19,10 +19,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -61,9 +59,7 @@ public class LoginController {
     @PostMapping("/check-duplicate-nickname")
     public ResponseEntity<String> getUserByUserNickname(@RequestBody UserModifyDTO userModifyDTO) {
         boolean isDuplicate = userService.duplicateUsername(userModifyDTO);
-
-        System.out.println("duplicate Check : " + isDuplicate);
-
+        
         if(isDuplicate) {
             return ResponseEntity.ok("Nickname is not available");
         }
@@ -100,10 +96,6 @@ public class LoginController {
 
         accessToken = getAccessTokenFromRequest(request);
         registUser =    createRegisteredUser(userInfo, accessToken);
-
-
-        System.out.println("저장된 유저 확인 : " + registUser);
-
         commonResponse = handleUserRegistration(userInfo, request);
 
         authenticateUserAfterRegistration(registUser);
