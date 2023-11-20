@@ -79,9 +79,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void loginCancel(String userNo){
-        userMapper.loginCancel(userNo);
-
+    public boolean loginCancel(String userNo){
+        boolean isCancelSuccessed = userMapper.loginCancel(userNo);
+        return isCancelSuccessed;
     }
 
     /**
