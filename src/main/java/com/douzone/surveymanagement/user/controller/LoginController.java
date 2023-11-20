@@ -100,6 +100,10 @@ public class LoginController {
 
         accessToken = getAccessTokenFromRequest(request);
         registUser =    createRegisteredUser(userInfo, accessToken);
+
+
+        System.out.println("저장된 유저 확인 : " + registUser);
+
         commonResponse = handleUserRegistration(userInfo, request);
 
         authenticateUserAfterRegistration(registUser);
@@ -206,9 +210,8 @@ public class LoginController {
         UserInfo userRegist = userService.findUserByUserAccessToken(accessToken);
         userInfo.setUserNo(userRegist.getUserNo());
         userInfo.setUserEmail(userRegist.getUserEmail());
-        userInfo.setRefreshToken(userInfo.getRefreshToken());
         userInfo.setAccessToken(accessToken);
-        userInfo.setExpiresIn(userInfo.getExpiresIn());
+        userInfo.setExpiresIn(userRegist.getExpiresIn());
         userInfo.setCreatedAt(userRegist.getCreatedAt());
         return userInfo;
     }
