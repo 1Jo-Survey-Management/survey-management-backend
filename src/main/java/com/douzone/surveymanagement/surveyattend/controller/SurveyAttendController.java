@@ -52,9 +52,6 @@ public class SurveyAttendController {
     @PostMapping("/save-responses")
     public ResponseEntity<CommonResponse> saveSurveyResponses(@RequestBody List<SurveyAttendSubmitDTO> surveyAttendSubmitDTOList) {
 
-        for (SurveyAttendSubmitDTO dto : surveyAttendSubmitDTOList) {
-            log.info("클라이언트로 받은 surveyAttendSubmitDTOList: {}", dto);
-        }
         try {
             surveyAttendServiceImpl.saveSurveyAndAnswers(surveyAttendSubmitDTOList);
             return ResponseEntity.ok().body(CommonResponse.success());
