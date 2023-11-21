@@ -32,7 +32,7 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
 
         Authentication authenticationCheck = SecurityContextHolder.getContext().getAuthentication();
         if (authenticationCheck != null && authenticationCheck.isAuthenticated()) {
-            System.out.println("필터쪽 Authentication Ok : " + request.getServletPath());
+            log.info("필터쪽 Authentication Ok : " + request.getServletPath());
             return (CustomAuthentication) authenticationCheck;
         }else{
             String accessToken = extractAccessTokenFromRequest(request);
@@ -49,6 +49,7 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication authResult) throws IOException, ServletException {
+        log.info("인증 성공");
         chain.doFilter(request, response);
     }
 
@@ -57,6 +58,7 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
                                               AuthenticationException failed) throws IOException{
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.getWriter().write("Authentication failed");
+        log.info("인증 실패");
 
     }
 
