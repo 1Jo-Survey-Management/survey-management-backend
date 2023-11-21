@@ -32,6 +32,7 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
 
         Authentication authenticationCheck = SecurityContextHolder.getContext().getAuthentication();
         if (authenticationCheck != null && authenticationCheck.isAuthenticated()) {
+            System.out.println("필터쪽 Authentication Ok : " + request.getServletPath());
             return (CustomAuthentication) authenticationCheck;
         }else{
             String accessToken = extractAccessTokenFromRequest(request);
