@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -131,13 +133,13 @@ public class LoginController {
         UserInfo alreadyExistCheck = userService.findUserByUserAccessToken(accessToken);
 
         if(alreadyExistCheck!=null){
-            ZonedDateTime koreaTime = ZonedDateTime.now();
-            ZonedDateTime newExpiresTime = koreaTime.plusMinutes(50);
+            ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
+            LocalDateTime seoulTime = LocalDateTime.now(seoulZoneId);
+            LocalDateTime newExpiresTime = seoulTime.plusMinutes(50);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formattedStringExpiresIn = newExpiresTime.format(formatter);
             alreadyExistCheck.setExpiresIn(formattedStringExpiresIn);
             userService.updateAccessToken(alreadyExistCheck);
-            alreadyExistCheck.setExpiresIn(formattedStringExpiresIn);
             CommonResponse commonResponse = CommonResponse.successOf(alreadyExistCheck);
             commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
             return commonResponseResponseEntity;
@@ -205,6 +207,8 @@ public class LoginController {
         userInfo.setAccessToken(accessToken);
         userInfo.setExpiresIn(userRegist.getExpiresIn());
         userInfo.setCreatedAt(userRegist.getCreatedAt());
+
+        System.out.println("setCreatedAt : " + userRegist.getCreatedAt());
         return userInfo;
     }
 
@@ -302,10 +306,12 @@ public class LoginController {
 
         if (dbUserEmail != null && dbUserEmail.equals(userEmail) && (dbAccessToken == null || !dbAccessToken.equals(newAccessToken)) ) {
             UserInfo updateUserToken = new UserInfo();
-            ZonedDateTime koreaTime = ZonedDateTime.now();
-            ZonedDateTime newExpiresTime = koreaTime.plusMinutes(50);
-            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            String formattedStringExpiresIn = newExpiresTime.format(formatter2);
+
+            ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
+            LocalDateTime seoulTime = LocalDateTime.now(seoulZoneId);
+            LocalDateTime newExpiresTime = seoulTime.plusMinutes(50);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedStringExpiresIn = newExpiresTime.format(formatter);
 
             updateUserToken.setUserEmail(dbUserEmail);
             updateUserToken.setAccessToken(params.get("access_token"));
@@ -333,8 +339,9 @@ public class LoginController {
 
         }
         else {
-            ZonedDateTime koreaTime = ZonedDateTime.now();
-            ZonedDateTime newExpiresTime = koreaTime.plusMinutes(50);
+            ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
+            LocalDateTime seoulTime = LocalDateTime.now(seoulZoneId);
+            LocalDateTime newExpiresTime = seoulTime.plusMinutes(50);
             DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formattedStringExpiresIn = newExpiresTime.format(formatter2);
 
