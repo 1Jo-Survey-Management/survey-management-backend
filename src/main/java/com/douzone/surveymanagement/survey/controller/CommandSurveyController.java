@@ -2,6 +2,7 @@ package com.douzone.surveymanagement.survey.controller;
 
 import com.douzone.surveymanagement.common.exception.BadRequestException;
 import com.douzone.surveymanagement.common.response.CommonResponse;
+import com.douzone.surveymanagement.survey.dto.request.SurveyCreateDto;
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoCreateDto;
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoUpdateDto;
 import com.douzone.surveymanagement.survey.service.CommandSurveyService;
@@ -17,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,26 +42,21 @@ public class CommandSurveyController {
     /**
      * 섦문을 등록하는 REST API 입니다.
      *
-     * @param surveyInfoCreateDto 설문에 대한 정보를 담은 Dto
-     * @param surveyQuestionCreateDtoList 설문 문항에 대한 정보를 담은 Dto
-     * @param surveyImage 설문에 대한 대표 이미지 Multipart
+     * @param surveyCreateDto 설문을 작성하기 위한 모든 정보를 갖고있는 Dto 입니다.
      * @return 성공적으로 저장되었을 경우 CREATED 201 을 응답합니다.
      * @author : 강명관
      */
     @PostMapping
     public ResponseEntity<CommonResponse<String>> surveyCreate(
-        @RequestPart SurveyInfoCreateDto surveyInfoCreateDto,
-        @RequestPart List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList,
-        @RequestPart MultipartFile surveyImage,
+        @RequestBody SurveyCreateDto surveyCreateDto,
         @AuthenticationPrincipal CustomUserDetails userDetails
         ) {
 
-        surveyInfoCreateDto.setUserNo(userDetails.getUserNo());
+        surveyCreateDto.getSurveyInfoCreateDto().setUserNo(userDetails.getUserNo());
 
         commandSurveyService.insertSurvey(
-            surveyInfoCreateDto,
-            surveyQuestionCreateDtoList,
-            surveyImage
+            surveyCreateDto.getSurveyInfoCreateDto(),
+            surveyCreateDto.getSurveyQuestionCreateDtoList()
         );
 
         return new ResponseEntity<>(CommonResponse.success(), HttpStatus.CREATED);

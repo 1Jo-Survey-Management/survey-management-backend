@@ -31,6 +31,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         Authentication authenticationCheck = SecurityContextHolder.getContext().getAuthentication();
         if (authenticationCheck != null && authenticationCheck.isAuthenticated()) {
+            log.info("인증 된 Authentication");
             return authenticationCheck;
         }
             if ((authentication instanceof CustomAuthenticationToken)) {
@@ -42,6 +43,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 if (userInfo != null) {
                     String refreshToken = userInfo.getRefreshToken();
                     String expiresCheck = userInfo.getExpiresIn();
+                    String userNickname = userInfo.getUserNickname();
                     ZonedDateTime koreaTime = ZonedDateTime.now();
 
                     if (expiresCheck == null || expiresCheck.equals(" ")) {
@@ -75,7 +77,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                         );
                         return customAuthentication;
                     } else {
-                        if (userInfo.getUserNickname() != null) {
+                        if (userNickname != null) {
+                            log.info("회원 존재 인증 완료(회원이름) : " + userNickname);
                             UserInfo user = userService.findUserByUserAccessToken(oldAccessToken);
                             CustomAuthentication customAuthentication = new CustomAuthentication(
                                     new CustomUserDetails(user.getUserNo(), user.getUserEmail(), user.getUserNickname(), user.getUserGender(), user.getUserBirth(), user.getUserImage(), customToken.getAuthorities()),
@@ -84,6 +87,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                             return customAuthentication;
                         }
                         else {
+                            log.info("회원가입 미완료 회원 토큰 : " + oldAccessToken);
                             UserInfo user = userService.findUserByUserAccessToken(oldAccessToken);
                             CustomAuthentication customAuthentication = new CustomAuthentication(
                                     new CustomUserDetails(user.getUserNo(), null, null, null, null, null, customToken.getAuthorities()),

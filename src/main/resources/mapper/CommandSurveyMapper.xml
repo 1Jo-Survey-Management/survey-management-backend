@@ -21,7 +21,7 @@
                 #{openStatusNo},
                 #{surveyTitle},
                 #{surveyDescription},
-                #{surveyImagePath},
+                #{surveyImageUrl},
                 #{surveyPostAt},
                 #{surveyClosingAt})
 

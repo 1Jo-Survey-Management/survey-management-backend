@@ -42,7 +42,7 @@ public class SurveyInfoCreateDto {
     @Min(value = 1, message = "설문 설명은 최소 1자보다 길어야 합니다.")
     private String surveyDescription;
 
-    private String surveyImagePath;
+    private String surveyImageUrl;
 
     private LocalDateTime surveyPostAt;
 
@@ -56,10 +56,6 @@ public class SurveyInfoCreateDto {
 
     public void setUserNo(long userNo) {
         this.userNo = userNo;
-    }
-
-    public void setSurveyImagePath(String surveyImagePath) {
-        this.surveyImagePath = surveyImagePath;
     }
 
     public void setSurveyPostAt(LocalDateTime surveyPostAt) {
