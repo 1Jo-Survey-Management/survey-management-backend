@@ -12,7 +12,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import java.time.ZonedDateTime;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 /**
@@ -44,15 +46,19 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                     String refreshToken = userInfo.getRefreshToken();
                     String expiresCheck = userInfo.getExpiresIn();
                     String userNickname = userInfo.getUserNickname();
-                    ZonedDateTime koreaTime = ZonedDateTime.now();
 
                     if (expiresCheck == null || expiresCheck.equals(" ")) {
+                        log.error("토큰의 유효기간이 존재하지 않습니다!");
                         return null;
                     }
-                    String formattedExpiresCheck = expiresCheck.replace(" ", "T") + "+09:00";
-                    ZonedDateTime expiresTime = ZonedDateTime.parse(formattedExpiresCheck);
 
-                    if (koreaTime.isAfter(expiresTime)) {
+                    ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
+                    LocalDateTime seoulTime = LocalDateTime.now(seoulZoneId);
+
+                    String formattedExpiresCheck = expiresCheck.replace(" ", "T") + "+09:00";
+                    LocalDateTime expiresTime = LocalDateTime.parse(formattedExpiresCheck, DateTimeFormatter.ISO_DATE_TIME);
+
+                    if (seoulTime.isAfter(expiresTime)) {
 
                         String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=refresh_token&client_id=" + clientId +
                                 "&client_secret=" + clientSecret + "&refresh_token=" + refreshToken;
@@ -62,7 +68,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                         String accessToken = params.get("access_token");
                         String renewRefreshToken = params.get("refresh_token");
 
-                        ZonedDateTime newExpiresTime = koreaTime.plusMinutes(50);
+                        LocalDateTime newExpiresTime = seoulTime.plusMinutes(50);
+
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                         String formattedStringExpiresIn = newExpiresTime.format(formatter);
                         UserInfo refreshTokenUserInfo;
