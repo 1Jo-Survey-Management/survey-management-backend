@@ -28,5 +28,5 @@ public interface SurveyTagMapper {
      * @param surveyNo 설문 번호
      * @author : 강명관
      */
-    void deleteAllSurveyTag(@Param("surveyNo") long surveyNo);
+    void deleteAllSurveyTagBySurveyNo(@Param("surveyNo") long surveyNo);
 }

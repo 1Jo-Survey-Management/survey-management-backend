@@ -3,8 +3,10 @@ package com.douzone.surveymanagement.survey.dto.request;
 import com.douzone.surveymanagement.survey.annotation.FutureDateTime;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
+import java.util.List;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -33,8 +35,11 @@ public class SurveyInfoUpdateDto {
     @Min(value = 1, message = "설문 설명은 최소 1자보다 길어야 합니다.")
     private String surveyDescription;
 
-    private String[] surveyTags;
+    @NotNull(message = "설문 태그는 필수 입니다.")
+    @Size(min = 1, max = 2, message = "설문의 태그는 1 ~ 2개 입니다.")
+    private List<Integer> surveyTags;
 
+    @NotNull(message = "설문 대표 이미지는 필수 입니다.")
     private String surveyImage;
 
     @FutureDateTime
