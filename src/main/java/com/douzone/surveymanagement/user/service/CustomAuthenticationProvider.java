@@ -12,7 +12,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import java.time.ZonedDateTime;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 /**
@@ -31,6 +33,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         Authentication authenticationCheck = SecurityContextHolder.getContext().getAuthentication();
         if (authenticationCheck != null && authenticationCheck.isAuthenticated()) {
+            log.info("인증 된 Authentication");
             return authenticationCheck;
         }
             if ((authentication instanceof CustomAuthenticationToken)) {
@@ -42,15 +45,20 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 if (userInfo != null) {
                     String refreshToken = userInfo.getRefreshToken();
                     String expiresCheck = userInfo.getExpiresIn();
-                    ZonedDateTime koreaTime = ZonedDateTime.now();
+                    String userNickname = userInfo.getUserNickname();
 
                     if (expiresCheck == null || expiresCheck.equals(" ")) {
+                        log.error("토큰의 유효기간이 존재하지 않습니다!");
                         return null;
                     }
-                    String formattedExpiresCheck = expiresCheck.replace(" ", "T") + "+09:00";
-                    ZonedDateTime expiresTime = ZonedDateTime.parse(formattedExpiresCheck);
 
-                    if (koreaTime.isAfter(expiresTime)) {
+                    ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
+                    LocalDateTime seoulTime = LocalDateTime.now(seoulZoneId);
+
+                    String formattedExpiresCheck = expiresCheck.replace(" ", "T") + "+09:00";
+                    LocalDateTime expiresTime = LocalDateTime.parse(formattedExpiresCheck, DateTimeFormatter.ISO_DATE_TIME);
+
+                    if (seoulTime.isAfter(expiresTime)) {
 
                         String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=refresh_token&client_id=" + clientId +
                                 "&client_secret=" + clientSecret + "&refresh_token=" + refreshToken;
@@ -60,7 +68,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                         String accessToken = params.get("access_token");
                         String renewRefreshToken = params.get("refresh_token");
 
-                        ZonedDateTime newExpiresTime = koreaTime.plusMinutes(50);
+                        LocalDateTime newExpiresTime = seoulTime.plusMinutes(50);
+
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                         String formattedStringExpiresIn = newExpiresTime.format(formatter);
                         UserInfo refreshTokenUserInfo;
@@ -75,7 +84,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                         );
                         return customAuthentication;
                     } else {
-                        if (userInfo.getUserNickname() != null) {
+                        if (userNickname != null) {
+                            log.info("회원 존재 인증 완료(회원이름) : " + userNickname);
                             UserInfo user = userService.findUserByUserAccessToken(oldAccessToken);
                             CustomAuthentication customAuthentication = new CustomAuthentication(
                                     new CustomUserDetails(user.getUserNo(), user.getUserEmail(), user.getUserNickname(), user.getUserGender(), user.getUserBirth(), user.getUserImage(), customToken.getAuthorities()),
@@ -84,6 +94,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                             return customAuthentication;
                         }
                         else {
+                            log.info("회원가입 미완료 회원 토큰 : " + oldAccessToken);
                             UserInfo user = userService.findUserByUserAccessToken(oldAccessToken);
                             CustomAuthentication customAuthentication = new CustomAuthentication(
                                     new CustomUserDetails(user.getUserNo(), null, null, null, null, null, customToken.getAuthorities()),
