@@ -62,7 +62,7 @@ public class S3ObjectDeleter {
      * 디코딩이 되지 않은 S3 Object URL 을 통해서 얻어온 Object Key 값을 Decode 하는 메서드 입니다.
      *
      * @param objectKeyBeforeDecoded 디코딩이 되지 않은 S3 Object URL 을 통해서 얻어온 Object Key
-     * @return
+     * @return 디코딩 된 Object Key
      * @author : 강명관
      */
     private String getUrlDecodedObjectKey(String objectKeyBeforeDecoded) {
