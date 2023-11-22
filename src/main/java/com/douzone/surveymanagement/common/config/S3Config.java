@@ -1,14 +1,9 @@
 package com.douzone.surveymanagement.common.config;
 
-import com.amazonaws.HttpMethod;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import java.net.URL;
-import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -57,9 +52,4 @@ public class S3Config {
             .withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials()))
             .build();
     }
-
-
-
-
-
 }

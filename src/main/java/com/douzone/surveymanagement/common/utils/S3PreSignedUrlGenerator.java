@@ -75,9 +75,7 @@ public class S3PreSignedUrlGenerator {
             CannedAccessControlList.PublicRead.toString()
         );
 
-
         return generatePresignedUrlRequest;
-
     }
 
     /**
