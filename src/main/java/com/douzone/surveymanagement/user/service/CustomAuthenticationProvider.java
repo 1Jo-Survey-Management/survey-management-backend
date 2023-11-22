@@ -116,8 +116,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                     if(((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/weekly")
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/recent")
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/closing")
-                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/surveyall")
-                        || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/images/test")){
+                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/surveyall")){
                         CustomAuthentication customAuthentication = new CustomAuthentication(
                                 new CustomUserDetails(null, null, null, null, null, null, customToken.getAuthorities()),
                                 null
