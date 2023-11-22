@@ -5,6 +5,7 @@ import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.survey.dto.request.SurveyCreateDto;
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoCreateDto;
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoUpdateDto;
+import com.douzone.surveymanagement.survey.dto.request.SurveyUpdateDto;
 import com.douzone.surveymanagement.survey.service.CommandSurveyService;
 import com.douzone.surveymanagement.survey.service.QuerySurveyService;
 import com.douzone.surveymanagement.surveyquestion.dto.request.SurveyQuestionCreateDto;
@@ -65,35 +66,40 @@ public class CommandSurveyController {
     /**
      * 설문을 수정하는 API 입니다.
      *
-     * @param surveyInfoUpdateDto 수정할 설문의 정보
+     * @param surveyInfoUpdateDto         수정할 설문의 정보
      * @param surveyQuestionCreateDtoList 수정된 설문 문항, 선택지 리스트
-     * @param surveyImage 설문 이미지
-     * @param userDetails 인가된 사용자
+     * @param surveyImage                 설문 이미지
+     * @param userDetails                 인가된 사용자
      * @return 공용 응답객체
      * @author : 강명관
      */
     @PutMapping
     public ResponseEntity<CommonResponse<String>> surveyUpdate(
-        @RequestPart SurveyInfoUpdateDto surveyInfoUpdateDto,
-        @RequestPart List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList,
-        @RequestPart(required = false) MultipartFile surveyImage,
+        @RequestBody SurveyUpdateDto surveyUpdateDto,
+//        @RequestPart SurveyInfoUpdateDto surveyInfoUpdateDto,
+//        @RequestPart List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList,
+//        @RequestPart(required = false) MultipartFile surveyImage,
         @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
 
         boolean surveyCreatedByUser = querySurveyService.isSurveyCreatedByUser(
             userDetails.getUserNo(),
-            surveyInfoUpdateDto.getSurveyNo()
+            surveyUpdateDto.getSurveyInfoUpdateDto().getSurveyNo()
         );
 
         if (!surveyCreatedByUser) {
             throw new BadRequestException("선택한 설문을 수정할 수 없습니다.");
         }
 
-        commandSurveyService.updateSurvey(
-            surveyInfoUpdateDto,
-            surveyImage,
-            surveyQuestionCreateDtoList
-        );
+        log.info("surveyInfoUpdateDto {}", surveyUpdateDto.getSurveyInfoUpdateDto());
+        log.info("surveyQuestionCreateDtoList {}",
+            surveyUpdateDto.getSurveyQuestionCreateDtoList());
+
+//        commandSurveyService.updateSurvey(
+//            surveyInfoUpdateDto,
+//            surveyImage,
+//            surveyQuestionCreateDtoList
+//        );
 
         return ResponseEntity.ok(CommonResponse.success());
     }

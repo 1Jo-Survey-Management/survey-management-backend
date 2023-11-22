@@ -29,4 +29,14 @@ public class SurveyTagServiceImpl implements SurveyTagService {
     public void insertSurveyTag(SurveyTagCreateDto surveyTagCreateDto) {
         surveyTagMapper.insertSurveyTag(surveyTagCreateDto);
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Transactional
+    @Override
+    public void deleteSurveyTags(long surveyNo) {
+        surveyTagMapper.deleteAllSurveyTag(surveyNo);
+    }
 }

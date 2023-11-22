@@ -17,6 +17,12 @@
        );
     </insert>
 
+    <delete id="deleteAllSurveyTag" parameterType="long">
+        DELETE
+        FROM survey_tag
+        WHERE survey_no = #{surveyNo};
+    </delete>
+
 
 
 </mapper>

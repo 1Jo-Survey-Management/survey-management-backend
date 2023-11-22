@@ -17,4 +17,12 @@ public interface SurveyTagService {
      * @author : 강명관
      */
     void insertSurveyTag(SurveyTagCreateDto surveyTagCreateDto);
+
+    /**
+     * 설문 번호를 통해 해당 설문의 태그를 모두 삭제하는 메서드 입니다.
+     *
+     * @param surveyNo 설문 번호
+     * @author : 강명관
+     */
+    void deleteSurveyTags(long surveyNo);
 }

@@ -32,6 +32,9 @@ public class SurveyInfoUpdateDto {
     @NotNull(message = "설문 설명은 필수 입니다.")
     @Min(value = 1, message = "설문 설명은 최소 1자보다 길어야 합니다.")
     private String surveyDescription;
+
+    private String[] surveyTags;
+
     private String surveyImage;
 
     @FutureDateTime

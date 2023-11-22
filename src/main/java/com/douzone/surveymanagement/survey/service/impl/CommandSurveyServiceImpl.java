@@ -89,6 +89,7 @@ public class CommandSurveyServiceImpl implements CommandSurveyService {
             surveyInfoUpdateDto.setSurveyImage(fileUploadPath);
         }
 
+//        surveyTagService.updateSurveyTag(surveyNo, surveyInfoUpdateDto.getSurveyTags());
         commandSurveyMapper.updateSurvey(surveyInfoUpdateDto);
     }
 
