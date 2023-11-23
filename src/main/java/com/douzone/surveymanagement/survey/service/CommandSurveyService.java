@@ -4,7 +4,6 @@ import com.douzone.surveymanagement.survey.dto.request.SurveyInfoCreateDto;
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoUpdateDto;
 import com.douzone.surveymanagement.surveyquestion.dto.request.SurveyQuestionCreateDto;
 import java.util.List;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 설문에 대한 비즈니스 로직을 정의하는 인터페이스 입니다.
@@ -49,7 +48,7 @@ public interface CommandSurveyService {
      * @param surveyInfoUpdateDto 설문 정보 수정에 필요한 데이터를 담은 Dto
      * @author : 강명관
      */
-    void updateSurveyInfo(SurveyInfoUpdateDto surveyInfoUpdateDto, MultipartFile surveyImage);
+    void updateSurveyInfo(SurveyInfoUpdateDto surveyInfoUpdateDto);
 
     /**
      * 설문을 수정하는 메서드 입니다.
@@ -57,12 +56,10 @@ public interface CommandSurveyService {
      * 새롭게 새로운 문항들을 등록합니다.
      *
      * @param surveyInfoUpdateDto 설문에 대한 정보를 담은 Dto
-     * @param surveyImage 설문의 이미지 파일
      * @param surveyQuestionCreateDtoList 설문의 문항과 선택지 리스트
      * @author : 강명관
      */
     void updateSurvey(SurveyInfoUpdateDto surveyInfoUpdateDto,
-                      MultipartFile surveyImage,
                       List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList);
 
     /**

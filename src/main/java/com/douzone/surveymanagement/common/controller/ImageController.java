@@ -79,7 +79,6 @@ public class ImageController {
     ) {
         try {
             String preSignedUrl = s3PreSignedUrlGenerator.getPreSignedUrl(fileName);
-            log.info("preSignedUrl {}", preSignedUrl);
             return ResponseEntity.ok(CommonResponse.successOf(preSignedUrl));
         } catch (Exception e) {
             log.error("Error generating Pre-Signed URL", e);
