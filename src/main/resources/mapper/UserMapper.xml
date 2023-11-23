@@ -28,7 +28,7 @@
 
     <update id="registUser">
         UPDATE user
-        SET user_nickname = #{userNickname}, user_gender =#{userGender}, user_birth=#{userBirth}
+        SET user_nickname = #{userNickname}, user_gender =#{userGender}, user_birth=#{userBirth}, user_image=#{userImage}
         WHERE user_no = #{userNo}
     </update>
 
