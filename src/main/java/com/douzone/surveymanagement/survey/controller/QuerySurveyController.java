@@ -28,7 +28,9 @@ public class QuerySurveyController {
     private final QuerySurveyService querySurveyService;
 
     @GetMapping("/{surveyNo}")
-    public ResponseEntity surveyDetails(@PathVariable(value = "surveyNo") long surveyNo) {
+    public ResponseEntity<CommonResponse<SurveyDetailsDto>> surveyDetails(
+        @PathVariable(value = "surveyNo") long surveyNo
+    ) {
         SurveyDetailsDto surveyDetails = querySurveyService.findSurveyDetails(surveyNo);
         return ResponseEntity.ok(CommonResponse.successOf(surveyDetails));
     }
