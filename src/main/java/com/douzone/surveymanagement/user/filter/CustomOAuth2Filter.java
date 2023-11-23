@@ -37,6 +37,9 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
         }else{
             String accessToken = extractAccessTokenFromRequest(request);
             String requestServletPath = request.getServletPath();
+
+            System.out.println("accessToken : " + accessToken);
+            System.out.println(("requestServletPath : " + requestServletPath));
             CustomAuthenticationToken authRequest = new CustomAuthenticationToken(accessToken, null, requestServletPath);
             CustomAuthentication authentication = (CustomAuthentication) getAuthenticationManager().authenticate(authRequest);
             if (authentication==null) {

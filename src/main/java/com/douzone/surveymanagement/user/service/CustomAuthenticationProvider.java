@@ -116,16 +116,19 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                     if(((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/weekly")
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/recent")
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/closing")
-                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/surveyall")){
+                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/surveyall")
+                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/survey/resultall")){
                         CustomAuthentication customAuthentication = new CustomAuthentication(
                                 new CustomUserDetails(null, null, null, null, null, null, customToken.getAuthorities()),
                                 null
                         );
                         return customAuthentication;
                     }
+                    System.out.println("provider 끝");
                     return null;
                 }
             }
+        System.out.println("provider 끝2");
         return null;
     }
 
