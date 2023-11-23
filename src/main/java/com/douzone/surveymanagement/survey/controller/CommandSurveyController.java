@@ -1,5 +1,6 @@
 package com.douzone.surveymanagement.survey.controller;
 
+import com.douzone.surveymanagement.common.annotation.S3DeleteObject;
 import com.douzone.surveymanagement.common.exception.BadRequestException;
 import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.survey.dto.request.SurveyCreateDto;
@@ -72,6 +73,7 @@ public class CommandSurveyController {
      * @return 공용 응답객체
      * @author : 강명관
      */
+    @S3DeleteObject
     @PutMapping
     public ResponseEntity<CommonResponse<String>> surveyUpdate(
         @RequestPart SurveyInfoUpdateDto surveyInfoUpdateDto,
