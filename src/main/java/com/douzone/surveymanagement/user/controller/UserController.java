@@ -31,31 +31,6 @@ import javax.validation.Valid;
 public class UserController {
     private final UserServiceImpl userServiceImpl;
 
-//    /**
-//     * 유저 닉네임 수정 엔드포인트입니다.
-//     *
-//     * @param userNo      유저 번호
-//     * @param userModifyDTO 유저 수정 DTO
-//     * @return 응답 엔터티
-//     */
-//    @PutMapping("/{userNo}/nickname")
-//    public ResponseEntity<CommonResponse> userNickNameUpdate(
-//            @PathVariable("userNo") long userNo, @Valid @RequestBody UserModifyDTO userModifyDTO) {
-//
-//        try {
-//            userServiceImpl.updateUserNickName(userModifyDTO);
-//
-//            return ResponseEntity
-//                    .ok()
-//                    .body(CommonResponse.<String>successOf("NickName updated successfully"));
-//        } catch (DuplicateUsernameException e) {
-//            String errorMessage = "Duplicate username: " + e.getMessage();
-//            return ResponseEntity
-//                    .status(HttpStatus.BAD_REQUEST)
-//                    .body(CommonResponse.<String>error(ErrorResponse.of(errorMessage)));
-//        }
-//    }
-
     @PutMapping("/nickname")
     public ResponseEntity<CommonResponse> userNickNameUpdate(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -77,31 +52,6 @@ public class UserController {
         }
     }
 
-//    /**
-//     * 유저 이미지 업데이트 엔드포인트
-//     *
-//     * @param userNo 유저 번호
-//     * @param File   이미지 파일
-//     * @return 업데이트 결과
-//     */
-//    @PutMapping("/{userNo}/image")
-//    public ResponseEntity<CommonResponse> updateUserImage(
-//            @PathVariable long userNo,
-//            @RequestParam("file") MultipartFile File) {
-//
-//        boolean updated = userServiceImpl.updateUserImage(userNo, File);
-//
-//        if (updated) {
-//            return ResponseEntity
-//                    .ok()
-//                    .body(CommonResponse.<String>successOf("Image updated successfully"));
-//        } else {
-//            return ResponseEntity
-//                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(CommonResponse.<String>error(ErrorResponse.of("Image update failed")));
-//        }
-//    }
-
     @PutMapping("/image")
     public ResponseEntity<CommonResponse> updateUserImage(
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -119,52 +69,6 @@ public class UserController {
                     .body(CommonResponse.<String>error(ErrorResponse.of("Image update failed")));
         }
     }
-
-//@PutMapping("/image")
-//public ResponseEntity<CommonResponse> updateUserImage(
-//        @AuthenticationPrincipal CustomUserDetails userDetails,
-//        @RequestBody byte[] imageBytes) {
-//
-//    if (userDetails == null) {
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//    }
-//
-//    try {
-//        boolean updated = userServiceImpl.updateUserImage(userDetails.getUserNo(), imageBytes);
-//
-//        if (updated) {
-//            return ResponseEntity
-//                    .ok()
-//                    .body(CommonResponse.<String>successOf("Image updated successfully"));
-//        } else {
-//            return ResponseEntity
-//                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(CommonResponse.<String>error(ErrorResponse.of("Image update failed")));
-//        }
-//    } catch (Exception e) {
-//        return ResponseEntity
-//                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                .body(CommonResponse.<String>error(ErrorResponse.of(e.getMessage())));
-//    }
-//}
-
-
-//    /**
-//     * 유저 정보 조회 엔드포인트
-//     *
-//     * @param userNo 유저 번호
-//     * @return 응답 엔터티
-//     */
-//    @GetMapping("/{userNo}")
-//    public ResponseEntity<UserDTO> getUserByUserNo(@PathVariable("userNo") long userNo) {
-//        UserDTO userDTO = userServiceImpl.getUserByUserNo(userNo);
-//
-//        if (userDTO == null) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//        }
-//
-//        return ResponseEntity.ok(userDTO);
-//    }
 
     @GetMapping("/user-info")
     public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
