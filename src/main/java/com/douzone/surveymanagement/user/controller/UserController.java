@@ -1,5 +1,6 @@
 package com.douzone.surveymanagement.user.controller;
 
+import com.douzone.surveymanagement.common.annotation.S3DeleteObject;
 import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.common.response.ErrorResponse;
 import com.douzone.surveymanagement.user.dto.request.ImageModifyDTO;
@@ -53,6 +54,7 @@ public class UserController {
         }
     }
 
+    @S3DeleteObject
     @PutMapping("/image")
     public ResponseEntity<CommonResponse> updateUserImage(
             @AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody ImageModifyDTO userImage) {
@@ -72,9 +74,6 @@ public class UserController {
 
     @GetMapping("/user-info")
     public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        System.out.println("userData의 userNo: " + userDetails.getUserNo());
-        System.out.println("userData의 userNickName: " + userDetails.getUserNickName());
-        System.out.println("userData의 userImage: " + userDetails.getUserImage());
 
         if(userDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
