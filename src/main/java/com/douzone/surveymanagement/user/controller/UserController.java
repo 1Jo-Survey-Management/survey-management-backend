@@ -2,6 +2,7 @@ package com.douzone.surveymanagement.user.controller;
 
 import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.common.response.ErrorResponse;
+import com.douzone.surveymanagement.user.dto.request.ImageModifyDTO;
 import com.douzone.surveymanagement.user.dto.request.UserDTO;
 import com.douzone.surveymanagement.user.dto.request.UserModifyDTO;
 import com.douzone.surveymanagement.user.exception.DuplicateUsernameException;
@@ -54,10 +55,9 @@ public class UserController {
 
     @PutMapping("/image")
     public ResponseEntity<CommonResponse> updateUserImage(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestParam("file") MultipartFile File) {
+            @AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody ImageModifyDTO userImage) {
 
-        boolean updated = userServiceImpl.updateUserImage(userDetails.getUserNo(), File);
+        boolean updated = userServiceImpl.updateUserImage(userDetails.getUserNo(), userImage.getUserImage());
 
         if (updated) {
             return ResponseEntity

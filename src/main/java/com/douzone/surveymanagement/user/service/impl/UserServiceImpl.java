@@ -145,12 +145,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public boolean updateUserImage(long userNo, MultipartFile File) {
+    public boolean updateUserImage(long userNo, String userImage) {
         deletePreviousUserImage(userNo);
 
-        String imagePath = FileUploadUtil.uploadFile(File);
-
-        ImageModifyDTO imageModifyDTO = new ImageModifyDTO(userNo, imagePath);
+        ImageModifyDTO imageModifyDTO = new ImageModifyDTO(userNo, userImage);
 
         int updatedRows = myPageMapper.updateUserImage(imageModifyDTO);
 
@@ -165,8 +163,8 @@ public class UserServiceImpl implements UserService {
 
         if (previousImagePath != null && !previousImagePath.isEmpty()) {
             try {
-                Path previousImageFilePath = Paths.get(previousImagePath);
-                Files.delete(previousImageFilePath.toAbsolutePath().normalize());
+//                Path previousImageFilePath = Paths.get(previousImagePath);
+//                Files.delete(previousImageFilePath.toAbsolutePath().normalize());
 
                 myPageMapper.deletePreviousUserImage(userNo);
             } catch (Exception e) {
