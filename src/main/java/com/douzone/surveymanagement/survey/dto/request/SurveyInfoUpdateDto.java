@@ -39,6 +39,7 @@ public class SurveyInfoUpdateDto {
     @Size(min = 1, max = 2, message = "설문의 태그는 1 ~ 2개 입니다.")
     private List<Integer> surveyTags;
 
+    @JsonProperty(value = "surveyImageUrl")
     @NotNull(message = "설문 대표 이미지는 필수 입니다.")
     private String surveyImage;
 

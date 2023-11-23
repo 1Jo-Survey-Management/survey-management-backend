@@ -1,6 +1,7 @@
 package com.douzone.surveymanagement.common.aspect;
 
 import com.douzone.surveymanagement.common.utils.S3ObjectDeleter;
+import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletRequestContext;
@@ -41,9 +42,10 @@ public class S3Aspect {
             ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
         String targetObjectUrl = request.getHeader(S3_DELETE_OBJECT_HEADER);
-        log.info("header targetObjectUrl {}", targetObjectUrl);
 
-        s3ObjectDeleter.deleteObjectByObjectUrl(targetObjectUrl);
+        if (Objects.nonNull(targetObjectUrl) && !targetObjectUrl.isEmpty()) {
+            s3ObjectDeleter.deleteObjectByObjectUrl(targetObjectUrl);
+        }
     }
 
 }
