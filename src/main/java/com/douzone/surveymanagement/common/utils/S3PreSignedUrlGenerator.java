@@ -75,9 +75,7 @@ public class S3PreSignedUrlGenerator {
             CannedAccessControlList.PublicRead.toString()
         );
 
-
         return generatePresignedUrlRequest;
-
     }
 
     /**
@@ -94,7 +92,7 @@ public class S3PreSignedUrlGenerator {
     /**
      * UUID 를 생성해서 파일이름 앞에 붙여주는 메서드 입니다.
      *
-     * @return
+     * @return UUID + 파일 이름
      * @author : 강명관
      */
     private String generateUUIDAppendedFileName(String fileName) {
