@@ -45,6 +45,7 @@ public class S3Aspect {
 
         if (Objects.nonNull(targetObjectUrl) && !targetObjectUrl.isEmpty()) {
             s3ObjectDeleter.deleteObjectByObjectUrl(targetObjectUrl);
+            log.debug("Delete S3 Object {}", targetObjectUrl);
         }
     }
 
