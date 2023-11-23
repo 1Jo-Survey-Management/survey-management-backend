@@ -33,7 +33,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         Authentication authenticationCheck = SecurityContextHolder.getContext().getAuthentication();
         if (authenticationCheck != null && authenticationCheck.isAuthenticated()) {
-            log.info("인증 된 Authentication");
             return authenticationCheck;
         }
             if ((authentication instanceof CustomAuthenticationToken)) {
@@ -46,11 +45,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                     String refreshToken = userInfo.getRefreshToken();
                     String expiresCheck = userInfo.getExpiresIn();
                     String userNickname = userInfo.getUserNickname();
-
-                    if (expiresCheck == null || expiresCheck.equals(" ")) {
-                        log.error("토큰의 유효기간이 존재하지 않습니다!");
-                        return null;
-                    }
 
                     ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
                     LocalDateTime seoulTime = LocalDateTime.now(seoulZoneId);
@@ -85,7 +79,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                         return customAuthentication;
                     } else {
                         if (userNickname != null) {
-                            log.info("회원 존재 인증 완료(회원이름) : " + userNickname);
                             UserInfo user = userService.findUserByUserAccessToken(oldAccessToken);
                             CustomAuthentication customAuthentication = new CustomAuthentication(
                                     new CustomUserDetails(user.getUserNo(), user.getUserEmail(), user.getUserNickname(), user.getUserGender(), user.getUserBirth(), user.getUserImage(), customToken.getAuthorities()),
@@ -94,7 +87,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                             return customAuthentication;
                         }
                         else {
-                            log.info("회원가입 미완료 회원 토큰 : " + oldAccessToken);
                             UserInfo user = userService.findUserByUserAccessToken(oldAccessToken);
                             CustomAuthentication customAuthentication = new CustomAuthentication(
                                     new CustomUserDetails(user.getUserNo(), null, null, null, null, null, customToken.getAuthorities()),
@@ -117,18 +109,21 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/recent")
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/closing")
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/surveyall")
-                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/survey/resultall")){
+                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/survey/nonMember/resultall")
+                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/oauthLogin/user")
+                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/select-closing")
+                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/select-post")){
                         CustomAuthentication customAuthentication = new CustomAuthentication(
                                 new CustomUserDetails(null, null, null, null, null, null, customToken.getAuthorities()),
                                 null
                         );
                         return customAuthentication;
                     }
-                    System.out.println("provider 끝");
+                    log.error("AccessToken이 존재하지 않고 회원가입/비회원 접근도 아닌 부적절한 접근입니다!");
                     return null;
                 }
             }
-        System.out.println("provider 끝2");
+        log.error("CustomAuthentication이 아닌 Authentication이 들어왔습니다.");
         return null;
     }
 
