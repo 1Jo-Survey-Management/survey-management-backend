@@ -1,6 +1,5 @@
 package com.douzone.surveymanagement.survey.service.impl;
 
-import com.douzone.surveymanagement.common.utils.FileUploadUtil;
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoCreateDto;
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoUpdateDto;
 import com.douzone.surveymanagement.survey.mapper.CommandSurveyMapper;
@@ -8,16 +7,13 @@ import com.douzone.surveymanagement.survey.service.CommandSurveyService;
 import com.douzone.surveymanagement.surveyquestion.dto.request.SurveyQuestionCreateDto;
 import com.douzone.surveymanagement.surveyquestion.service.SurveyQuestionService;
 import com.douzone.surveymanagement.surveystatus.enums.SurveyStatusEnum;
-import com.douzone.surveymanagement.surveytag.dto.request.SurveyTagCreateDto;
 import com.douzone.surveymanagement.surveytag.service.SurveyTagService;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 설문에 대한 비즈니스 로직을 담당하는 서비스 클래스 입니다.
@@ -34,8 +30,6 @@ public class CommandSurveyServiceImpl implements CommandSurveyService {
     private final SurveyQuestionService surveyQuestionService;
     private final SurveyTagService surveyTagService;
 
-    private static final int NEXT_DEFAULT_INDEX = 1;
-
     /**
      * {@inheritDoc}
      */
@@ -48,11 +42,7 @@ public class CommandSurveyServiceImpl implements CommandSurveyService {
 
         long surveyNo = surveyInfoCreateDto.getSurveyNo();
 
-        surveyInfoCreateDto.getSurveyTags().forEach((tagNo) ->
-            surveyTagService.insertSurveyTag(
-                new SurveyTagCreateDto(surveyNo, tagNo + NEXT_DEFAULT_INDEX)
-            )
-        );
+        surveyTagService.insertAllSurveyTag(surveyNo, surveyInfoCreateDto.getSurveyTags());
 
         return surveyNo;
     }
@@ -70,6 +60,9 @@ public class CommandSurveyServiceImpl implements CommandSurveyService {
         surveyQuestionService.insertQuestionList(surveyNo, surveyQuestionCreateDtoList);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Transactional
     @Override
     public void updateSurveyStatusToDeadline() {
@@ -81,24 +74,24 @@ public class CommandSurveyServiceImpl implements CommandSurveyService {
      */
     @Transactional
     @Override
-    public void updateSurveyInfo(SurveyInfoUpdateDto surveyInfoUpdateDto,
-                                 MultipartFile surveyImage) {
-
-        if (Objects.nonNull(surveyImage)) {
-            String fileUploadPath = FileUploadUtil.uploadFile(surveyImage);
-            surveyInfoUpdateDto.setSurveyImage(fileUploadPath);
-        }
-
+    public void updateSurveyInfo(SurveyInfoUpdateDto surveyInfoUpdateDto) {
         commandSurveyMapper.updateSurvey(surveyInfoUpdateDto);
+
+        surveyTagService.updateSurveyTags(
+            surveyInfoUpdateDto.getSurveyNo(),
+            surveyInfoUpdateDto.getSurveyTags()
+        );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Transactional
     @Override
     public void updateSurvey(SurveyInfoUpdateDto surveyInfoUpdateDto,
-                             MultipartFile surveyImage,
                              List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList) {
 
-        updateSurveyInfo(surveyInfoUpdateDto, surveyImage);
+        updateSurveyInfo(surveyInfoUpdateDto);
         surveyQuestionService.updateQuestion(
             surveyInfoUpdateDto.getSurveyNo(),
             surveyQuestionCreateDtoList

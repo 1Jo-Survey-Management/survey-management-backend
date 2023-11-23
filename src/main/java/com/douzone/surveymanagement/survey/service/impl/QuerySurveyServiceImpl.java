@@ -82,7 +82,7 @@ public class QuerySurveyServiceImpl implements QuerySurveyService {
     }
 
     private int showNextPage(int page) {
-        int nextPage = page * 20;
+        int nextPage = page * 24;
         return nextPage;
     }
 

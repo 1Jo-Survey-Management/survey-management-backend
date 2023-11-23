@@ -63,8 +63,6 @@ public class MySurveyController {
         }
         List<MySurveyDTO> myAttendSurveys = mySurveyServiceImpl.selectMyParticipatedSurveys(userDetails.getUserNo());
 
-        myAttendSurveys.forEach(survey -> System.out.println("attend 객체 로깅: " + survey.toString()));
-
         return ResponseEntity.ok(CommonResponse.successOf(myAttendSurveys));
     }
 

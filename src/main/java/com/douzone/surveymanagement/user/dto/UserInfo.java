@@ -21,5 +21,4 @@ public class UserInfo {
     private String expiresIn;
     private String refreshToken;
     private String oldAccessToken;
-
 }
