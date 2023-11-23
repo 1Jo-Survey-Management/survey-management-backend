@@ -163,8 +163,6 @@ public class UserServiceImpl implements UserService {
 
         if (previousImagePath != null && !previousImagePath.isEmpty()) {
             try {
-//                Path previousImageFilePath = Paths.get(previousImagePath);
-//                Files.delete(previousImageFilePath.toAbsolutePath().normalize());
 
                 myPageMapper.deletePreviousUserImage(userNo);
             } catch (Exception e) {
