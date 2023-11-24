@@ -26,6 +26,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 로그인 관련 Controller 입니다
@@ -53,7 +54,7 @@ public class LoginController {
         String accessToken = getAccessTokenFromRequest(request);
         UserInfo returnUser = userService.findUserByUserAccessToken(accessToken);
         CommonResponse commonResponse = CommonResponse.successOf(returnUser);
-        commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
+        commonResponseResponseEntity = ResponseEntity.of(Optional.of(commonResponse));
         return commonResponseResponseEntity;
     }
 

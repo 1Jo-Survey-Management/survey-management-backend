@@ -41,7 +41,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 CustomAuthenticationToken customToken = (CustomAuthenticationToken) authentication;
                 String oldAccessToken = customToken.getCustomToken();
                 UserInfo userInfo = userService.findUserByUserAccessToken(oldAccessToken);
-                if (userInfo != null) {
+            if (userInfo != null) {
                     String refreshToken = userInfo.getRefreshToken();
                     String expiresCheck = userInfo.getExpiresIn();
                     String userNickname = userInfo.getUserNickname();
@@ -53,7 +53,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                     LocalDateTime expiresTime = LocalDateTime.parse(formattedExpiresCheck, DateTimeFormatter.ISO_DATE_TIME);
 
                     if (seoulTime.isAfter(expiresTime)) {
-
                         String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=refresh_token&client_id=" + clientId +
                                 "&client_secret=" + clientSecret + "&refresh_token=" + refreshToken;
 
@@ -109,8 +108,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/recent")
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/closing")
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/surveyall")
-                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/survey/nonMember/resultall")
-                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/oauthLogin/user")
+                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/survey/resultall/nonMember")
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/select-closing")
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/select-post")){
                         CustomAuthentication customAuthentication = new CustomAuthentication(

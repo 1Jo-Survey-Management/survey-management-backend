@@ -32,14 +32,10 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
 
         Authentication authenticationCheck = SecurityContextHolder.getContext().getAuthentication();
         if (authenticationCheck != null && authenticationCheck.isAuthenticated()) {
-            log.info("필터쪽 Authentication Ok : " + request.getServletPath());
             return (CustomAuthentication) authenticationCheck;
         }else{
             String accessToken = extractAccessTokenFromRequest(request);
             String requestServletPath = request.getServletPath();
-
-            System.out.println("accessToken : " + accessToken);
-            System.out.println(("requestServletPath : " + requestServletPath));
             CustomAuthenticationToken authRequest = new CustomAuthenticationToken(accessToken, null, requestServletPath);
             CustomAuthentication authentication = (CustomAuthentication) getAuthenticationManager().authenticate(authRequest);
             if (authentication==null) {
@@ -52,7 +48,9 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        log.info("인증 성공");
+        String changedAccessToken = (String) authResult.getCredentials();
+        response.setHeader("Access-Control-Expose-Headers", "Accesstoken");
+        response.setHeader("Accesstoken", "Bearer " +changedAccessToken);
         chain.doFilter(request, response);
     }
 
@@ -61,7 +59,6 @@ public class CustomOAuth2Filter extends AbstractAuthenticationProcessingFilter {
                                               AuthenticationException failed) throws IOException{
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.getWriter().write("Authentication failed");
-        log.info("인증 실패");
 
     }
 
