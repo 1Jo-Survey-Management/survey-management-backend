@@ -50,4 +50,8 @@ public class CustomAuthentication implements Authentication {
     public String getName() {
         return userDetails.getUserEmail();
     }
+
+    public String getCustomToken() {
+        return customToken;
+    }
 }

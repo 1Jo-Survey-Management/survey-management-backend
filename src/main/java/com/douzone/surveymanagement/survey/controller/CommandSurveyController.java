@@ -1,5 +1,6 @@
 package com.douzone.surveymanagement.survey.controller;
 
+import com.douzone.surveymanagement.common.annotation.RequiredUser;
 import com.douzone.surveymanagement.common.annotation.S3DeleteObject;
 import com.douzone.surveymanagement.common.exception.BadRequestException;
 import com.douzone.surveymanagement.common.response.CommonResponse;
@@ -42,6 +43,7 @@ public class CommandSurveyController {
      * @return 성공적으로 저장되었을 경우 CREATED 201 을 응답합니다.
      * @author : 강명관
      */
+    @RequiredUser
     @PostMapping
     public ResponseEntity<CommonResponse<String>> surveyCreate(
         @RequestBody SurveyCreateDto surveyCreateDto,
@@ -66,6 +68,7 @@ public class CommandSurveyController {
      * @return 공용 응답객체
      * @author : 강명관
      */
+    @RequiredUser
     @S3DeleteObject
     @PutMapping
     public ResponseEntity<CommonResponse<String>> surveyUpdate(
@@ -97,6 +100,7 @@ public class CommandSurveyController {
      * @return 공용응답 객체
      * @author : 강명관
      */
+    @RequiredUser
     @PutMapping("/{surveyNo}/post")
     public ResponseEntity<CommonResponse<String>> surveyStatusToPostFromInProgress(
         @PathVariable(value = "surveyNo") long surveyNo,
