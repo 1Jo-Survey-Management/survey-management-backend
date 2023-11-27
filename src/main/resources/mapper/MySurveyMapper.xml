@@ -19,6 +19,7 @@
         <result property="isDeleted" column="is_deleted"/>
         <result property="openStatusNo" column="open_status_no"/>
         <result property="attendeeCount" column="attendee_count"/>
+        <result property="surveyAttendCreatedAt" column="survey_attend_created_at"/>
         <collection property="tagNames" javaType="list" resultMap="MySurveyDTO" />
     </resultMap>
 
@@ -70,6 +71,7 @@
             s.open_status_no,
             u.user_nickname AS userNickname,
             t.tag_name AS tagNames,
+            sa.survey_attend_created_at,
             COUNT(DISTINCT sa.user_no) AS attendee_count
         FROM
             survey s
@@ -92,7 +94,7 @@
             WHEN s.survey_status_no = 2 THEN 2
             ELSE 3
             END,
-            s.survey_closing_at;
+            sa.survey_attend_created_at;
     </select>
 
 
