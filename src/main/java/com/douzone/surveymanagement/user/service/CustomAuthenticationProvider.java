@@ -12,11 +12,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import org.springframework.util.AntPathMatcher;
+
 /**
  * 첫 로그인 회원 가입 시 인증 구분을 위한 CustomAuthenticationProvider 입니다
  * @author 김선규
@@ -31,6 +32,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+
+        CustomAuthentication customAuthentication;
+
         Authentication authenticationCheck = SecurityContextHolder.getContext().getAuthentication();
         if (authenticationCheck != null && authenticationCheck.isAuthenticated()) {
             return authenticationCheck;
@@ -71,7 +75,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                         refreshTokenUserInfo.setRefreshToken(renewRefreshToken);
                         refreshTokenUserInfo.setExpiresIn(formattedStringExpiresIn);
                         userService.updateAccessToken(refreshTokenUserInfo);
-                        CustomAuthentication customAuthentication = new CustomAuthentication(
+                        customAuthentication = new CustomAuthentication(
                                 new CustomUserDetails(refreshTokenUserInfo.getUserNo(), refreshTokenUserInfo.getUserEmail(), refreshTokenUserInfo.getUserNickname(), refreshTokenUserInfo.getUserGender(), refreshTokenUserInfo.getUserBirth(), refreshTokenUserInfo.getUserImage(), customToken.getAuthorities()),
                                 accessToken
                         );
@@ -79,7 +83,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                     } else {
                         if (userNickname != null) {
                             UserInfo user = userService.findUserByUserAccessToken(oldAccessToken);
-                            CustomAuthentication customAuthentication = new CustomAuthentication(
+                            customAuthentication = new CustomAuthentication(
                                     new CustomUserDetails(user.getUserNo(), user.getUserEmail(), user.getUserNickname(), user.getUserGender(), user.getUserBirth(), user.getUserImage(), customToken.getAuthorities()),
                                     oldAccessToken
                             );
@@ -87,7 +91,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                         }
                         else {
                             UserInfo user = userService.findUserByUserAccessToken(oldAccessToken);
-                            CustomAuthentication customAuthentication = new CustomAuthentication(
+                            customAuthentication = new CustomAuthentication(
                                     new CustomUserDetails(user.getUserNo(), null, null, null, null, null, customToken.getAuthorities()),
                                     oldAccessToken
                             );
@@ -98,23 +102,28 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 else {
                     if (((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/oauthLogin/oauth2/code/naver")
                             || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/oauthLogin/check-duplicate-nickname")) {
-                        CustomAuthentication customAuthentication = new CustomAuthentication(
+                        customAuthentication = new CustomAuthentication(
                                 new CustomUserDetails(null, null, null, null, null, null, customToken.getAuthorities()),
                                 null
                         );
                         return customAuthentication;
                     }
-                    if(((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/weekly")
-                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/recent")
-                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/closing")
-                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/surveyall")
-                       || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/search")
+                AntPathMatcher pathMatcher = new AntPathMatcher();
+                    String callBackUri = ((CustomAuthenticationToken) authentication).getCallBackUri();
 
-                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/survey/resultall/nonMember")
-                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/select-closing")
-                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/select-post")){
+                    if((callBackUri.equals("/api/surveys/weekly"))
+                    || (callBackUri.equals("/api/surveys/recent"))
+                    || (callBackUri.equals("/api/surveys/closing"))
+                    || (callBackUri.equals("/api/surveys/surveyall"))
+                    || (callBackUri.equals("/api/surveys/search"))
 
-                        CustomAuthentication customAuthentication = new CustomAuthentication(
+                    || (callBackUri.equals("/api/survey/resultall/nonMember"))
+                    || (callBackUri.equals("/api/surveys/select-closing"))
+                    || (callBackUri.equals("/api/surveys/select-post"))
+                    ||(pathMatcher.match("/swagger-ui/**", callBackUri))
+                    ||(pathMatcher.match("/v3/api-docs/**", callBackUri)))
+                    {
+                        customAuthentication = new CustomAuthentication(
                                 new CustomUserDetails(null, null, null, null, null, null, customToken.getAuthorities()),
                                 null
                         );
