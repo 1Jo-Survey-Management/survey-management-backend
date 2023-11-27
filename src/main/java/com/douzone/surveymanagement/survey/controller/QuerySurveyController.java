@@ -116,4 +116,12 @@ public class QuerySurveyController {
         List<SurveyDetailInfoDto> postSurvey = querySurveyService.selectPost(page, userNo);
         return ResponseEntity.ok(postSurvey);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<SurveyDetailInfoDto>> findSurveyByKeyword(@RequestParam("searchWord") String searchWord, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        long userNo = userDetails.getUserNo();
+        List<SurveyDetailInfoDto> findSurvey = querySurveyService.searchSurveyByKeyword( searchWord, userNo);
+        System.out.println(findSurvey);
+        return ResponseEntity.ok(findSurvey);
+    }
 }
