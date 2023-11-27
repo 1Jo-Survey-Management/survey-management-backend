@@ -33,10 +33,10 @@ public class S3Aspect {
     private static final String S3_DELETE_OBJECT_HEADER = "X-Previous-Image-URL";
 
     @Pointcut("@annotation(com.douzone.surveymanagement.common.annotation.S3DeleteObject)")
-    public void S3DeleteObjectPointCut() {
+    public void s3DeleteObjectPointCut() {
     }
 
-    @After("S3DeleteObjectPointCut()")
+    @After("s3DeleteObjectPointCut()")
     public void afterS3DeleteObject() {
         HttpServletRequest request =
             ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
