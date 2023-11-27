@@ -81,8 +81,13 @@ public class QuerySurveyServiceImpl implements QuerySurveyService {
         return querySurveyMapper.selectPostSurvey(pageAndUserNo(page, userNo));
     }
 
+    @Override
+    public List<SurveyDetailInfoDto> searchSurveyByKeyword(String searchWord, long userNo) {
+        return querySurveyMapper.searchSurvey(searchWord(searchWord, userNo));
+    }
+
     private int showNextPage(int page) {
-        int nextPage = page * 24;
+        int nextPage = page * 12;
         return nextPage;
     }
 
@@ -92,4 +97,12 @@ public class QuerySurveyServiceImpl implements QuerySurveyService {
         pageUser.put("userNo", userNo);
         return pageUser;
     }
+
+    private HashMap<String, Object> searchWord(String searchWord, long userNo){
+        HashMap<String, Object> searchKeyword = new HashMap<>();
+        searchKeyword.put("searchWord", searchWord);
+        searchKeyword.put("userNo", userNo);
+        return searchKeyword;
+    }
+
 }
