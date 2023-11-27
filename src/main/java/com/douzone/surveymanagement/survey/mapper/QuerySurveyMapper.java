@@ -58,4 +58,5 @@ public interface QuerySurveyMapper {
 
     List<SurveyDetailInfoDto> selectPostSurvey(HashMap<String, Object> pageUserNo);
 
+    List<SurveyDetailInfoDto> searchSurvey(HashMap<String, Object> searchKeyword);
 }

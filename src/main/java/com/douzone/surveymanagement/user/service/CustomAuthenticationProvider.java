@@ -108,9 +108,12 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/recent")
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/closing")
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/surveyall")
+                       || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/search")
+
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/survey/resultall/nonMember")
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/select-closing")
                     || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/select-post")){
+
                         CustomAuthentication customAuthentication = new CustomAuthentication(
                                 new CustomUserDetails(null, null, null, null, null, null, customToken.getAuthorities()),
                                 null

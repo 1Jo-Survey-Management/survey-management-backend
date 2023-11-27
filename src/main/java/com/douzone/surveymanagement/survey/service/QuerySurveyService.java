@@ -53,6 +53,7 @@ public interface QuerySurveyService {
     List<SurveyDetailInfoDto> selectClosing(int page, long userNo);
 
     List<SurveyDetailInfoDto> selectPost(int page,long userNo);
+    List<SurveyDetailInfoDto> searchSurveyByKeyword(String searchWord,long userNo);
 }
 
 
