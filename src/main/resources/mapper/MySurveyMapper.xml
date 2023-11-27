@@ -9,6 +9,7 @@
         <id property="surveyNo" column="survey_no"/>
         <result property="userNo" column="user_no"/>
         <result property="userNickname" column="userNickname"/>
+        <result property="userImage" column="user_image"/>
         <result property="surveyStatusNo" column="survey_status_no"/>
         <result property="surveyTitle" column="survey_title"/>
         <result property="surveyDescription" column="survey_description"/>
@@ -69,6 +70,7 @@
             s.survey_closing_at,
             s.is_deleted,
             s.open_status_no,
+            u.user_image,
             u.user_nickname AS userNickname,
             t.tag_name AS tagNames,
             sa.survey_attend_created_at,
