@@ -17,6 +17,7 @@ import java.util.List;
 public class MySurveyDTO {
     private Long surveyNo;
     private Long userNo;
+    private String userImage;
     private String userNickname;
     private Long surveyStatusNo;
     private String surveyTitle;
