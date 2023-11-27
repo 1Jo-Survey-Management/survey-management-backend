@@ -1,5 +1,6 @@
 package com.douzone.surveymanagement.survey.controller;
 
+import com.douzone.surveymanagement.common.annotation.RequiredUser;
 import com.douzone.surveymanagement.common.annotation.S3DeleteObject;
 import com.douzone.surveymanagement.common.exception.BadRequestException;
 import com.douzone.surveymanagement.common.response.CommonResponse;
@@ -18,9 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 설문을 등록하는 API를 정의한 Controller 클래스 입니다.
@@ -44,6 +43,7 @@ public class CommandSurveyController {
      * @return 성공적으로 저장되었을 경우 CREATED 201 을 응답합니다.
      * @author : 강명관
      */
+    @RequiredUser
     @PostMapping
     public ResponseEntity<CommonResponse<String>> surveyCreate(
         @RequestBody SurveyCreateDto surveyCreateDto,
@@ -68,6 +68,7 @@ public class CommandSurveyController {
      * @return 공용 응답객체
      * @author : 강명관
      */
+    @RequiredUser
     @S3DeleteObject
     @PutMapping
     public ResponseEntity<CommonResponse<String>> surveyUpdate(
@@ -99,6 +100,7 @@ public class CommandSurveyController {
      * @return 공용응답 객체
      * @author : 강명관
      */
+    @RequiredUser
     @PutMapping("/{surveyNo}/post")
     public ResponseEntity<CommonResponse<String>> surveyStatusToPostFromInProgress(
         @PathVariable(value = "surveyNo") long surveyNo,

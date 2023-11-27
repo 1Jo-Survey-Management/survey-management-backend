@@ -12,11 +12,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import org.springframework.util.AntPathMatcher;
+
 /**
  * 첫 로그인 회원 가입 시 인증 구분을 위한 CustomAuthenticationProvider 입니다
  * @author 김선규
@@ -31,9 +32,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+
+        CustomAuthentication customAuthentication;
+
         Authentication authenticationCheck = SecurityContextHolder.getContext().getAuthentication();
         if (authenticationCheck != null && authenticationCheck.isAuthenticated()) {
-            log.info("인증 된 Authentication");
             return authenticationCheck;
         }
             if ((authentication instanceof CustomAuthenticationToken)) {
@@ -42,15 +45,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 CustomAuthenticationToken customToken = (CustomAuthenticationToken) authentication;
                 String oldAccessToken = customToken.getCustomToken();
                 UserInfo userInfo = userService.findUserByUserAccessToken(oldAccessToken);
-                if (userInfo != null) {
+            if (userInfo != null) {
                     String refreshToken = userInfo.getRefreshToken();
                     String expiresCheck = userInfo.getExpiresIn();
                     String userNickname = userInfo.getUserNickname();
-
-                    if (expiresCheck == null || expiresCheck.equals(" ")) {
-                        log.error("토큰의 유효기간이 존재하지 않습니다!");
-                        return null;
-                    }
 
                     ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
                     LocalDateTime seoulTime = LocalDateTime.now(seoulZoneId);
@@ -59,7 +57,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                     LocalDateTime expiresTime = LocalDateTime.parse(formattedExpiresCheck, DateTimeFormatter.ISO_DATE_TIME);
 
                     if (seoulTime.isAfter(expiresTime)) {
-
                         String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=refresh_token&client_id=" + clientId +
                                 "&client_secret=" + clientSecret + "&refresh_token=" + refreshToken;
 
@@ -78,25 +75,23 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                         refreshTokenUserInfo.setRefreshToken(renewRefreshToken);
                         refreshTokenUserInfo.setExpiresIn(formattedStringExpiresIn);
                         userService.updateAccessToken(refreshTokenUserInfo);
-                        CustomAuthentication customAuthentication = new CustomAuthentication(
+                        customAuthentication = new CustomAuthentication(
                                 new CustomUserDetails(refreshTokenUserInfo.getUserNo(), refreshTokenUserInfo.getUserEmail(), refreshTokenUserInfo.getUserNickname(), refreshTokenUserInfo.getUserGender(), refreshTokenUserInfo.getUserBirth(), refreshTokenUserInfo.getUserImage(), customToken.getAuthorities()),
                                 accessToken
                         );
                         return customAuthentication;
                     } else {
                         if (userNickname != null) {
-                            log.info("회원 존재 인증 완료(회원이름) : " + userNickname);
                             UserInfo user = userService.findUserByUserAccessToken(oldAccessToken);
-                            CustomAuthentication customAuthentication = new CustomAuthentication(
+                            customAuthentication = new CustomAuthentication(
                                     new CustomUserDetails(user.getUserNo(), user.getUserEmail(), user.getUserNickname(), user.getUserGender(), user.getUserBirth(), user.getUserImage(), customToken.getAuthorities()),
                                     oldAccessToken
                             );
                             return customAuthentication;
                         }
                         else {
-                            log.info("회원가입 미완료 회원 토큰 : " + oldAccessToken);
                             UserInfo user = userService.findUserByUserAccessToken(oldAccessToken);
-                            CustomAuthentication customAuthentication = new CustomAuthentication(
+                            customAuthentication = new CustomAuthentication(
                                     new CustomUserDetails(user.getUserNo(), null, null, null, null, null, customToken.getAuthorities()),
                                     oldAccessToken
                             );
@@ -107,25 +102,38 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 else {
                     if (((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/oauthLogin/oauth2/code/naver")
                             || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/oauthLogin/check-duplicate-nickname")) {
-                        CustomAuthentication customAuthentication = new CustomAuthentication(
+                        customAuthentication = new CustomAuthentication(
                                 new CustomUserDetails(null, null, null, null, null, null, customToken.getAuthorities()),
                                 null
                         );
                         return customAuthentication;
                     }
-                    if(((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/weekly")
-                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/recent")
-                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/closing")
-                    || ((CustomAuthenticationToken) authentication).getCallBackUri().equals("/api/surveys/surveyall")){
-                        CustomAuthentication customAuthentication = new CustomAuthentication(
+                AntPathMatcher pathMatcher = new AntPathMatcher();
+                    String callBackUri = ((CustomAuthenticationToken) authentication).getCallBackUri();
+
+                    if((callBackUri.equals("/api/surveys/weekly"))
+                    || (callBackUri.equals("/api/surveys/recent"))
+                    || (callBackUri.equals("/api/surveys/closing"))
+                    || (callBackUri.equals("/api/surveys/surveyall"))
+                    || (callBackUri.equals("/api/surveys/search"))
+
+                    || (callBackUri.equals("/api/survey/resultall/nonMember"))
+                    || (callBackUri.equals("/api/surveys/select-closing"))
+                    || (callBackUri.equals("/api/surveys/select-post"))
+                    ||(pathMatcher.match("/swagger-ui/**", callBackUri))
+                    ||(pathMatcher.match("/v3/api-docs/**", callBackUri)))
+                    {
+                        customAuthentication = new CustomAuthentication(
                                 new CustomUserDetails(null, null, null, null, null, null, customToken.getAuthorities()),
                                 null
                         );
                         return customAuthentication;
                     }
+                    log.error("AccessToken이 존재하지 않고 회원가입/비회원 접근도 아닌 부적절한 접근입니다!");
                     return null;
                 }
             }
+        log.error("CustomAuthentication이 아닌 Authentication이 들어왔습니다.");
         return null;
     }
 
