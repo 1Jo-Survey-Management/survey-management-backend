@@ -6,6 +6,7 @@ import com.douzone.surveymanagement.surveyattend.dto.request.SurveyAttendDTO;
 import com.douzone.surveymanagement.surveyattend.dto.request.SurveyAttendSubmitDTO;
 import com.douzone.surveymanagement.surveyattend.exception.SurveyAttendException;
 import com.douzone.surveymanagement.surveyattend.service.impl.SurveyAttendServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,7 @@ public class SurveyAttendController {
      * @return 설문 데이터 목록을 담은 ResponseEntity
      */
     @GetMapping("/survey-data")
+    @Operation(summary = "설문 데이터 가져오기", description = "설문 참여를 위한 데이터를 조회합니다.")
     public ResponseEntity<CommonResponse> getSurveyData() {
         List<SurveyAttendDTO> surveyData = surveyAttendServiceImpl.selectSurveyAttendData();
         return ResponseEntity
@@ -50,6 +52,7 @@ public class SurveyAttendController {
      * @return 작업 상태를 담은 ResponseEntity
      */
     @PostMapping("/save-responses")
+    @Operation(summary = "사용자 응답 저장하기", description = "사용자의 설문 응답을 저장합니다. 주관식 및 객관식 답변을 포함합니다.")
     public ResponseEntity<CommonResponse> saveSurveyResponses(@RequestBody List<SurveyAttendSubmitDTO> surveyAttendSubmitDTOList) {
 
         try {
@@ -73,6 +76,7 @@ public class SurveyAttendController {
      * @return 마감일 정보를 담은 ResponseEntity
      */
     @GetMapping("/closing-time/{surveyNo}")
+    @Operation(summary = "설문 마감일 조회하기", description = "설문 번호에 따른 마감일을 조회합니다.")
     public ResponseEntity<CommonResponse> getSurveyClosingTime(@PathVariable long surveyNo) {
         try {
             LocalDateTime closingTime = surveyAttendServiceImpl.getSurveyClosingTime(surveyNo);

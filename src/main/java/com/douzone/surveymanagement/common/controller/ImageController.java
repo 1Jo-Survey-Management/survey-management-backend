@@ -8,6 +8,7 @@ import com.douzone.surveymanagement.common.utils.S3PreSignedUrlGenerator;
 import com.douzone.surveymanagement.survey.service.QuerySurveyService;
 import com.douzone.surveymanagement.user.service.UserService;
 import com.douzone.surveymanagement.user.util.CustomUserDetails;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -47,6 +48,7 @@ public class ImageController {
      * @author : 강명관
      */
     @GetMapping("/surveys/{surveyNo}")
+    @Operation(summary = "설문 이미지 표시", description = "주어진 설문 번호에 해당하는 이미지를 byte 배열로 반환합니다.")
     public ResponseEntity<byte[]> surveyImageDisplay(
         @PathVariable(value = "surveyNo") long surveyNo) {
 
@@ -59,6 +61,7 @@ public class ImageController {
     }
 
     @GetMapping("/user-image")
+    @Operation(summary = "사용자 이미지 표시", description = "로그인한 사용자의 프로필 이미지를 byte 배열로 반환합니다.")
     public ResponseEntity<byte[]> userImageDisplay(
         @AuthenticationPrincipal CustomUserDetails userDetails) {
         if (userDetails == null) {
@@ -74,6 +77,7 @@ public class ImageController {
     }
 
     @GetMapping("/presigned-url")
+    @Operation(summary = "S3 사전 서명된 URL 생성", description = "주어진 파일 이름에 대해 S3 사전 서명된 URL을 생성하여 반환합니다.")
     public ResponseEntity<CommonResponse> S3GeneratePreSignedURL(
         @RequestParam String fileName
     ) {

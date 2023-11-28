@@ -5,6 +5,7 @@ import com.douzone.surveymanagement.survey.dto.response.SurveyDetailsDto;
 import com.douzone.surveymanagement.survey.dto.response.SurveyDetailInfoDto;
 import com.douzone.surveymanagement.survey.service.QuerySurveyService;
 import com.douzone.surveymanagement.user.util.CustomUserDetails;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,7 @@ public class QuerySurveyController {
     private final QuerySurveyService querySurveyService;
 
     @GetMapping("/{surveyNo}")
+    @Operation(summary = "설문 상세 정보 조회", description = "특정 설문의 상세 정보를 조회합니다.")
     public ResponseEntity<CommonResponse<SurveyDetailsDto>> surveyDetails(
         @PathVariable(value = "surveyNo") long surveyNo
     ) {
@@ -43,6 +45,7 @@ public class QuerySurveyController {
      */
 
     @GetMapping("/weekly")
+    @Operation(summary = "이번 주 인기 설문 조회", description = "이번 주에 참여자가 많은 인기 설문 10개를 조회합니다.")
     public ResponseEntity<List<SurveyDetailInfoDto>> weeklySurveyList(@AuthenticationPrincipal CustomUserDetails userDetails) {
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> weeklySurvey = querySurveyService.readWeeklySurvey(userNo);
@@ -56,6 +59,7 @@ public class QuerySurveyController {
      *
      */
     @GetMapping("/recent")
+    @Operation(summary = "최근 등록된 설문 조회", description = "최근에 등록된 설문 10개를 조회합니다.")
     public ResponseEntity<List<SurveyDetailInfoDto>> recentSurveyList (@AuthenticationPrincipal CustomUserDetails userDetails) {
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> recentSurvey = querySurveyService.readRecentSurvey(userNo);
@@ -69,6 +73,7 @@ public class QuerySurveyController {
      *
      */
     @GetMapping("/closing")
+    @Operation(summary = "최근 마감된 설문 조회", description = "최근에 마감된 순서대로 설문 10개를 조회합니다.")
     public ResponseEntity<List<SurveyDetailInfoDto>> closingSurveyList (@AuthenticationPrincipal CustomUserDetails userDetails) {
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> closingSurvey = querySurveyService.readClosingSurvey(userNo);
@@ -83,6 +88,7 @@ public class QuerySurveyController {
      *
      */
     @GetMapping("/surveyall")
+    @Operation(summary = "게시 및 마감된 설문 전체 조회", description = "게시되거나 마감된 모든 설문을 페이지별로 조회합니다.")
     public ResponseEntity<List<SurveyDetailInfoDto>> getAllSurvey(@RequestParam("page") int page, @AuthenticationPrincipal CustomUserDetails userDetails){
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> allSurvey = querySurveyService.getSurveyAll(page, userNo);
@@ -97,6 +103,7 @@ public class QuerySurveyController {
      *
      */
     @GetMapping("/select-closing")
+    @Operation(summary = "마감된 설문 페이징 조회", description = "마감된 설문을 페이지별로 20개씩 조회합니다.")
     public ResponseEntity<List<SurveyDetailInfoDto>> selectClosingSurveyList(@RequestParam("page") int page,@AuthenticationPrincipal CustomUserDetails userDetails){
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> closeSurvey = querySurveyService.selectClosing(page, userNo);
@@ -111,6 +118,7 @@ public class QuerySurveyController {
      *
      */
     @GetMapping("/select-post")
+    @Operation(summary = "진행중인 설문 페이징 조회", description = "진행 중인 설문을 페이지별로 20개씩 조회합니다.")
     public ResponseEntity<List<SurveyDetailInfoDto>> selectPostSurveyList(@RequestParam("page") int page, @AuthenticationPrincipal CustomUserDetails userDetails) {
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> postSurvey = querySurveyService.selectPost(page, userNo);
@@ -118,6 +126,7 @@ public class QuerySurveyController {
     }
 
     @GetMapping("/search")
+    @Operation(summary = "키워드로 설문 검색", description = "주어진 키워드로 설문을 검색합니다.")
     public ResponseEntity<List<SurveyDetailInfoDto>> findSurveyByKeyword(@RequestParam("searchWord") String searchWord, @AuthenticationPrincipal CustomUserDetails userDetails) {
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> findSurvey = querySurveyService.searchSurveyByKeyword( searchWord, userNo);

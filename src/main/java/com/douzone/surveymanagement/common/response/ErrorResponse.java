@@ -1,5 +1,6 @@
 package com.douzone.surveymanagement.common.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 /**
@@ -9,10 +10,13 @@ import lombok.Getter;
  * @since : 1.0
  **/
 @Getter
+@Schema(description = "API 응답에서 에러 정보를 제공하는 클래스")
 public class ErrorResponse<T> {
 
+    @Schema(description = "에러 메시지", example = "에러가 발생했습니다.")
     private final String message;
 
+    @Schema(description = "에러에 대한 추가적인 내용")
     private final T content;
 
     private static final String METHOD_ARGUMENT_EXCEPTION_MESSAGE = "Method Arguments Valid Exception!";
