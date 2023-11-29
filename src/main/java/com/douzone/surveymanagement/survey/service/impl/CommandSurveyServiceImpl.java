@@ -53,7 +53,7 @@ public class CommandSurveyServiceImpl implements CommandSurveyService {
     @Transactional
     @Override
     public void insertSurvey(SurveyInfoCreateDto surveyInfoCreateDto,
-                             List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList) {
+        List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList) {
 
         long surveyNo = insertSurveyInfo(surveyInfoCreateDto);
 
@@ -89,7 +89,7 @@ public class CommandSurveyServiceImpl implements CommandSurveyService {
     @Transactional
     @Override
     public void updateSurvey(SurveyInfoUpdateDto surveyInfoUpdateDto,
-                             List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList) {
+        List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList) {
 
         updateSurveyInfo(surveyInfoUpdateDto);
         surveyQuestionService.updateQuestion(

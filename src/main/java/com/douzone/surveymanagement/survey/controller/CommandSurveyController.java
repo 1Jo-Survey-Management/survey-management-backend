@@ -48,15 +48,15 @@ public class CommandSurveyController {
     @PostMapping
     @Operation(summary = "설문 생성", description = "새로운 설문을 등록합니다. 설문 생성에 필요한 모든 정보가 포함된 DTO를 사용합니다.")
     public ResponseEntity<CommonResponse<String>> surveyCreate(
-        @RequestBody SurveyCreateDto surveyCreateDto,
-        @AuthenticationPrincipal CustomUserDetails userDetails
-        ) {
+            @RequestBody SurveyCreateDto surveyCreateDto,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
 
         surveyCreateDto.getSurveyInfoCreateDto().setUserNo(userDetails.getUserNo());
 
         commandSurveyService.insertSurvey(
-            surveyCreateDto.getSurveyInfoCreateDto(),
-            surveyCreateDto.getSurveyQuestionCreateDtoList()
+                surveyCreateDto.getSurveyInfoCreateDto(),
+                surveyCreateDto.getSurveyQuestionCreateDtoList()
         );
 
         return new ResponseEntity<>(CommonResponse.success(), HttpStatus.CREATED);
@@ -66,7 +66,7 @@ public class CommandSurveyController {
      * 설문을 수정하는 API 입니다.
      *
      * @param surveyUpdateDto 설문의 수정에 필요한 데이터
-     * @param userDetails 인가된 사용자
+     * @param userDetails     인가된 사용자
      * @return 공용 응답객체
      * @author : 강명관
      */
@@ -75,12 +75,12 @@ public class CommandSurveyController {
     @PutMapping
     @Operation(summary = "설문 수정", description = "기존에 생성된 설문을 수정합니다. 수정에 필요한 데이터를 포함한 DTO를 사용합니다.")
     public ResponseEntity<CommonResponse<String>> surveyUpdate(
-        @RequestBody SurveyUpdateDto surveyUpdateDto,
-        @AuthenticationPrincipal CustomUserDetails userDetails
+            @RequestBody SurveyUpdateDto surveyUpdateDto,
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         boolean surveyCreatedByUser = querySurveyService.isSurveyCreatedByUser(
-            userDetails.getUserNo(),
-            surveyUpdateDto.getSurveyInfoUpdateDto().getSurveyNo()
+                userDetails.getUserNo(),
+                surveyUpdateDto.getSurveyInfoUpdateDto().getSurveyNo()
         );
 
         if (!surveyCreatedByUser) {
@@ -88,8 +88,8 @@ public class CommandSurveyController {
         }
 
         commandSurveyService.updateSurvey(
-            surveyUpdateDto.getSurveyInfoUpdateDto(),
-            surveyUpdateDto.getSurveyQuestionCreateDtoList()
+                surveyUpdateDto.getSurveyInfoUpdateDto(),
+                surveyUpdateDto.getSurveyQuestionCreateDtoList()
         );
 
         return ResponseEntity.ok(CommonResponse.success());
@@ -98,7 +98,7 @@ public class CommandSurveyController {
     /**
      * 작성된 설문의 상태를 게시하는 API 입니다.
      *
-     * @param surveyNo 설문 번호
+     * @param surveyNo    설문 번호
      * @param userDetails 인가된 사용자
      * @return 공용응답 객체
      * @author : 강명관
@@ -107,20 +107,20 @@ public class CommandSurveyController {
     @PutMapping("/{surveyNo}/post")
     @Operation(summary = "설문 상태 변경 (게시)", description = "진행 중인 설문의 상태를 게시 상태로 변경합니다. 설문 번호를 기반으로 상태를 변경합니다.")
     public ResponseEntity<CommonResponse<String>> surveyStatusToPostFromInProgress(
-        @PathVariable(value = "surveyNo") long surveyNo,
-        @AuthenticationPrincipal CustomUserDetails userDetails
+            @PathVariable(value = "surveyNo") long surveyNo,
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
 
         if (!querySurveyService.isSurveyCreatedByUser(
-            userDetails.getUserNo(),
-            surveyNo
+                userDetails.getUserNo(),
+                surveyNo
         )) {
             throw new BadRequestException("선택한 설문을 삭제할 수 없습니다.");
         }
 
         if (!commandSurveyService.updateSurveyStatusToPostInProgress(surveyNo)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(CommonResponse.fail());
+                    .body(CommonResponse.fail());
         }
 
         return ResponseEntity.ok(CommonResponse.success());

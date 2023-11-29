@@ -34,11 +34,11 @@ public class SurveyQuestionServiceImpl implements SurveyQuestionService {
     @Transactional
     @Override
     public void insertQuestionList(long surveyNo,
-                                   List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList) {
+        List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList) {
 
         surveyQuestionCreateDtoList.forEach(surveyQuestionCreateDto -> {
-            surveyQuestionCreateDto.setSurveyNo(surveyNo);
-            surveyQuestionMapper.insertSurveyQuestion(surveyQuestionCreateDto);
+                surveyQuestionCreateDto.setSurveyNo(surveyNo);
+                surveyQuestionMapper.insertSurveyQuestion(surveyQuestionCreateDto);
             }
         );
 
@@ -71,7 +71,7 @@ public class SurveyQuestionServiceImpl implements SurveyQuestionService {
 
     @Override
     public void updateQuestion(long surveyNo,
-                               List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList) {
+        List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList) {
         selectionService.deleteAllSelection(surveyNo);
         surveyQuestionMapper.deleteAllSurveyQuestionsBySurveyNo(surveyNo);
         insertQuestionList(surveyNo, surveyQuestionCreateDtoList);

@@ -30,6 +30,7 @@ public class SwaggerConfig {
             .pathsToMatch(PATH_MATCH)
             .build();
     }
+
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()

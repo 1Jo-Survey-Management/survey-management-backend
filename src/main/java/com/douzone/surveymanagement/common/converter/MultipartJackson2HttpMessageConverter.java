@@ -16,8 +16,7 @@ import org.springframework.stereotype.Component;
 public class MultipartJackson2HttpMessageConverter extends AbstractJackson2HttpMessageConverter {
 
     /**
-     * 생성자를 통해 ObjectMapper, MediaType을 받아옵니다.
-     * MediaType 에 MediaType.APPLICATION_OCTET_STREAM을 추가하여
+     * 생성자를 통해 ObjectMapper, MediaType을 받아옵니다. MediaType 에 MediaType.APPLICATION_OCTET_STREAM을 추가하여
      * 메시지 컨버터가 이진 데이터 스트림을 처리할 수 있게 해줍니다.
      *
      * @param objectMapper Jackson2 ObjectMapper

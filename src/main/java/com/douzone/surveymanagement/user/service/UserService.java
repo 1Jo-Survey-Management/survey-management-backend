@@ -1,4 +1,5 @@
 package com.douzone.surveymanagement.user.service;
+
 import com.douzone.surveymanagement.user.dto.request.UserDTO;
 import com.douzone.surveymanagement.user.dto.request.UserModifyDTO;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ public interface UserService {
 
     /**
      * 회원가입 전 미완료 회원 등록
+     *
      * @param userInfo
      * @return 성공 여부
      */
@@ -19,12 +21,14 @@ public interface UserService {
 
     /**
      * 회원 가입
+     *
      * @param userInfo
      */
     void registUser(UserInfo userInfo);
 
     /**
      * 토큰 갱신
+     *
      * @param userInfo
      * @return 갱신 성공 여부
      */
@@ -35,6 +39,7 @@ public interface UserService {
 
     /**
      * 토큰으로 유저 정보 조회
+     *
      * @param accessToken
      * @return 유저 정보
      */
@@ -42,6 +47,7 @@ public interface UserService {
 
     /**
      * 이메일로 유저 정보 조회
+     *
      * @param userEmail
      * @return 유저 정보
      */
@@ -79,13 +85,13 @@ public interface UserService {
      */
     boolean isUserNicknameDuplicate(String userNickname);
 
-        /**
-         * 유저의 이미지 정보를 업데이트합니다.
-         *
-         * @param userNo       유저 번호
-         * @param userImage 새 이미지 파일
-         * @return 업데이트 성공 여부 (true: 성공, false: 실패)
-         */
+    /**
+     * 유저의 이미지 정보를 업데이트합니다.
+     *
+     * @param userNo    유저 번호
+     * @param userImage 새 이미지 파일
+     * @return 업데이트 성공 여부 (true: 성공, false: 실패)
+     */
     boolean updateUserImage(long userNo, String userImage);
 
     /**

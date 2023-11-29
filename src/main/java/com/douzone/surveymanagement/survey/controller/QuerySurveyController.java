@@ -25,23 +25,22 @@ import java.util.List;
 @RequestMapping("/api/surveys")
 @RequiredArgsConstructor
 public class QuerySurveyController {
-  
+
     private final QuerySurveyService querySurveyService;
 
     @GetMapping("/{surveyNo}")
     @Operation(summary = "설문 상세 정보 조회", description = "특정 설문의 상세 정보를 조회합니다.")
     public ResponseEntity<CommonResponse<SurveyDetailsDto>> surveyDetails(
-        @PathVariable(value = "surveyNo") long surveyNo
+            @PathVariable(value = "surveyNo") long surveyNo
     ) {
         SurveyDetailsDto surveyDetails = querySurveyService.findSurveyDetails(surveyNo);
         return ResponseEntity.ok(CommonResponse.successOf(surveyDetails));
     }
-  
+
     /**
      * 이번 주 내에 등록된 설문 중 참여자가 많은 설문 10개를 가져오는 API입니다.
      *
      * @return 인기 설문 10개
-     *
      */
 
     @GetMapping("/weekly")
@@ -56,11 +55,10 @@ public class QuerySurveyController {
      * 최근 등록된 설문 10개를 가져오는 API 입니다.
      *
      * @return 최근 등록 설문 10개
-     *
      */
     @GetMapping("/recent")
     @Operation(summary = "최근 등록된 설문 조회", description = "최근에 등록된 설문 10개를 조회합니다.")
-    public ResponseEntity<List<SurveyDetailInfoDto>> recentSurveyList (@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<List<SurveyDetailInfoDto>> recentSurveyList(@AuthenticationPrincipal CustomUserDetails userDetails) {
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> recentSurvey = querySurveyService.readRecentSurvey(userNo);
         return ResponseEntity.ok(recentSurvey);
@@ -70,11 +68,10 @@ public class QuerySurveyController {
      * 최근에 마감된 순서로 설문 10개를 가져오는 API입니다.
      *
      * @return 최근 마감 설문 10개
-     *
      */
     @GetMapping("/closing")
     @Operation(summary = "최근 마감된 설문 조회", description = "최근에 마감된 순서대로 설문 10개를 조회합니다.")
-    public ResponseEntity<List<SurveyDetailInfoDto>> closingSurveyList (@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<List<SurveyDetailInfoDto>> closingSurveyList(@AuthenticationPrincipal CustomUserDetails userDetails) {
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> closingSurvey = querySurveyService.readClosingSurvey(userNo);
         return ResponseEntity.ok(closingSurvey);
@@ -85,11 +82,10 @@ public class QuerySurveyController {
      *
      * @param page
      * @return 전체 설문
-     *
      */
     @GetMapping("/surveyall")
     @Operation(summary = "게시 및 마감된 설문 전체 조회", description = "게시되거나 마감된 모든 설문을 페이지별로 조회합니다.")
-    public ResponseEntity<List<SurveyDetailInfoDto>> getAllSurvey(@RequestParam("page") int page, @AuthenticationPrincipal CustomUserDetails userDetails){
+    public ResponseEntity<List<SurveyDetailInfoDto>> getAllSurvey(@RequestParam("page") int page, @AuthenticationPrincipal CustomUserDetails userDetails) {
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> allSurvey = querySurveyService.getSurveyAll(page, userNo);
         return ResponseEntity.ok(allSurvey);
@@ -100,11 +96,10 @@ public class QuerySurveyController {
      *
      * @param page
      * @return 마감 설문 20개
-     *
      */
     @GetMapping("/select-closing")
     @Operation(summary = "마감된 설문 페이징 조회", description = "마감된 설문을 페이지별로 20개씩 조회합니다.")
-    public ResponseEntity<List<SurveyDetailInfoDto>> selectClosingSurveyList(@RequestParam("page") int page,@AuthenticationPrincipal CustomUserDetails userDetails){
+    public ResponseEntity<List<SurveyDetailInfoDto>> selectClosingSurveyList(@RequestParam("page") int page, @AuthenticationPrincipal CustomUserDetails userDetails) {
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> closeSurvey = querySurveyService.selectClosing(page, userNo);
         return ResponseEntity.ok(closeSurvey);
@@ -115,7 +110,6 @@ public class QuerySurveyController {
      *
      * @param page
      * @return 진행중인 설문 20개
-     *
      */
     @GetMapping("/select-post")
     @Operation(summary = "진행중인 설문 페이징 조회", description = "진행 중인 설문을 페이지별로 20개씩 조회합니다.")
@@ -129,7 +123,7 @@ public class QuerySurveyController {
     @Operation(summary = "키워드로 설문 검색", description = "주어진 키워드로 설문을 검색합니다.")
     public ResponseEntity<List<SurveyDetailInfoDto>> findSurveyByKeyword(@RequestParam("searchWord") String searchWord, @AuthenticationPrincipal CustomUserDetails userDetails) {
         long userNo = userDetails.getUserNo();
-        List<SurveyDetailInfoDto> findSurvey = querySurveyService.searchSurveyByKeyword( searchWord, userNo);
+        List<SurveyDetailInfoDto> findSurvey = querySurveyService.searchSurveyByKeyword(searchWord, userNo);
         System.out.println(findSurvey);
         return ResponseEntity.ok(findSurvey);
     }

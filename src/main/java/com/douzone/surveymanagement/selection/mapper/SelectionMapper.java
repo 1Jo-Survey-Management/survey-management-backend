@@ -18,13 +18,13 @@ public interface SelectionMapper {
     /**
      * 선택지 리스트를 등록하는 쿼리 입니다.
      *
-     * @param surveyQuestionNo 설문 문항 번호
+     * @param surveyQuestionNo       설문 문항 번호
      * @param selectionCreateDtoList 선택지 정보를 담은 리스트
      * @author : 강명관
      */
     void insertSelectionList(@Param("surveyQuestionNo") long surveyQuestionNo,
-                             @Param("selectionCreateDtoList")
-                             List<SelectionCreateDto> selectionCreateDtoList);
+        @Param("selectionCreateDtoList")
+        List<SelectionCreateDto> selectionCreateDtoList);
 
     /**
      * 설문 번호에 대한 선택지들을 삭제하는 쿼리 입니다.

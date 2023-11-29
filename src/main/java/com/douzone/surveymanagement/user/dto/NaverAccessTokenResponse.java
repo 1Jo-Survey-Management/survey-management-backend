@@ -1,15 +1,18 @@
 package com.douzone.surveymanagement.user.dto;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * 네이버 토큰 dto
+ *
  * @author 김선규
  */
 @Getter
 @Setter
 public class NaverAccessTokenResponse {
+
     @JsonProperty("access_token")
     private String accessToken;
 

@@ -24,7 +24,7 @@ import org.hibernate.validator.constraints.Length;
 @ToString
 @Getter
 @AllArgsConstructor
-@Schema(description = "새로운 설문의 기본 정보를 등록하기 위한 DTO")
+@Schema(description = "새로운 설문의 기a본 정보를 등록하기 위한 DTO")
 public class SurveyInfoCreateDto {
 
     @JsonIgnore

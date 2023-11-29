@@ -1,7 +1,6 @@
 package com.douzone.surveymanagement.user.domain;
 
 
-
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -17,6 +16,7 @@ import java.time.LocalDateTime;
 @Getter
 @RequiredArgsConstructor
 public class User {
+
     private final Long userNo;
     private final String userNickName;
     private final Date userBirth;

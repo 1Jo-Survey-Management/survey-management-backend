@@ -84,7 +84,8 @@ public class SurveyAttendServiceImpl implements SurveyAttendService {
             }
 
             saveSubjectiveAnswer(surveyAttendSubmitDTO, surveyAttendNo);
-            saveObjectiveAnswer(surveyAttendDTOList, surveyAttendSubmitDTO, surveyAttendNo, currentQuestionNo);
+            saveObjectiveAnswer(surveyAttendDTOList, surveyAttendSubmitDTO, surveyAttendNo,
+                currentQuestionNo);
 
             processedQuestions.add(currentQuestionNo);
         }
@@ -93,16 +94,16 @@ public class SurveyAttendServiceImpl implements SurveyAttendService {
     /**
      * 주관식 답변을 데이터베이스에 저장합니다.
      * <p>
-     * 주관식 답변이 존재하고 유효한 경우 해당 답변을 데이터베이스에 저장합니다.
-     * 저장에 실패할 경우 {@link SurveyAttendException}을 발생시킵니다.
+     * 주관식 답변이 존재하고 유효한 경우 해당 답변을 데이터베이스에 저장합니다. 저장에 실패할 경우 {@link SurveyAttendException}을 발생시킵니다.
      * </p>
      *
-     * @param dto             주관식 답변 정보를 포함한 DTO
-     * @param surveyAttendNo  설문 참여 번호
+     * @param dto            주관식 답변 정보를 포함한 DTO
+     * @param surveyAttendNo 설문 참여 번호
      * @throws SurveyAttendException 저장에 실패한 경우
      */
     private void saveSubjectiveAnswer(SurveyAttendSubmitDTO dto, long surveyAttendNo) {
-        if (dto.getSurveySubjectiveAnswer() != null && !dto.getSurveySubjectiveAnswer().trim().isEmpty()) {
+        if (dto.getSurveySubjectiveAnswer() != null && !dto.getSurveySubjectiveAnswer().trim()
+            .isEmpty()) {
             dto.setSurveyAttendNo(surveyAttendNo);
             int rowCount = surveyAttendMapper.insertSurveySubjectiveAnswer(dto);
             if (rowCount == 0) {
@@ -114,18 +115,20 @@ public class SurveyAttendServiceImpl implements SurveyAttendService {
     /**
      * 객관식 답변을 데이터베이스에 저장합니다.
      * <p>
-     * 제공된 'DTO' 의 문항 유형이 객관식인 경우 해당 답변과 관련된 선택 항목들을 데이터베이스에 저장합니다.
-     * 저장에 실패할 경우 {@link SurveyAttendException}을 발생시킵니다.
+     * 제공된 'DTO' 의 문항 유형이 객관식인 경우 해당 답변과 관련된 선택 항목들을 데이터베이스에 저장합니다. 저장에 실패할 경우
+     * {@link SurveyAttendException}을 발생시킵니다.
      * </p>
      *
-     * @param list             설문 응답 리스트
-     * @param dto              현재 처리 중인 문항에 대한 응답 정보를 포함한 DTO
-     * @param surveyAttendNo   설문 참여 번호
+     * @param list              설문 응답 리스트
+     * @param dto               현재 처리 중인 문항에 대한 응답 정보를 포함한 DTO
+     * @param surveyAttendNo    설문 참여 번호
      * @param currentQuestionNo 현재 처리 중인 문항 번호
      * @throws SurveyAttendException 저장에 실패한 경우
      */
-    private void saveObjectiveAnswer(List<SurveyAttendSubmitDTO> list, SurveyAttendSubmitDTO dto, long surveyAttendNo, long currentQuestionNo) {
-        if (dto.getQuestionTypeNo() == 1 || dto.getQuestionTypeNo() == 2 || dto.getQuestionTypeNo() == 3) {
+    private void saveObjectiveAnswer(List<SurveyAttendSubmitDTO> list, SurveyAttendSubmitDTO dto,
+        long surveyAttendNo, long currentQuestionNo) {
+        if (dto.getQuestionTypeNo() == 1 || dto.getQuestionTypeNo() == 2
+            || dto.getQuestionTypeNo() == 3) {
             dto.setSurveyAttendNo(surveyAttendNo);
             int rowCount = surveyAttendMapper.insertObjectiveAnswer(dto);
             if (rowCount == 0) {
@@ -135,14 +138,15 @@ public class SurveyAttendServiceImpl implements SurveyAttendService {
             long surveyAnswerNo = dto.getSurveyAnswerNo();
 
             list.stream()
-                    .filter(d -> d.getSurveyQuestionNo() == currentQuestionNo)
-                    .forEach(d -> {
-                        d.setSurveyAnswerNo(surveyAnswerNo);
-                        int objectiveRowCount = surveyAttendMapper.insertSurveyAnswerSelection(d);
-                        if (objectiveRowCount == 0) {
-                            throw new SurveyAttendException("Failed to save objective answer selection data.");
-                        }
-                    });
+                .filter(d -> d.getSurveyQuestionNo() == currentQuestionNo)
+                .forEach(d -> {
+                    d.setSurveyAnswerNo(surveyAnswerNo);
+                    int objectiveRowCount = surveyAttendMapper.insertSurveyAnswerSelection(d);
+                    if (objectiveRowCount == 0) {
+                        throw new SurveyAttendException(
+                            "Failed to save objective answer selection data.");
+                    }
+                });
         }
     }
 

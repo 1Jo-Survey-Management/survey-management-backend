@@ -55,16 +55,15 @@ public class S3PreSignedUrlGenerator {
     }
 
     /**
-     * S3 Bucket에 해당 파일에 대한 PreSignedURL 을 얻는 Request를 만드는 메서드 입니다.
-     * 권한은 파일 업로드만 설정되어 있습니다.
+     * S3 Bucket에 해당 파일에 대한 PreSignedURL 을 얻는 Request를 만드는 메서드 입니다. 권한은 파일 업로드만 설정되어 있습니다.
      *
      * @param bucketName S3 Bucket 이름
-     * @param fileName 업로드할 파일 이름
+     * @param fileName   업로드할 파일 이름
      * @return GeneratePresignedUrlRequest
      * @author : 강명관
      */
     private GeneratePresignedUrlRequest getGeneratePreSignedUrlRequest(String bucketName,
-                                                                       String fileName) {
+        String fileName) {
         GeneratePresignedUrlRequest generatePresignedUrlRequest =
             new GeneratePresignedUrlRequest(bucketName, fileName)
                 .withMethod(HttpMethod.PUT)

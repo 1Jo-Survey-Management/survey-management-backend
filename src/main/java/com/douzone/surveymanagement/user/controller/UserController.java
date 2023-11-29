@@ -32,27 +32,27 @@ import javax.validation.Valid;
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
+
     private final UserServiceImpl userServiceImpl;
 
     @PutMapping("/nickname")
     @Operation(summary = "사용자 닉네임 업데이트", description = "로그인한 사용자의 닉네임을 업데이트합니다.")
     public ResponseEntity<CommonResponse> userNickNameUpdate(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @Valid @RequestBody UserModifyDTO userModifyDTO) {
+        @AuthenticationPrincipal CustomUserDetails userDetails,
+        @Valid @RequestBody UserModifyDTO userModifyDTO) {
 
         try {
             userModifyDTO.setUserNo(userDetails.getUserNo());
             userServiceImpl.updateUserNickName(userModifyDTO);
             return ResponseEntity
-                    .ok()
-                    .body(CommonResponse.<String>successOf("NickName updated successfully"));
+                .ok()
+                .body(CommonResponse.<String>successOf("NickName updated successfully"));
         } catch (DuplicateUsernameException e) {
             String errorMessage = "Duplicate username: " + e.getMessage();
 
-
             return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(CommonResponse.<String>error(ErrorResponse.of(errorMessage)));
+                .status(HttpStatus.BAD_REQUEST)
+                .body(CommonResponse.<String>error(ErrorResponse.of(errorMessage)));
         }
     }
 
@@ -60,26 +60,29 @@ public class UserController {
     @PutMapping("/image")
     @Operation(summary = "사용자 이미지 업데이트", description = "로그인한 사용자의 프로필 이미지를 업데이트합니다.")
     public ResponseEntity<CommonResponse> updateUserImage(
-            @AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody ImageModifyDTO userImage) {
+        @AuthenticationPrincipal CustomUserDetails userDetails,
+        @RequestBody ImageModifyDTO userImage) {
 
-        boolean updated = userServiceImpl.updateUserImage(userDetails.getUserNo(), userImage.getUserImage());
+        boolean updated = userServiceImpl.updateUserImage(userDetails.getUserNo(),
+            userImage.getUserImage());
 
         if (updated) {
             return ResponseEntity
-                    .ok()
-                    .body(CommonResponse.<String>successOf("Image updated successfully"));
+                .ok()
+                .body(CommonResponse.<String>successOf("Image updated successfully"));
         } else {
             return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(CommonResponse.<String>error(ErrorResponse.of("Image update failed")));
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(CommonResponse.<String>error(ErrorResponse.of("Image update failed")));
         }
     }
 
     @GetMapping("/user-info")
     @Operation(summary = "현재 로그인한 사용자 정보 조회", description = "현재 로그인한 사용자의 상세 정보를 조회합니다.")
-    public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<UserDTO> getCurrentUser(
+        @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        if(userDetails == null) {
+        if (userDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
@@ -104,7 +107,7 @@ public class UserController {
     public ResponseEntity<String> getUserByUserNickname(@RequestBody UserModifyDTO userModifyDTO) {
         boolean isDuplicate = userServiceImpl.duplicateUsername(userModifyDTO);
 
-        if(isDuplicate) {
+        if (isDuplicate) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Nickname is not available");
         }
 

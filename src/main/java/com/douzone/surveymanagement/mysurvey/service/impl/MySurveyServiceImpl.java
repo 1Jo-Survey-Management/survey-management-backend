@@ -15,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MySurveyServiceImpl implements MySurveyService {
+
     private final MySurveyMapper mySurveyMapper;
 
     @Override
@@ -31,6 +32,7 @@ public class MySurveyServiceImpl implements MySurveyService {
     @Override
     @Transactional
     public boolean deleteMySurveyInProgress(MySurveyDTO mySurveyDTO) {
-        return mySurveyDTO.getSurveyStatusNo() == 1 && mySurveyMapper.updateMySurveysInProgress(mySurveyDTO) == 1;
+        return mySurveyDTO.getSurveyStatusNo() == 1
+            && mySurveyMapper.updateMySurveysInProgress(mySurveyDTO) == 1;
     }
 }

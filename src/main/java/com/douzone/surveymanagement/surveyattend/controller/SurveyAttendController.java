@@ -16,8 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 설문 참여 관련 작업을 담당하는 컨트롤러입니다.
- * 참여를 위한 설문에 대한 CRUD 작업을 처리합니다.
+ * 설문 참여 관련 작업을 담당하는 컨트롤러입니다. 참여를 위한 설문에 대한 CRUD 작업을 처리합니다.
  *
  * @author : 박창우
  * @since : 1.0
@@ -40,20 +39,20 @@ public class SurveyAttendController {
     public ResponseEntity<CommonResponse> getSurveyData() {
         List<SurveyAttendDTO> surveyData = surveyAttendServiceImpl.selectSurveyAttendData();
         return ResponseEntity
-                .ok()
-                .body(CommonResponse.successOf(surveyData));
+            .ok()
+            .body(CommonResponse.successOf(surveyData));
     }
 
     /**
-     * 사용자의 설문 응답을 저장합니다.
-     * 이에는 주요 설문 참여 데이터와 주관식/객관식 답변이 포함됩니다.
+     * 사용자의 설문 응답을 저장합니다. 이에는 주요 설문 참여 데이터와 주관식/객관식 답변이 포함됩니다.
      *
      * @param surveyAttendSubmitDTOList 사용자의 설문 응답을 담고 있는 데이터 전송 객체
      * @return 작업 상태를 담은 ResponseEntity
      */
     @PostMapping("/save-responses")
     @Operation(summary = "사용자 응답 저장하기", description = "사용자의 설문 응답을 저장합니다. 주관식 및 객관식 답변을 포함합니다.")
-    public ResponseEntity<CommonResponse> saveSurveyResponses(@RequestBody List<SurveyAttendSubmitDTO> surveyAttendSubmitDTOList) {
+    public ResponseEntity<CommonResponse> saveSurveyResponses(
+        @RequestBody List<SurveyAttendSubmitDTO> surveyAttendSubmitDTOList) {
 
         try {
             surveyAttendServiceImpl.saveSurveyAndAnswers(surveyAttendSubmitDTOList);
@@ -64,8 +63,8 @@ public class SurveyAttendController {
         } catch (Exception e) {
             log.error("설문 응답 저장 중 알 수 없는 오류 발생", e);
             return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(CommonResponse.error(ErrorResponse.of("ERROR_SAVING_SURVEY")));
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(CommonResponse.error(ErrorResponse.of("ERROR_SAVING_SURVEY")));
         }
     }
 
@@ -84,8 +83,8 @@ public class SurveyAttendController {
         } catch (Exception e) {
             log.error("마감일 정보 조회 중 오류 발생: {}", e.getMessage());
             return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(CommonResponse.error(ErrorResponse.of("ERROR_RETRIEVING_CLOSING_TIME")));
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(CommonResponse.error(ErrorResponse.of("ERROR_RETRIEVING_CLOSING_TIME")));
         }
     }
 }

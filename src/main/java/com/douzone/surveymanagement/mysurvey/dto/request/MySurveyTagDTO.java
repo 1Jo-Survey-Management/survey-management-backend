@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Schema(description = "설문 태그 정보 DTO")
 public class MySurveyTagDTO {
+
     @Schema(description = "태그 번호", example = "1")
     private int tagNo;
     @Schema(description = "태그 이름들", example = "일상, 기타")

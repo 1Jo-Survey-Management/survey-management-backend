@@ -33,7 +33,8 @@ public class GetAccessToken {
             int responseCode = connection.getResponseCode();
 
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                try (BufferedReader in = new BufferedReader(
+                    new InputStreamReader(connection.getInputStream()))) {
                     String inputLine;
 
                     while ((inputLine = in.readLine()) != null) {
@@ -59,7 +60,8 @@ public class GetAccessToken {
         try {
             if (jsonResponse != null && !jsonResponse.isEmpty()) {
                 // JSON 문자열이 비어 있지 않은 경우에만 변환
-                return objectMapper.readValue(jsonResponse, new TypeReference<>() {});
+                return objectMapper.readValue(jsonResponse, new TypeReference<>() {
+                });
             } else {
                 log.warn("Empty or null JSON response. Returning an empty map.");
                 return Collections.emptyMap();

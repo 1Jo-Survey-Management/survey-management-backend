@@ -18,6 +18,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Schema(description = "설문 참여 관련 데이터 DTO")
 public class SurveyAttendDTO {
+
     @Schema(description = "설문 제목", example = "설문 제목 예시")
     private String surveyTitle;
     @Schema(description = "설문 이미지 URL", example = "https://example.com/image.jpg")

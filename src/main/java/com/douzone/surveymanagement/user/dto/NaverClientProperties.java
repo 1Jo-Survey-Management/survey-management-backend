@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 @Setter
 @ConfigurationProperties("spring.security.oauth2.client.registration.naver")
 public class NaverClientProperties {
+
     private String clientId;
     private String clientSecret;
     private String clientName;

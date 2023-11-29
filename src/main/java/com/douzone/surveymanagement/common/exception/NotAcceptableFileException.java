@@ -7,6 +7,7 @@ package com.douzone.surveymanagement.common.exception;
  * @since : 1.0
  **/
 public class NotAcceptableFileException extends RuntimeException {
+
     private static final String MESSAGE = "적절하지 않은 파일입니다.";
 
     public NotAcceptableFileException() {

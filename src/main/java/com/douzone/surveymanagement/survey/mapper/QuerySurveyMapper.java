@@ -39,12 +39,13 @@ public interface QuerySurveyMapper {
     /**
      * 설문 번호와 유저 번호가 설문 작성자인지 확인하는 쿼리
      *
-     * @param userNo 유저 번호
+     * @param userNo   유저 번호
      * @param surveyNo 설문 번호
      * @return 설문의 작성자와 해당 유저가 동일하면 true, 아니다면 false
      * @author : 강명관
      */
-    boolean selectSurveyCreatedByUser(@Param("userNo") long userNo, @Param("surveyNo") long surveyNo);
+    boolean selectSurveyCreatedByUser(@Param("userNo") long userNo,
+        @Param("surveyNo") long surveyNo);
 
     List<SurveyDetailInfoDto> selectWeeklySurvey(long userNo);
 

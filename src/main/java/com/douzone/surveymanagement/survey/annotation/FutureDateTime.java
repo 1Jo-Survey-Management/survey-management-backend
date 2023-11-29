@@ -18,7 +18,10 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = FutureDateTimeValidator.class)
 public @interface FutureDateTime {
+
     String message() default "입력된 날짜 및 시간은 미래 시간이어야 합니다.";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

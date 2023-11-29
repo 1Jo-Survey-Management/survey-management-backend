@@ -6,12 +6,14 @@ import java.util.Date;
 
 /**
  * 유저 정보 dto 입니다
+ *
  * @author 김선규
  */
 @Getter
 @Setter
 @Schema(description = "사용자 정보 DTO")
 public class UserInfo {
+
     @Schema(description = "사용자 번호", example = "1")
     private long userNo;
     @Schema(description = "사용자 닉네임", example = "nickname123")

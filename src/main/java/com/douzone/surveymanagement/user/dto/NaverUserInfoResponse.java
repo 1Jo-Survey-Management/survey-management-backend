@@ -1,15 +1,18 @@
 package com.douzone.surveymanagement.user.dto;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * 네이버 유저 dto
+ *
  * @author 김선규
  */
 @Getter
 @Setter
 public class NaverUserInfoResponse {
+
     @JsonProperty("resultcode")
     private String resultCode;
 
@@ -20,6 +23,7 @@ public class NaverUserInfoResponse {
     @Getter
     @Setter
     public static class NaverUserInfo {
+
         private String id;
         private String nickname;
         private String email;
