@@ -35,8 +35,8 @@ public class QuerySurveyController {
      * @return {@link SurveyDetailsDto}
      * @author : 강명관
      */
-    @GetMapping("/{surveyNo}")
     @Operation(summary = "설문에 대한 모든 상세 정보 조회", description = "특정 설문의 상세 정보를 조회합니다.")
+    @GetMapping("/{surveyNo}")
     public ResponseEntity<CommonResponse<SurveyDetailsDto>> surveyDetails(
         @PathVariable(value = "surveyNo") long surveyNo
     ) {
@@ -50,9 +50,11 @@ public class QuerySurveyController {
      * @return 인기 설문 10개
      *
      */
-
+    @Operation(
+        summary = "이번 주 인기 설문 조회",
+        description = "이번 주에 참여자가 많은 인기 설문 10개를 조회합니다."
+    )
     @GetMapping("/weekly")
-    @Operation(summary = "이번 주 인기 설문 조회", description = "이번 주에 참여자가 많은 인기 설문 10개를 조회합니다.")
     public ResponseEntity<List<SurveyDetailInfoDto>> weeklySurveyList(
         @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
@@ -67,8 +69,8 @@ public class QuerySurveyController {
      * @return 최근 등록 설문 10개
      *
      */
-    @GetMapping("/recent")
     @Operation(summary = "최근 등록된 설문 조회", description = "최근에 등록된 설문 10개를 조회합니다.")
+    @GetMapping("/recent")
     public ResponseEntity<List<SurveyDetailInfoDto>> recentSurveyList (
         @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
@@ -83,9 +85,11 @@ public class QuerySurveyController {
      * @return 최근 마감 설문 10개
      *
      */
-    @GetMapping("/closing")
     @Operation(summary = "최근 마감된 설문 조회", description = "최근에 마감된 순서대로 설문 10개를 조회합니다.")
-    public ResponseEntity<List<SurveyDetailInfoDto>> closingSurveyList (@AuthenticationPrincipal CustomUserDetails userDetails) {
+    @GetMapping("/closing")
+    public ResponseEntity<List<SurveyDetailInfoDto>> closingSurveyList (
+        @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> closingSurvey = querySurveyService.readClosingSurvey(userNo);
         return ResponseEntity.ok(closingSurvey);
@@ -98,8 +102,11 @@ public class QuerySurveyController {
      * @return 전체 설문
      *
      */
+    @Operation(
+        summary = "게시 및 마감된 설문 전체 조회",
+        description = "게시되거나 마감된 모든 설문을 페이지별로 조회합니다."
+    )
     @GetMapping("/surveyall")
-    @Operation(summary = "게시 및 마감된 설문 전체 조회", description = "게시되거나 마감된 모든 설문을 페이지별로 조회합니다.")
     public ResponseEntity<List<SurveyDetailInfoDto>> getAllSurvey(
         @RequestParam("page") int page,
         @AuthenticationPrincipal CustomUserDetails userDetails
@@ -152,7 +159,8 @@ public class QuerySurveyController {
         @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         long userNo = userDetails.getUserNo();
-        List<SurveyDetailInfoDto> findSurvey = querySurveyService.searchSurveyByKeyword( searchWord, userNo);
+        List<SurveyDetailInfoDto> findSurvey =
+            querySurveyService.searchSurveyByKeyword(searchWord, userNo);
         return ResponseEntity.ok(findSurvey);
     }
 
@@ -164,7 +172,10 @@ public class QuerySurveyController {
      * @return {@link SurveyDetailInfoDto}
      * @author : 강명관
      */
-    @Operation(summary = "특정 설문에 대해 메인 페이지에 필요한 모든 정보", description = "특정 설문에 대해 메인 페이지에서 필요한 모든 정보를 조회합니다.")
+    @Operation(
+        summary = "특정 설문에 대해 메인 페이지에 필요한 모든 정보",
+        description = "특정 설문에 대해 메인 페이지에서 필요한 모든 정보를 조회합니다."
+    )
     @GetMapping("/details/{surveyNo}")
     public ResponseEntity<CommonResponse> surveyFindOneDetails(
         @PathVariable("surveyNo") long surveyNo,
