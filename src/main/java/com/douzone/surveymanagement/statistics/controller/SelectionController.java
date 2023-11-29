@@ -22,7 +22,9 @@ public class SelectionController {
 
     @GetMapping("/resultall")
     @Operation(summary = "모든 선택 항목 조회", description = "주어진 설문 번호에 대해 모든 통계의 결과를 조회합니다.")
-    public ResponseEntity<CommonResponse>  findSelectionListAll(@RequestParam(value = "surveyno") long surveyNo){
+    public ResponseEntity<CommonResponse>  findSelectionListAll(
+        @RequestParam(value = "surveyno") long surveyNo
+    ){
 
         List<SelectDto> selectList = selectService.readSelectionAll(surveyNo);
 

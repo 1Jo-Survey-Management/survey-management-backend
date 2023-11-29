@@ -121,7 +121,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                     || (callBackUri.equals("/api/surveys/select-closing"))
                     || (callBackUri.equals("/api/surveys/select-post"))
                     ||(pathMatcher.match("/swagger-ui/**", callBackUri))
-                    ||(pathMatcher.match("/v3/api-docs/**", callBackUri)))
+                    ||(pathMatcher.match("/v3/api-docs/**", callBackUri))
+                    ||(pathMatcher.match("/api/surveys/details/**", callBackUri)))
                     {
                         customAuthentication = new CustomAuthentication(
                                 new CustomUserDetails(null, null, null, null, null, null, customToken.getAuthorities()),

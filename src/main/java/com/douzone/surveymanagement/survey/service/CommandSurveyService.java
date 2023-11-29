@@ -2,6 +2,7 @@ package com.douzone.surveymanagement.survey.service;
 
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoCreateDto;
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoUpdateDto;
+import com.douzone.surveymanagement.survey.dto.response.SurveyDetailInfoDto;
 import com.douzone.surveymanagement.surveyquestion.dto.request.SurveyQuestionCreateDto;
 import java.util.List;
 

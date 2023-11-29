@@ -37,15 +37,18 @@ public class MySurveyController {
      * @param userDetails 로그인 된 사용자 번호
      * @return 설문 목록과 상태 정보를 포함한 응답
      */
+    @Operation(
+        summary = "사용자가 작성한 설문 목록 가져오기",
+        description = "로그인한 사용자가 작성한 설문 목록을 가져옵니다."
+    )
     @GetMapping("/write-surveys")
-    @Operation(summary = "사용자가 작성한 설문 목록 가져오기", description = "로그인한 사용자가 작성한 설문 목록을 가져옵니다.")
     public ResponseEntity<CommonResponse<List<MySurveyDTO>>> selectMySurvey(
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        @AuthenticationPrincipal CustomUserDetails userDetails) {
         if (userDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        List<MySurveyDTO> myWriteSurveys = mySurveyServiceImpl.selectMySurveysWithSorting(userDetails.getUserNo());
-
+        List<MySurveyDTO> myWriteSurveys =
+            mySurveyServiceImpl.selectMySurveysWithSorting(userDetails.getUserNo());
 
         return ResponseEntity.ok(CommonResponse.successOf(myWriteSurveys));
     }
@@ -57,23 +60,30 @@ public class MySurveyController {
      * @param userDetails 로그인 된 사용자 번호
      * @return 설문 목록과 상태 정보를 포함한 응답
      */
+    @Operation(
+        summary = "사용자가 참여한 설문 목록 가져오기",
+        description = "로그인한 사용자가 참여한 설문 목록을 가져옵니다."
+    )
     @GetMapping("/attend-surveys")
-    @Operation(summary = "사용자가 참여한 설문 목록 가져오기", description = "로그인한 사용자가 참여한 설문 목록을 가져옵니다.")
     public ResponseEntity<CommonResponse<List<MySurveyDTO>>> selectAttendSurvey(
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        @AuthenticationPrincipal CustomUserDetails userDetails) {
         if (userDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        List<MySurveyDTO> myAttendSurveys = mySurveyServiceImpl.selectMyParticipatedSurveys(userDetails.getUserNo());
+        List<MySurveyDTO> myAttendSurveys =
+            mySurveyServiceImpl.selectMyParticipatedSurveys(userDetails.getUserNo());
 
         return ResponseEntity.ok(CommonResponse.successOf(myAttendSurveys));
     }
 
+    @Operation(
+        summary = "사용자가 작성한 설문 수정하기",
+        description = "로그인한 사용자가 작성한 특정 설문을 수정합니다."
+    )
     @PutMapping("/update-write-surveys")
-    @Operation(summary = "사용자가 작성한 설문 수정하기", description = "로그인한 사용자가 작성한 특정 설문을 수정합니다.")
     public ResponseEntity<CommonResponse> updateMySurvey(
-            @RequestBody MySurveyDTO mySurveyDTO,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        @RequestBody MySurveyDTO mySurveyDTO,
+        @AuthenticationPrincipal CustomUserDetails userDetails) {
         if (userDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -83,7 +93,7 @@ public class MySurveyController {
             return ResponseEntity.ok(CommonResponse.successOf("Survey deleted successfully"));
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(CommonResponse.error(ErrorResponse.of("Failed to delete survey")));
+                .body(CommonResponse.error(ErrorResponse.of("Failed to delete survey")));
         }
     }
 }
