@@ -9,6 +9,7 @@ import com.douzone.surveymanagement.user.dto.request.UserModifyDTO;
 import com.douzone.surveymanagement.user.exception.DuplicateUsernameException;
 import com.douzone.surveymanagement.user.service.impl.UserServiceImpl;
 import com.douzone.surveymanagement.user.util.CustomUserDetails;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,7 @@ public class UserController {
     private final UserServiceImpl userServiceImpl;
 
     @PutMapping("/nickname")
+    @Operation(summary = "사용자 닉네임 업데이트", description = "로그인한 사용자의 닉네임을 업데이트합니다.")
     public ResponseEntity<CommonResponse> userNickNameUpdate(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody UserModifyDTO userModifyDTO) {
@@ -56,6 +58,7 @@ public class UserController {
 
     @S3DeleteObject
     @PutMapping("/image")
+    @Operation(summary = "사용자 이미지 업데이트", description = "로그인한 사용자의 프로필 이미지를 업데이트합니다.")
     public ResponseEntity<CommonResponse> updateUserImage(
             @AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody ImageModifyDTO userImage) {
 
@@ -73,6 +76,7 @@ public class UserController {
     }
 
     @GetMapping("/user-info")
+    @Operation(summary = "현재 로그인한 사용자 정보 조회", description = "현재 로그인한 사용자의 상세 정보를 조회합니다.")
     public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
         if(userDetails == null) {
@@ -96,6 +100,7 @@ public class UserController {
      * @return 응답 엔터티
      */
     @PostMapping("/check-duplicate-nickname")
+    @Operation(summary = "닉네임 중복 확인", description = "닉네임이 이미 사용 중인지 확인합니다.")
     public ResponseEntity<String> getUserByUserNickname(@RequestBody UserModifyDTO userModifyDTO) {
         boolean isDuplicate = userServiceImpl.duplicateUsername(userModifyDTO);
 

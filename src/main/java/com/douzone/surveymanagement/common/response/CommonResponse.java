@@ -1,5 +1,6 @@
 package com.douzone.surveymanagement.common.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 /**
@@ -9,12 +10,16 @@ import lombok.Getter;
  * @since : 1.0
  **/
 @Getter
+@Schema(description = "API 응답을 위한 공통 포맷을 정의하는 클래스")
 public class CommonResponse<T> {
 
+    @Schema(description = "응답 성공 여부", example = "true")
     private final boolean success;
 
+    @Schema(description = "응답 내용")
     private final T content;
 
+    @Schema(description = "에러 응답 정보")
     private final ErrorResponse<T> errorResponse;
 
     private static final String DEFAULT_SUCCESS_MESSAGE = "Success!!";

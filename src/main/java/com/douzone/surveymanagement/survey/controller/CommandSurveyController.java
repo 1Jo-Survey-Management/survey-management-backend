@@ -9,6 +9,7 @@ import com.douzone.surveymanagement.survey.dto.request.SurveyUpdateDto;
 import com.douzone.surveymanagement.survey.service.CommandSurveyService;
 import com.douzone.surveymanagement.survey.service.QuerySurveyService;
 import com.douzone.surveymanagement.user.util.CustomUserDetails;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -43,6 +44,10 @@ public class CommandSurveyController {
      * @return 성공적으로 저장되었을 경우 CREATED 201 을 응답합니다.
      * @author : 강명관
      */
+    @Operation(
+        summary = "설문 생성",
+        description = "새로운 설문을 등록합니다. 설문 생성에 필요한 모든 정보가 포함된 DTO를 사용합니다."
+    )
     @RequiredUser
     @PostMapping
     public ResponseEntity<CommonResponse<String>> surveyCreate(
@@ -68,6 +73,10 @@ public class CommandSurveyController {
      * @return 공용 응답객체
      * @author : 강명관
      */
+    @Operation(
+        summary = "설문 수정",
+        description = "기존에 생성된 설문을 수정합니다. 수정에 필요한 데이터를 포함한 DTO를 사용합니다."
+    )
     @RequiredUser
     @S3DeleteObject
     @PutMapping
@@ -100,6 +109,10 @@ public class CommandSurveyController {
      * @return 공용응답 객체
      * @author : 강명관
      */
+    @Operation(
+        summary = "설문 상태 변경 (게시)",
+        description = "진행 중인 설문의 상태를 게시 상태로 변경합니다. 설문 번호를 기반으로 상태를 변경합니다."
+    )
     @RequiredUser
     @PutMapping("/{surveyNo}/post")
     public ResponseEntity<CommonResponse<String>> surveyStatusToPostFromInProgress(
