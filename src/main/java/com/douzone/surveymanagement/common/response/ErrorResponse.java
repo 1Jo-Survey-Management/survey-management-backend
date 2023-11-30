@@ -19,7 +19,8 @@ public class ErrorResponse<T> {
     @Schema(description = "에러에 대한 추가적인 내용")
     private final T content;
 
-    private static final String METHOD_ARGUMENT_EXCEPTION_MESSAGE = "Method Arguments Valid Exception!";
+    private static final String METHOD_ARGUMENT_EXCEPTION_MESSAGE =
+        "Method Arguments Valid Exception!";
 
     private ErrorResponse(String message, T content) {
         this.message = message;

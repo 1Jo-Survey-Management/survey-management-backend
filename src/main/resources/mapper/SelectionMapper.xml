@@ -25,7 +25,8 @@
                 <otherwise>
                     #{item.surveyQuestionMoveNo}
                 </otherwise>
-            </choose>,
+            </choose>
+            ,
             #{item.selectionValue},
             #{item.isMovable},
             #{item.isEndOfSurvey}
@@ -34,12 +35,14 @@
     </insert>
 
     <delete id="deleteSelectionsBySurveyNo" parameterType="long">
-        DELETE se
+        DELETE
+        se
         FROM
         selection AS se
             INNER JOIN survey_question AS sq
                 ON se.survey_question_no = sq.survey_question_no
-        WHERE sq.survey_no = #{surveyNo};
+        WHERE sq.survey_no =
+        #{surveyNo};
     </delete>
 
 </mapper>

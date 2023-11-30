@@ -1,8 +1,7 @@
 package com.douzone.surveymanagement.survey.service;
 
-import com.douzone.surveymanagement.survey.dto.response.SurveyDetailsDto;
 import com.douzone.surveymanagement.survey.dto.response.SurveyDetailInfoDto;
-
+import com.douzone.surveymanagement.survey.dto.response.SurveyDetailsDto;
 import java.util.List;
 
 /**
@@ -35,7 +34,7 @@ public interface QuerySurveyService {
     /**
      * 설문의 작성자와 userNo의 유저와 동일한지 비교하는 메서드 입니다.
      *
-     * @param userNo 유저 번호
+     * @param userNo   유저 번호
      * @param surveyNo 설문 번호
      * @return 일치할 경우 true, 일치하지 않을 경우 false
      * @author : 강명관
@@ -52,14 +51,15 @@ public interface QuerySurveyService {
 
     List<SurveyDetailInfoDto> selectClosing(int page, long userNo);
 
-    List<SurveyDetailInfoDto> selectPost(int page,long userNo);
-    List<SurveyDetailInfoDto> searchSurveyByKeyword(String searchWord,long userNo);
+    List<SurveyDetailInfoDto> selectPost(int page, long userNo);
+
+    List<SurveyDetailInfoDto> searchSurveyByKeyword(String searchWord, long userNo);
 
 
     /**
      * 설문의 번호를 통해 설문의 상세 정보를 가져오는 메서드 입니다.
      *
-     * @param userNo 유저 번호
+     * @param userNo   유저 번호
      * @param surveyNo 설문 번호
      * @return {@link SurveyDetailInfoDto}
      * @author : 강명관

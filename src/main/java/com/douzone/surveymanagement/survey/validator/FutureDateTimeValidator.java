@@ -18,9 +18,8 @@ public class FutureDateTimeValidator implements ConstraintValidator<FutureDateTi
     /**
      * 현재 시간을 value로 받고 해당 value가 유효한지 판별하는 메서드 입니다.
      *
-     * @param value object to validate
+     * @param value   object to validate
      * @param context context in which the constraint is evaluated
-     *
      * @return 유효하면 true, 유효하지 않으면 false
      * @author : 강명관
      */

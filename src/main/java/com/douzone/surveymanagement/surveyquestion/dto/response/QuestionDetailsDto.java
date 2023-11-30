@@ -2,9 +2,8 @@ package com.douzone.surveymanagement.surveyquestion.dto.response;
 
 import com.douzone.surveymanagement.selection.dto.response.SelectionDetailsDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

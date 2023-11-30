@@ -6,6 +6,7 @@ import lombok.Setter;
 
 /**
  * 네이버 로그인 시 프로필 응답 dto 입니다
+ *
  * @author 김선규
  */
 @Getter

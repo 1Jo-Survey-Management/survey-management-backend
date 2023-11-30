@@ -1,10 +1,12 @@
 package com.douzone.surveymanagement.user.dto;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * 네이버 유저 dto
+ *
  * @author 김선규
  */
 @Getter

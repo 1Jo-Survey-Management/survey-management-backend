@@ -34,7 +34,7 @@ public class S3Config {
      * @author : 강명관
      */
     @Bean
-    public BasicAWSCredentials basicAWSCredentials () {
+    public BasicAWSCredentials basicAWSCredentials() {
         return new BasicAWSCredentials(accessKey, secretKey);
     }
 

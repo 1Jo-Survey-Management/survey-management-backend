@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 /**
  * 로그인에 필요한 userMapper 입니다
+ *
  * @author 김선규
  */
 @Mapper

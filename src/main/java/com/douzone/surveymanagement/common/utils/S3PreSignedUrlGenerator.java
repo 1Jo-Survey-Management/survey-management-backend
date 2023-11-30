@@ -59,7 +59,7 @@ public class S3PreSignedUrlGenerator {
      * 권한은 파일 업로드만 설정되어 있습니다.
      *
      * @param bucketName S3 Bucket 이름
-     * @param fileName 업로드할 파일 이름
+     * @param fileName   업로드할 파일 이름
      * @return GeneratePresignedUrlRequest
      * @author : 강명관
      */

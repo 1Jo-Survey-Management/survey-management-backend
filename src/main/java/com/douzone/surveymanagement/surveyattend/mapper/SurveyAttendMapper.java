@@ -2,11 +2,9 @@ package com.douzone.surveymanagement.surveyattend.mapper;
 
 import com.douzone.surveymanagement.surveyattend.dto.request.SurveyAttendDTO;
 import com.douzone.surveymanagement.surveyattend.dto.request.SurveyAttendSubmitDTO;
-import org.apache.ibatis.annotations.Mapper;
-
-
 import java.time.LocalDateTime;
 import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 /**

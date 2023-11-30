@@ -1,11 +1,13 @@
 package com.douzone.surveymanagement.user.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
 import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 유저 정보 dto 입니다
+ *
  * @author 김선규
  */
 @Getter
