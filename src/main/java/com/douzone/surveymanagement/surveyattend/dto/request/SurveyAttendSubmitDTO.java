@@ -16,6 +16,7 @@ import lombok.ToString;
 @Setter
 @Schema(description = "설문 참여 제출을 위한 DTO")
 public class SurveyAttendSubmitDTO {
+
     @Schema(description = "사용자 번호", example = "1")
     private long userNo;
     @Schema(description = "설문 번호", example = "1")

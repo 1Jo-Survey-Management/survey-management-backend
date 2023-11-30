@@ -41,7 +41,8 @@ public class RestControllerAdvisor {
 
         log.error("MethodArgumentNotValidException Error");
         log.error("message : {}", e.getMessage());
-        List<MethodArgumentValidError> methodArgumentValidErrors = e.getBindingResult().getFieldErrors()
+        List<MethodArgumentValidError> methodArgumentValidErrors = e.getBindingResult()
+            .getFieldErrors()
             .stream()
             .map(error -> new MethodArgumentValidError(
                 error.getField(),
@@ -52,7 +53,7 @@ public class RestControllerAdvisor {
 
         return ResponseEntity.badRequest()
             .body(CommonResponse.error(
-                ErrorResponse.ofMethodArgumentValidError(methodArgumentValidErrors)
+                    ErrorResponse.ofMethodArgumentValidError(methodArgumentValidErrors)
                 )
             );
     }
@@ -102,7 +103,7 @@ public class RestControllerAdvisor {
      * 처리하지 못한 전역 에러를 처리하기 위한 ExceptionHandler 입니다.
      *
      * @param e Exception
-     * @return  공통 응답객체에 ErrorResponse 객체를 담은 응답입니다.
+     * @return 공통 응답객체에 ErrorResponse 객체를 담은 응답입니다.
      * @author : 강명관
      */
     @ExceptionHandler({Exception.class, RuntimeException.class})

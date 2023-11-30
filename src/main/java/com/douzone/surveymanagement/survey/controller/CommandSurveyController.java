@@ -53,7 +53,7 @@ public class CommandSurveyController {
     public ResponseEntity<CommonResponse<String>> surveyCreate(
         @RequestBody SurveyCreateDto surveyCreateDto,
         @AuthenticationPrincipal CustomUserDetails userDetails
-        ) {
+    ) {
 
         surveyCreateDto.getSurveyInfoCreateDto().setUserNo(userDetails.getUserNo());
 
@@ -69,7 +69,7 @@ public class CommandSurveyController {
      * 설문을 수정하는 API 입니다.
      *
      * @param surveyUpdateDto 설문의 수정에 필요한 데이터
-     * @param userDetails 인가된 사용자
+     * @param userDetails     인가된 사용자
      * @return 공용 응답객체
      * @author : 강명관
      */
@@ -104,7 +104,7 @@ public class CommandSurveyController {
     /**
      * 작성된 설문의 상태를 게시하는 API 입니다.
      *
-     * @param surveyNo 설문 번호
+     * @param surveyNo    설문 번호
      * @param userDetails 인가된 사용자
      * @return 공용응답 객체
      * @author : 강명관

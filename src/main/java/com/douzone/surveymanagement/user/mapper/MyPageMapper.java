@@ -11,6 +11,7 @@ import org.apache.ibatis.annotations.Param;
  */
 @Mapper
 public interface MyPageMapper {
+
     int updateUserNickNameByUserNo(UserModifyDTO userModifyDTO);
 
     int updateUserImage(ImageModifyDTO imageModifyDTO);

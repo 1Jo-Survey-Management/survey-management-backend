@@ -10,7 +10,10 @@ import java.util.List;
  */
 @Mapper
 public interface MySurveyMapper {
+
     List<MySurveyDTO> selectMySurveysWithSorting(long userNo);
+
     List<MySurveyDTO> selectMyParticipatedSurveys(long userNo);
+
     int updateMySurveysInProgress(MySurveyDTO mySurveyDTO);
 }

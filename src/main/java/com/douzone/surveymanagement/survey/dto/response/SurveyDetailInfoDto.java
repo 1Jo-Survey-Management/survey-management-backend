@@ -13,31 +13,31 @@ import java.util.List;
 public class SurveyDetailInfoDto {
 
     @Schema(description = "설문 번호", example = "1")
-    private  long surveyNo;
+    private long surveyNo;
     @Schema(description = "설문 제목", example = "설문 제목 예시")
-    private  String surveyTitle;
+    private String surveyTitle;
     @Schema(description = "설문 설명", example = "설문 설명 예시")
-    private  String surveyDescription;
+    private String surveyDescription;
     @Schema(description = "설문 이미지 URL", example = "https://survey-management-bucket.s3.ap-northeast-2.amazonaws.com/survey-management-images/image.jpg")
-    private  String surveyImage;
+    private String surveyImage;
     @Schema(description = "설문 게시 일시", example = "2023-01-01T00:00:00.000+00:00")
-    private  LocalDateTime surveyPostAt;
+    private LocalDateTime surveyPostAt;
     @Schema(description = "설문 마감 일시", example = "2023-12-31")
     private LocalDate surveyClosingAt;
     @Schema(description = "사용자 번호", example = "1")
-    private  int userNo;
+    private int userNo;
     @Schema(description = "사용자 닉네임", example = "nickname123")
-    private  String userNickName;
+    private String userNickName;
     @Schema(description = "사용자 이미지 URL", example = "https://survey-management-bucket.s3.ap-northeast-2.amazonaws.com/survey-management-images/userimage.jpg")
-    private  String userImage;
+    private String userImage;
     @Schema(description = "설문 상태 이름", example = "진행중")
-    private  String surveyStatusName;
+    private String surveyStatusName;
     @Schema(description = "설문 공개 상태 이름", example = "공개")
-    private  String openStatusName;
+    private String openStatusName;
     @Schema(description = "설문 참여자 수", example = "100")
-    private  long surveyAttendCount;
+    private long surveyAttendCount;
     @Schema(description = "설문 삭제 여부", example = "false")
-    private  boolean isDeleted;
+    private boolean isDeleted;
     @Schema(description = "설문 태그 목록", example = "[\"공지\", \"일상\"]")
     private List<String> tagName;
 

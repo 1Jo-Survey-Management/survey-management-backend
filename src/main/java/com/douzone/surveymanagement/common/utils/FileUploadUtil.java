@@ -26,7 +26,8 @@ public class FileUploadUtil {
 
     }
 
-    private static final String FILE_PATH = System.getProperty("user.home") + "/Documents/GitHub/survey-management-frontend/public/images";
+    private static final String FILE_PATH = System.getProperty("user.home")
+        + "/Documents/GitHub/survey-management-frontend/public/images";
 
     /**
      * 파일을 로컬 폴더에 업로드하기 위한 메서드 입니다.

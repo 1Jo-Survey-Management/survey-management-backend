@@ -20,8 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 설문 참여 관련 작업을 담당하는 컨트롤러입니다.
- * 참여를 위한 설문에 대한 CRUD 작업을 처리합니다.
+ * 설문 참여 관련 작업을 담당하는 컨트롤러입니다. 참여를 위한 설문에 대한 CRUD 작업을 처리합니다.
  *
  * @author : 박창우
  * @since : 1.0
@@ -46,7 +45,7 @@ public class SurveyAttendController {
     public ResponseEntity<CommonResponse> getSurveyData(
         @PathVariable("surveyNo") long surveyNo,
         @AuthenticationPrincipal CustomUserDetails customUserDetails
-        ) {
+    ) {
 
         boolean isSurveyCreatedByUser = querySurveyService.isSurveyCreatedByUser(
             customUserDetails.getUserNo(),
@@ -65,8 +64,7 @@ public class SurveyAttendController {
     }
 
     /**
-     * 사용자의 설문 응답을 저장합니다.
-     * 이에는 주요 설문 참여 데이터와 주관식/객관식 답변이 포함됩니다.
+     * 사용자의 설문 응답을 저장합니다. 이에는 주요 설문 참여 데이터와 주관식/객관식 답변이 포함됩니다.
      *
      * @param surveyAttendSubmitDTOList 사용자의 설문 응답을 담고 있는 데이터 전송 객체
      * @return 작업 상태를 담은 ResponseEntity

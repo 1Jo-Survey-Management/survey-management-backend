@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.douzone.surveymanagement.surveytag.mapper.SurveyTagMapper">
 
-    <insert id="insertSurveyTag"
-            parameterType="com.douzone.surveymanagement.surveytag.dto.request.SurveyTagCreateDto">
-        INSERT INTO survey_tag (
-            `survey_no`,
-            `tag_no`
-        )
-        VALUES (
-           #{surveyNo},
-           #{tagNo}
-       );
-    </insert>
+  <insert id="insertSurveyTag"
+    parameterType="com.douzone.surveymanagement.surveytag.dto.request.SurveyTagCreateDto">
+    INSERT INTO survey_tag (`survey_no`,
+                            `tag_no`)
+    VALUES (#{surveyNo},
+            #{tagNo});
+  </insert>
 
-    <delete id="deleteAllSurveyTagBySurveyNo" parameterType="long">
-        DELETE
-        FROM survey_tag
-        WHERE survey_no = #{surveyNo};
-    </delete>
+  <delete id="deleteAllSurveyTagBySurveyNo" parameterType="long">
+    DELETE
+    FROM survey_tag
+    WHERE survey_no = #{surveyNo};
+  </delete>
 
 </mapper>

@@ -17,6 +17,7 @@ import java.util.List;
 @ToString
 @Schema(description = "사용자 설문 정보 DTO")
 public class MySurveyDTO {
+
     @Schema(description = "설문 번호", example = "1")
     private Long surveyNo;
     @Schema(description = "사용자 번호", example = "1")

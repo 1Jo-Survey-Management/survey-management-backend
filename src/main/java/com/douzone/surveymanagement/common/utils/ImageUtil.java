@@ -55,8 +55,8 @@ public class ImageUtil {
     }
 
     /**
-     * JPEG, JPG, PNG 에 따라 맞는 MediaType을 반환하는 메서드 입니다.
-     * 그 외의 타입의 경우 NotAcceptableFileException 을 발생 시킵니다.
+     * JPEG, JPG, PNG 에 따라 맞는 MediaType을 반환하는 메서드 입니다. 그 외의 타입의 경우 NotAcceptableFileException 을 발생
+     * 시킵니다.
      *
      * @param fileExtension 파일 확장자
      * @return 파일 MediaType

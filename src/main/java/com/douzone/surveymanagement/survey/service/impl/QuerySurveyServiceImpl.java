@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly=true)
+@Transactional(readOnly = true)
 public class QuerySurveyServiceImpl implements QuerySurveyService {
 
     private final QuerySurveyMapper querySurveyMapper;
@@ -92,14 +92,14 @@ public class QuerySurveyServiceImpl implements QuerySurveyService {
         return nextPage;
     }
 
-    private HashMap<String, Object> pageAndUserNo(int page, long userNo){
+    private HashMap<String, Object> pageAndUserNo(int page, long userNo) {
         HashMap<String, Object> pageUser = new HashMap<>();
         pageUser.put("page", showNextPage(page));
         pageUser.put("userNo", userNo);
         return pageUser;
     }
 
-    private HashMap<String, Object> searchWord(String searchWord, long userNo){
+    private HashMap<String, Object> searchWord(String searchWord, long userNo) {
         HashMap<String, Object> searchKeyword = new HashMap<>();
         searchKeyword.put("searchWord", searchWord);
         searchKeyword.put("userNo", userNo);

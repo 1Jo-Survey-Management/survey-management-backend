@@ -1,4 +1,5 @@
 package com.douzone.surveymanagement.user.util;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -6,9 +7,11 @@ import java.util.Collection;
 
 /**
  * token을 추가한 CustomAuthentication 입니다
+ *
  * @author 김선규
  */
 public class CustomAuthentication implements Authentication {
+
     private final CustomUserDetails userDetails;
     private final String customToken;
 

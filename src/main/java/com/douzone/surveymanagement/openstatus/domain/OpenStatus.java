@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class OpenStatus {
+
     private final int openStatusNo;
     private final String openStatusString;
 }

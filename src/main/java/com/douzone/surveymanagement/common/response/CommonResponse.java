@@ -39,9 +39,10 @@ public class CommonResponse<T> {
         return new CommonResponse<>(Boolean.FALSE, DEFAULT_FAIL_MESSAGE, null);
     }
 
-    public static <T> CommonResponse<T> successOf(T content ) {
+    public static <T> CommonResponse<T> successOf(T content) {
         return new CommonResponse<>(Boolean.TRUE, content, null);
     }
+
     public static CommonResponse<ErrorResponse> error(ErrorResponse errorResponse) {
         return new CommonResponse<>(Boolean.FALSE, null, errorResponse);
     }

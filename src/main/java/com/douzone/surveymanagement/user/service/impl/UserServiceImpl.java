@@ -34,14 +34,15 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 회원가입 중의 가입 미완료 회원의 등록 메서드입니다
+     *
      * @param userInfo
      * @return 성공여부
      * @author 김선규
      */
     @Override
     @Transactional
-    public int beforeRegistUser(UserInfo userInfo){
-        int flag ;
+    public int beforeRegistUser(UserInfo userInfo) {
+        int flag;
 
         flag = userMapper.beforeRegistUser(userInfo);
 
@@ -50,12 +51,13 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 회원가입 유저 등록 메서드입니다
+     *
      * @param userInfo
      * @author 김선규
      */
     @Override
     @Transactional
-    public void registUser(UserInfo userInfo){
+    public void registUser(UserInfo userInfo) {
 
         userMapper.registUser(userInfo);
 
@@ -63,14 +65,15 @@ public class UserServiceImpl implements UserService {
 
     /**
      * AccessToken 갱신 메서드입니다
+     *
      * @param userInfo
      * @return 성공여부
      * @author 김선규
      */
     @Override
     @Transactional
-    public int updateAccessToken(UserInfo userInfo){
-        int flag ;
+    public int updateAccessToken(UserInfo userInfo) {
+        int flag;
 
         flag = userMapper.updateAccessToken(userInfo);
 
@@ -79,19 +82,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public boolean loginCancel(String userNo){
+    public boolean loginCancel(String userNo) {
         boolean isCancelSuccessed = userMapper.loginCancel(userNo);
         return isCancelSuccessed;
     }
 
     /**
      * AccessToken으로 회원 조회하는 메서드입니다
+     *
      * @param accessToken
      * @return 회원정보
      * @author 김선규
      */
     @Override
-    public UserInfo findUserByUserAccessToken(String accessToken){
+    public UserInfo findUserByUserAccessToken(String accessToken) {
 
         UserInfo userInfo = userMapper.findUserByUserAccessToken(accessToken);
 
@@ -100,12 +104,13 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 유저 이메일로 회원 조회 하는 메서드입니다
+     *
      * @param userEmail
      * @return 회원정보
      * @author 김선규
      */
     @Override
-    public UserInfo findUserByUserEmail(String userEmail){
+    public UserInfo findUserByUserEmail(String userEmail) {
 
         UserInfo userInfo = userMapper.selectAllByUserEmail(userEmail);
 
@@ -115,10 +120,13 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public boolean updateUserNickName(UserModifyDTO userModifyDTO) {
-        UserModifyDTO existUserNickname = myPageMapper.getUserByUserNickname(userModifyDTO.getUserNickname());
+        UserModifyDTO existUserNickname = myPageMapper.getUserByUserNickname(
+            userModifyDTO.getUserNickname());
 
-        if (existUserNickname != null && isUserNicknameDuplicate(existUserNickname.getUserNickname())) {
-            throw new DuplicateUsernameException("Duplicate username: " + userModifyDTO.getUserNickname());
+        if (existUserNickname != null && isUserNicknameDuplicate(
+            existUserNickname.getUserNickname())) {
+            throw new DuplicateUsernameException(
+                "Duplicate username: " + userModifyDTO.getUserNickname());
         }
 
         int updatedRows = myPageMapper.updateUserNickNameByUserNo(userModifyDTO);
@@ -133,8 +141,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean duplicateUsername(UserModifyDTO userModifyDTO) {
-        UserModifyDTO existUserNickname = myPageMapper.getUserByUserNickname(userModifyDTO.getUserNickname());
-        return existUserNickname != null && isUserNicknameDuplicate(existUserNickname.getUserNickname());
+        UserModifyDTO existUserNickname = myPageMapper.getUserByUserNickname(
+            userModifyDTO.getUserNickname());
+        return existUserNickname != null && isUserNicknameDuplicate(
+            existUserNickname.getUserNickname());
     }
 
     @Override

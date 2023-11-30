@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class SurveyQuestion {
+
     private final long surveyQuestionNo;
     private final long surveyNo;
     private final int questionTypeNo;

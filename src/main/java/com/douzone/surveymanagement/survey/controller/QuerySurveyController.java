@@ -48,7 +48,6 @@ public class QuerySurveyController {
      * 이번 주 내에 등록된 설문 중 참여자가 많은 설문 10개를 가져오는 API입니다.
      *
      * @return 인기 설문 10개
-     *
      */
     @Operation(
         summary = "이번 주 인기 설문 조회",
@@ -67,11 +66,10 @@ public class QuerySurveyController {
      * 최근 등록된 설문 10개를 가져오는 API 입니다.
      *
      * @return 최근 등록 설문 10개
-     *
      */
     @Operation(summary = "최근 등록된 설문 조회", description = "최근에 등록된 설문 10개를 조회합니다.")
     @GetMapping("/recent")
-    public ResponseEntity<List<SurveyDetailInfoDto>> recentSurveyList (
+    public ResponseEntity<List<SurveyDetailInfoDto>> recentSurveyList(
         @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         long userNo = userDetails.getUserNo();
@@ -83,11 +81,10 @@ public class QuerySurveyController {
      * 최근에 마감된 순서로 설문 10개를 가져오는 API입니다.
      *
      * @return 최근 마감 설문 10개
-     *
      */
     @Operation(summary = "최근 마감된 설문 조회", description = "최근에 마감된 순서대로 설문 10개를 조회합니다.")
     @GetMapping("/closing")
-    public ResponseEntity<List<SurveyDetailInfoDto>> closingSurveyList (
+    public ResponseEntity<List<SurveyDetailInfoDto>> closingSurveyList(
         @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         long userNo = userDetails.getUserNo();
@@ -100,7 +97,6 @@ public class QuerySurveyController {
      *
      * @param page
      * @return 전체 설문
-     *
      */
     @Operation(
         summary = "게시 및 마감된 설문 전체 조회",
@@ -110,7 +106,7 @@ public class QuerySurveyController {
     public ResponseEntity<List<SurveyDetailInfoDto>> getAllSurvey(
         @RequestParam("page") int page,
         @AuthenticationPrincipal CustomUserDetails userDetails
-    ){
+    ) {
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> allSurvey = querySurveyService.getSurveyAll(page, userNo);
         return ResponseEntity.ok(allSurvey);
@@ -121,14 +117,13 @@ public class QuerySurveyController {
      *
      * @param page
      * @return 마감 설문 20개
-     *
      */
     @GetMapping("/select-closing")
     @Operation(summary = "마감된 설문 페이징 조회", description = "마감된 설문을 페이지별로 20개씩 조회합니다.")
     public ResponseEntity<List<SurveyDetailInfoDto>> selectClosingSurveyList(
         @RequestParam("page") int page,
         @AuthenticationPrincipal CustomUserDetails userDetails
-    ){
+    ) {
         long userNo = userDetails.getUserNo();
         List<SurveyDetailInfoDto> closeSurvey = querySurveyService.selectClosing(page, userNo);
         return ResponseEntity.ok(closeSurvey);
@@ -139,7 +134,6 @@ public class QuerySurveyController {
      *
      * @param page
      * @return 진행중인 설문 20개
-     *
      */
     @GetMapping("/select-post")
     @Operation(summary = "진행중인 설문 페이징 조회", description = "진행 중인 설문을 페이지별로 20개씩 조회합니다.")
@@ -167,7 +161,7 @@ public class QuerySurveyController {
     /**
      * 특정 설문에 대해 메인 페이지에 필요한 모든 정보를 조회하는 API 입니다.
      *
-     * @param surveyNo 설문 번호
+     * @param surveyNo          설문 번호
      * @param customUserDetails 현재 인가된 사용자 정보
      * @return {@link SurveyDetailInfoDto}
      * @author : 강명관

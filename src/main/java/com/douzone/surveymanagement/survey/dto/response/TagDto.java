@@ -13,6 +13,6 @@ public class TagDto {
     @Schema(description = "태그 번호", example = "1")
     private int tagNo;
     @Schema(description = "태그 이름", example = "일상")
-    private  String tagName;
+    private String tagName;
 
 }

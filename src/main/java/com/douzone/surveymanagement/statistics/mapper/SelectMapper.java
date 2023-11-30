@@ -8,5 +8,6 @@ import java.util.List;
 
 @Mapper
 public interface SelectMapper {
-    List<SelectDto> readSelectionAll(@Param(value= "surveyNo") long surveyNo);
+
+    List<SelectDto> readSelectionAll(@Param(value = "surveyNo") long surveyNo);
 }
