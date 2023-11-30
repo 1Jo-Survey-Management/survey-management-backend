@@ -66,6 +66,7 @@ public class QuerySurveyController {
      *
      * @return 최근 등록 설문 10개
      */
+    @GetMapping("/recent")
     @Operation(summary = "최근 등록된 설문 조회", description = "최근에 등록된 설문 10개를 조회합니다.")
     public ResponseEntity<List<SurveyDetailInfoDto>> recentSurveyList(@AuthenticationPrincipal CustomUserDetails userDetails) {
         long userNo = userDetails.getUserNo();
@@ -78,6 +79,7 @@ public class QuerySurveyController {
      *
      * @return 최근 마감 설문 10개
      */
+    @GetMapping("/closing")
     @Operation(summary = "최근 마감된 설문 조회", description = "최근에 마감된 순서대로 설문 10개를 조회합니다.")
     public ResponseEntity<List<SurveyDetailInfoDto>> closingSurveyList(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
