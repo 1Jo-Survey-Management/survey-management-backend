@@ -30,6 +30,7 @@ public enum QuestionTypeEnum {
     public int getQuestionTypeNo() {
         return questionTypeNo;
     }
+
     public String getQuestionTypeName() {
         return questionTypeName;
     }

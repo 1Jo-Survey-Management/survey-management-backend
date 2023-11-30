@@ -1,11 +1,10 @@
 package com.douzone.surveymanagement.surveyattend.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.time.LocalDateTime;
 
 @ToString
 @Getter

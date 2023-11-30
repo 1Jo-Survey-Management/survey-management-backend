@@ -17,6 +17,7 @@ import java.util.List;
 
 /**
  * 시큐리티 필터 설정입니다
+ *
  * @author 김선규
  */
 @EnableWebSecurity(debug = false)
@@ -29,26 +30,29 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
     @Bean
     public CustomOAuth2Filter customOAuth2Filter(AuthenticationManager authenticationManager) {
         CustomOAuth2Filter filter = new CustomOAuth2Filter("/**");
         filter.setAuthenticationManager(authenticationManager);
         return filter;
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors().configurationSource(corsConfigurationSource())
-                .and()
-                .httpBasic().disable()
-                .csrf().disable()
-                .formLogin().disable()
-                .rememberMe().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            .cors().configurationSource(corsConfigurationSource())
+            .and()
+            .httpBasic().disable()
+            .csrf().disable()
+            .formLogin().disable()
+            .rememberMe().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http    .authorizeHttpRequests(authorize -> authorize
-                    .anyRequest().authenticated());
-        http.   addFilterBefore(customOAuth2Filter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
+        http.authorizeHttpRequests(authorize -> authorize
+            .anyRequest().authenticated());
+        http.addFilterBefore(customOAuth2Filter(authenticationManager()),
+            UsernamePasswordAuthenticationFilter.class);
 
 
         return http.build();

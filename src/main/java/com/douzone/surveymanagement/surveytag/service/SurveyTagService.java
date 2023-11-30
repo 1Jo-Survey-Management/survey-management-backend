@@ -30,7 +30,7 @@ public interface SurveyTagService {
     /**
      * 설문의 기존의 태그를 삭제하고 새롭게 추가하는 메서드 입니다.
      *
-     * @param surveyNo 설문 번호
+     * @param surveyNo        설문 번호
      * @param surveyTagNoList 설문 태그 번호 리스트
      * @author : 강명관
      */

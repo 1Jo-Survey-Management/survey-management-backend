@@ -3,11 +3,10 @@ package com.douzone.surveymanagement.surveyquestion.dto.request;
 import com.douzone.surveymanagement.selection.dto.reqeust.SelectionCreateDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;

@@ -6,7 +6,6 @@ package com.douzone.surveymanagement.user.exception;
  *
  * @author : 박창우
  * @since : 1.0
- *
  **/
 public class DuplicateUsernameException extends RuntimeException {
 

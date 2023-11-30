@@ -1,11 +1,12 @@
 package com.douzone.surveymanagement.user.util;
+
+import java.util.Optional;
 import lombok.Getter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import java.util.Optional;
-
 /**
  * 아이디 비밀번호
+ *
  * @author 김선규
  */
 @Getter

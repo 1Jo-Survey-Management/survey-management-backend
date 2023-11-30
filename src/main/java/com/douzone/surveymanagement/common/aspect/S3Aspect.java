@@ -13,7 +13,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
- * Some description here.
+ * S3 이미지를 삭제하는 AOP를 담당하는 클래스 입니다.
  *
  * @author : 강명관
  * @since : 1.0

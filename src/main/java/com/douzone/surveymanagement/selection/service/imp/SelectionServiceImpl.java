@@ -58,7 +58,7 @@ public class SelectionServiceImpl implements SelectionService {
     /**
      * 설문이동 번호를 계산하고 넣어주기 위한 메서드 입니다.
      *
-     * @param questionNoList 문항들이 저장되고 나온 문항 PK 번호 리스트 입니다.
+     * @param questionNoList         문항들이 저장되고 나온 문항 PK 번호 리스트 입니다.
      * @param selectionCreateDtoList 선택지를 저장하기 위한 Dto 리스트 입니다.
      * @author : 강명관
      */

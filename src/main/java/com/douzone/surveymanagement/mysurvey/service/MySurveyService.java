@@ -1,7 +1,6 @@
 package com.douzone.surveymanagement.mysurvey.service;
 
 import com.douzone.surveymanagement.mysurvey.dto.request.MySurveyDTO;
-
 import java.util.List;
 
 /**
@@ -19,6 +18,7 @@ public interface MySurveyService {
 
     /**
      * 사용자가 참여한 설문 목록을 정렬하여 가져옵니다.
+     *
      * @param userNo 사용자 번호
      * @return 사용자가 참여한 설문 목록
      */

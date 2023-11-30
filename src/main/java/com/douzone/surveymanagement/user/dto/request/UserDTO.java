@@ -1,10 +1,12 @@
 package com.douzone.surveymanagement.user.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-
-import javax.validation.constraints.NotBlank;
 import java.util.Date;
+import javax.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 유저 정보 DTO 클래스입니다.

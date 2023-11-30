@@ -10,26 +10,36 @@ import com.douzone.surveymanagement.user.service.impl.UserServiceImpl;
 import com.douzone.surveymanagement.user.util.CustomAuthentication;
 import com.douzone.surveymanagement.user.util.CustomUserDetails;
 import com.douzone.surveymanagement.user.util.GetAccessToken;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestTemplate;
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * 로그인 관련 Controller 입니다
+ *
  * @author 김선규
  * @since 1.0.0
  */
@@ -45,6 +55,7 @@ public class LoginController {
 
     /**
      * 회원 프로필 가져오는 메서드입니다.
+     *
      * @param request
      * @return 회원정보
      * @author 김선규
@@ -61,8 +72,8 @@ public class LoginController {
     @PostMapping("/check-duplicate-nickname")
     public ResponseEntity<String> getUserByUserNickname(@RequestBody UserModifyDTO userModifyDTO) {
         boolean isDuplicate = userService.duplicateUsername(userModifyDTO);
-        
-        if(isDuplicate) {
+
+        if (isDuplicate) {
             return ResponseEntity.ok("Nickname is not available");
         }
 
@@ -71,12 +82,14 @@ public class LoginController {
 
     /**
      * 회원가입 중간 취소에 따른 가입 미완료 회원 삭제
+     *
      * @param userNo
      * @return void
      * @author 김선규
      */
     @GetMapping("cancel")
-    public ResponseEntity<CommonResponse> loginCancel(@RequestParam(name = "userNo") String userNo) {
+    public ResponseEntity<CommonResponse> loginCancel(
+        @RequestParam(name = "userNo") String userNo) {
         boolean isCancelSuccessed = userService.loginCancel(userNo);
         CommonResponse commonResponse = CommonResponse.successOf(isCancelSuccessed);
         commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
@@ -85,19 +98,21 @@ public class LoginController {
 
     /**
      * 회원 가입하는 메서드입니다.
+     *
      * @param userInfo
      * @param request
      * @return ResponseEntity<CommonResponse>
      * @author 김선규
      */
     @PostMapping("/regist")
-    public ResponseEntity<CommonResponse> registUser(@RequestBody UserInfo userInfo, HttpServletRequest request) {
+    public ResponseEntity<CommonResponse> registUser(@RequestBody UserInfo userInfo,
+                                                     HttpServletRequest request) {
         String accessToken;
         UserInfo registUser;
         CommonResponse commonResponse;
 
         accessToken = getAccessTokenFromRequest(request);
-        registUser =    createRegisteredUser(userInfo, accessToken);
+        registUser = createRegisteredUser(userInfo, accessToken);
         commonResponse = handleUserRegistration(userInfo, request);
 
         authenticateUserAfterRegistration(registUser);
@@ -115,10 +130,11 @@ public class LoginController {
      * @author 김선규
      */
     @GetMapping("oauth2/code/naver")
-    public ResponseEntity<CommonResponse> naverCallback(@RequestParam(name = "code", required = false) String code,
-                                                        @RequestParam(name = "state", required = false) String state,
-                                                        @RequestParam(name = "userNo", required = false) String userNo) {
-        if(userNo!=null){
+    public ResponseEntity<CommonResponse> naverCallback(
+        @RequestParam(name = "code", required = false) String code,
+        @RequestParam(name = "state", required = false) String state,
+        @RequestParam(name = "userNo", required = false) String userNo) {
+        if (userNo != null) {
             CommonResponse commonResponse = CommonResponse.fail();
             commonResponseResponseEntity = ResponseEntity.of(java.util.Optional.of(commonResponse));
             return commonResponseResponseEntity;
@@ -132,7 +148,7 @@ public class LoginController {
         String accessToken = parms.get("access_token");
         UserInfo alreadyExistCheck = userService.findUserByUserAccessToken(accessToken);
 
-        if(alreadyExistCheck!=null){
+        if (alreadyExistCheck != null) {
             ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
             LocalDateTime seoulTime = LocalDateTime.now(seoulZoneId);
             LocalDateTime newExpiresTime = seoulTime.plusMinutes(50);
@@ -146,23 +162,24 @@ public class LoginController {
         }
         NaverUserInfoResponse userInfo = getNaverUserInfo(accessToken);
 
-        if(userInfo!=null){
+        if (userInfo != null) {
             CommonResponse commonResponse = handleUserRegistration(userInfo, parms);
 
             return ResponseEntity
-                    .ok()
-                    .body(commonResponse);
-        }else{
+                .ok()
+                .body(commonResponse);
+        } else {
             String errorMessage = "Required AccessCode again!";
             return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(CommonResponse.<String>error(ErrorResponse.of(errorMessage)));
+                .status(HttpStatus.BAD_REQUEST)
+                .body(CommonResponse.<String>error(ErrorResponse.of(errorMessage)));
         }
 
     }
 
     /**
      * 회원가입을 진행하는 메서드입니다
+     *
      * @param userInfo
      * @param request
      * @return CommonResponse
@@ -179,6 +196,7 @@ public class LoginController {
 
     /**
      * request header에서 accessToken을 추출하는 메서드입니다.
+     *
      * @param request
      * @return accessToken
      * @author 김선규
@@ -194,6 +212,7 @@ public class LoginController {
 
     /**
      * 등록된 회원의 정보를 가져오는 메서드입니다.
+     *
      * @param userInfo
      * @param accessToken
      * @return userInfo
@@ -214,6 +233,7 @@ public class LoginController {
 
     /**
      * 완료된 회원가입에 대하여 인증 객체와 ContextHolder에 등록해주는 메서드입니다.
+     *
      * @param userInfo
      * @author 김선규
      */
@@ -222,14 +242,17 @@ public class LoginController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         CustomAuthentication changeCustomAuthentication = new CustomAuthentication(
-                new CustomUserDetails(userInfo.getUserNo(), userInfo.getUserEmail(), userInfo.getUserNickname(), userInfo.getUserGender(), userInfo.getUserBirth(), userInfo.getUserImage(), authorities),
-                userInfo.getAccessToken()
+            new CustomUserDetails(userInfo.getUserNo(), userInfo.getUserEmail(),
+                userInfo.getUserNickname(), userInfo.getUserGender(), userInfo.getUserBirth(),
+                userInfo.getUserImage(), authorities),
+            userInfo.getAccessToken()
         );
         SecurityContextHolder.getContext().setAuthentication(changeCustomAuthentication);
     }
 
     /**
      * 네이버 Code Url로 accessToken, refreshToken, expiresIn 가져오는 메서드입니다.
+     *
      * @param clientId
      * @param clientSecret
      * @param code
@@ -237,9 +260,12 @@ public class LoginController {
      * @return params
      * @author 김선규
      */
-    private Map<String, String> getAccessTokenUsingCode(String clientId, String clientSecret, String code, String state) {
+    private Map<String, String> getAccessTokenUsingCode(String clientId, String clientSecret,
+                                                        String code, String state) {
 
-        String tokenUrl = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=" + clientId +
+        String tokenUrl =
+            "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=" +
+                clientId +
                 "&client_secret=" + clientSecret + "&code=" + code + "&state=" + state;
         Map<String, String> params = GetAccessToken.getToken(tokenUrl);
         return params;
@@ -247,6 +273,7 @@ public class LoginController {
 
     /**
      * 네이버 OAuth에서 프로필 연동으로 정보 가져오는 메서드입니다.
+     *
      * @param accessToken
      * @return UserInfo
      * @author 김선규
@@ -262,15 +289,15 @@ public class LoginController {
         String userInfoUrl = "https://openapi.naver.com/v1/nid/me";
 
         ResponseEntity<NaverUserInfoResponse> response = null;
-        
+
         try {
             response = restTemplate.exchange(
-                    userInfoUrl,
-                    HttpMethod.GET,
-                    entity,
-                    NaverUserInfoResponse.class
+                userInfoUrl,
+                HttpMethod.GET,
+                entity,
+                NaverUserInfoResponse.class
             );
-            
+
         } catch (HttpStatusCodeException e) {
 
             System.out.println("Error: Need new AccessCode");
@@ -283,12 +310,14 @@ public class LoginController {
 
     /**
      * 프로필로 들고온 회원 유저 정보로 회원가입 완료하는 메서드입니다.
+     *
      * @param userInfo
      * @param params
      * @return commonResponse
      * @author 김선규
      */
-    private CommonResponse handleUserRegistration(NaverUserInfoResponse userInfo, Map<String, String> params) {
+    private CommonResponse handleUserRegistration(NaverUserInfoResponse userInfo,
+                                                  Map<String, String> params) {
 
         String userEmail = userInfo.getResponse().getEmail();
         String newAccessToken = params.get("access_token");
@@ -304,7 +333,8 @@ public class LoginController {
 
         }
 
-        if (dbUserEmail != null && dbUserEmail.equals(userEmail) && (dbAccessToken == null || !dbAccessToken.equals(newAccessToken)) ) {
+        if (dbUserEmail != null && dbUserEmail.equals(userEmail) &&
+            (dbAccessToken == null || !dbAccessToken.equals(newAccessToken))) {
             UserInfo updateUserToken = new UserInfo();
 
             ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
@@ -327,7 +357,8 @@ public class LoginController {
             String userNickname = userExistCheck.getUserNickname();
 
             if (userNickname != null) {
-                UserInfo userCheck = userService.findUserByUserAccessToken(params.get("access_token"));
+                UserInfo userCheck =
+                    userService.findUserByUserAccessToken(params.get("access_token"));
 
                 userCheck.setExpiresIn(userCheck.getExpiresIn());
                 userCheck.setRefreshToken(params.get("refresh_token"));
@@ -337,8 +368,7 @@ public class LoginController {
                 return commonResponse;
             }
 
-        }
-        else {
+        } else {
             ZoneId seoulZoneId = ZoneId.of("Asia/Seoul");
             LocalDateTime seoulTime = LocalDateTime.now(seoulZoneId);
             LocalDateTime newExpiresTime = seoulTime.plusMinutes(50);
@@ -353,7 +383,8 @@ public class LoginController {
 
             userService.beforeRegistUser(userRegist);
 
-            UserInfo respUserInfo = userService.findUserByUserAccessToken(params.get("access_token"));
+            UserInfo respUserInfo =
+                userService.findUserByUserAccessToken(params.get("access_token"));
             CommonResponse commonResponse = CommonResponse.successOf(respUserInfo);
             return commonResponse;
         }

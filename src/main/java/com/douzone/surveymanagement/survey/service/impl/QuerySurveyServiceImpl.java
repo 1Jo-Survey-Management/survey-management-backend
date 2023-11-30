@@ -1,16 +1,15 @@
 package com.douzone.surveymanagement.survey.service.impl;
 
 import com.douzone.surveymanagement.common.exception.NotFoundElementException;
-import com.douzone.surveymanagement.survey.dto.response.SurveyDetailsDto;
 import com.douzone.surveymanagement.survey.dto.response.SurveyDetailInfoDto;
+import com.douzone.surveymanagement.survey.dto.response.SurveyDetailsDto;
 import com.douzone.surveymanagement.survey.mapper.QuerySurveyMapper;
 import com.douzone.surveymanagement.survey.service.QuerySurveyService;
+import java.util.HashMap;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -23,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly=true)
+@Transactional(readOnly = true)
 public class QuerySurveyServiceImpl implements QuerySurveyService {
 
     private final QuerySurveyMapper querySurveyMapper;
@@ -92,14 +91,14 @@ public class QuerySurveyServiceImpl implements QuerySurveyService {
         return nextPage;
     }
 
-    private HashMap<String, Object> pageAndUserNo(int page, long userNo){
+    private HashMap<String, Object> pageAndUserNo(int page, long userNo) {
         HashMap<String, Object> pageUser = new HashMap<>();
         pageUser.put("page", showNextPage(page));
         pageUser.put("userNo", userNo);
         return pageUser;
     }
 
-    private HashMap<String, Object> searchWord(String searchWord, long userNo){
+    private HashMap<String, Object> searchWord(String searchWord, long userNo) {
         HashMap<String, Object> searchKeyword = new HashMap<>();
         searchKeyword.put("searchWord", searchWord);
         searchKeyword.put("userNo", userNo);

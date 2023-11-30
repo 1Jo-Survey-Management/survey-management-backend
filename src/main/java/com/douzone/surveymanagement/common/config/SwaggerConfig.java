@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Some description here.
+ * 스웨거 설정을 담당하는 클래스 입니다.
  *
  * @author : 강명관
  * @since : 1.0
@@ -30,6 +30,7 @@ public class SwaggerConfig {
             .pathsToMatch(PATH_MATCH)
             .build();
     }
+
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
