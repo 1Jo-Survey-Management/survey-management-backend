@@ -2,6 +2,7 @@ package com.douzone.surveymanagement.survey.mapper;
 
 import com.douzone.surveymanagement.survey.dto.response.SurveyDetailsDto;
 import com.douzone.surveymanagement.survey.dto.response.SurveyDetailInfoDto;
+import java.util.Optional;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -60,4 +61,15 @@ public interface QuerySurveyMapper {
     List<SurveyDetailInfoDto> selectPostSurvey(HashMap<String, Object> pageUserNo);
 
     List<SurveyDetailInfoDto> searchSurvey(HashMap<String, Object> searchKeyword);
+
+    /**
+     * 설문 번호를 통해 설문의 상세 정보를 가져오는 쿼리 입니다.
+     *
+     * @param userNo 유저 번호
+     * @param surveyNo 설문번호
+     * @return {@link Optional<SurveyDetailInfoDto>}
+     * @author : 강명관
+     */
+    Optional<SurveyDetailInfoDto> selectOneSurveyBySurveyNo(@Param("userNo") long userNo,
+                                                            @Param("surveyNo") long surveyNo);
 }

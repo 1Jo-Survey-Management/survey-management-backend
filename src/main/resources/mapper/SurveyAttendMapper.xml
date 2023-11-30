@@ -2,6 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.douzone.surveymanagement.surveyattend.mapper.SurveyAttendMapper">
 
   <resultMap id="surveyAttendDataResultMap"
@@ -21,36 +22,40 @@
     <result property="isEndOfSurvey" column="is_end_of_survey"/>
   </resultMap>
 
-  <select id="selectSurveyAttendData" resultMap="surveyAttendDataResultMap">
-    SELECT
-    s.survey_title,
-    s.survey_image,
-    sq.survey_question_no,
-    s.survey_no,
-    sq.question_type_no,
-    sq.survey_question_title,
-    sq.survey_question_description,
-    sq.is_required,
-    se.selection_no,
-    se.survey_question_move_no,
-    se.selection_value,
-    se.is_movable,
-    se.is_end_of_survey
-    FROM survey s
-    JOIN survey_question sq ON s.survey_no = sq.survey_no
-    LEFT JOIN question_type qt ON sq.question_type_no = qt.question_type_no
-    LEFT JOIN (
-    SELECT
-    selection_no,
-    survey_question_no,
-    survey_question_move_no,
-    selection_value,
-    is_movable,
-    is_end_of_survey
-    FROM selection
-    ) se ON sq.survey_question_no = se.survey_question_no
-    WHERE s.open_status_no IN (1, 2, 3)
-  </select>
+    <select id="selectSurveyAttendData" resultMap="surveyAttendDataResultMap" parameterType="long">
+        SELECT
+            s.survey_title,
+            s.survey_image,
+            sq.survey_question_no,
+            s.survey_no,
+            sq.question_type_no,
+            sq.survey_question_title,
+            sq.survey_question_description,
+            sq.is_required,
+            se.selection_no,
+            se.survey_question_move_no,
+            se.selection_value,
+            se.is_movable,
+            se.is_end_of_survey
+        FROM survey s
+            JOIN survey_question sq
+                ON s.survey_no = sq.survey_no
+            LEFT JOIN question_type qt
+                ON sq.question_type_no = qt.question_type_no
+            LEFT JOIN (
+                SELECT
+                    selection_no,
+                    survey_question_no,
+                    survey_question_move_no,
+                    selection_value,
+                    is_movable,
+                    is_end_of_survey
+                FROM selection
+            ) se
+                ON sq.survey_question_no = se.survey_question_no
+        WHERE s.survey_no = #{surveyNo}
+        ORDER BY sq.survey_question_no ASC, se.selection_no ASC
+    </select>
 
   <!-- 설문 참여 저장 -->
   <insert id="insertSurveyAttend"

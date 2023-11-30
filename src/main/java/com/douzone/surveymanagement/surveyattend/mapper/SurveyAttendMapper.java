@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 설문 참여 관련 데이터 작업을 관리하는 Mapper 입니다.
@@ -22,7 +23,7 @@ public interface SurveyAttendMapper {
      *
      * @return 설문 참여 데이터를 포함한 {@link SurveyAttendDTO}의 리스트를 반환합니다.
      */
-    List<SurveyAttendDTO> selectSurveyAttendData();
+    List<SurveyAttendDTO> selectSurveyAttendData(@Param("surveyNo") long surveyNo);
 
     /**
      * 설문 참여에 대한 새로운 레코드를 삽입합니다.

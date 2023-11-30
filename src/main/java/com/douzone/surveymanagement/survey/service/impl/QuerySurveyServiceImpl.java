@@ -1,5 +1,6 @@
 package com.douzone.surveymanagement.survey.service.impl;
 
+import com.douzone.surveymanagement.common.exception.NotFoundElementException;
 import com.douzone.surveymanagement.survey.dto.response.SurveyDetailsDto;
 import com.douzone.surveymanagement.survey.dto.response.SurveyDetailInfoDto;
 import com.douzone.surveymanagement.survey.mapper.QuerySurveyMapper;
@@ -104,6 +105,16 @@ public class QuerySurveyServiceImpl implements QuerySurveyService {
         searchKeyword.put("searchWord", searchWord);
         searchKeyword.put("userNo", userNo);
         return searchKeyword;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SurveyDetailInfoDto findOneSurveyDetailsBySurveyNo(long userNo, long surveyNo) {
+        return querySurveyMapper.selectOneSurveyBySurveyNo(userNo, surveyNo)
+            .orElseThrow(() -> new NotFoundElementException("해당 설문을 찾을 수 없습니다."));
     }
 
 }

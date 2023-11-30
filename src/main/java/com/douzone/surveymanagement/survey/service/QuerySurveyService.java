@@ -52,9 +52,21 @@ public interface QuerySurveyService {
 
     List<SurveyDetailInfoDto> selectClosing(int page, long userNo);
 
-    List<SurveyDetailInfoDto> selectPost(int page, long userNo);
 
-    List<SurveyDetailInfoDto> searchSurveyByKeyword(String searchWord, long userNo);
+    List<SurveyDetailInfoDto> selectPost(int page,long userNo);
+    List<SurveyDetailInfoDto> searchSurveyByKeyword(String searchWord,long userNo);
+
+
+    /**
+     * 설문의 번호를 통해 설문의 상세 정보를 가져오는 메서드 입니다.
+     *
+     * @param userNo 유저 번호
+     * @param surveyNo 설문 번호
+     * @return {@link SurveyDetailInfoDto}
+     * @author : 강명관
+     */
+    SurveyDetailInfoDto findOneSurveyDetailsBySurveyNo(long userNo, long surveyNo);
+
 }
 
 

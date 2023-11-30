@@ -2,6 +2,7 @@ package com.douzone.surveymanagement.survey.service.impl;
 
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoCreateDto;
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoUpdateDto;
+import com.douzone.surveymanagement.survey.dto.response.SurveyDetailInfoDto;
 import com.douzone.surveymanagement.survey.mapper.CommandSurveyMapper;
 import com.douzone.surveymanagement.survey.service.CommandSurveyService;
 import com.douzone.surveymanagement.surveyquestion.dto.request.SurveyQuestionCreateDto;
@@ -119,5 +120,6 @@ public class CommandSurveyServiceImpl implements CommandSurveyService {
             surveyInfoCreateDto.setSurveyPostAt(LocalDateTime.now());
         }
     }
+
 }
 

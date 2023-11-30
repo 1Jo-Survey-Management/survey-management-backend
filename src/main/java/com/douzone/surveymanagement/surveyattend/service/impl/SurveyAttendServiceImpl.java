@@ -1,5 +1,6 @@
 package com.douzone.surveymanagement.surveyattend.service.impl;
 
+import com.douzone.surveymanagement.common.exception.NotFoundElementException;
 import com.douzone.surveymanagement.surveyattend.dto.request.SurveyAttendSubmitDTO;
 import com.douzone.surveymanagement.surveyattend.exception.SurveyAttendException;
 import com.douzone.surveymanagement.surveyattend.mapper.SurveyAttendMapper;
@@ -35,8 +36,15 @@ public class SurveyAttendServiceImpl implements SurveyAttendService {
      * @return 설문 참여 데이터를 포함한 {@link SurveyAttendDTO}의 리스트를 반환합니다.
      */
     @Override
-    public List<SurveyAttendDTO> selectSurveyAttendData() {
-        return surveyAttendMapper.selectSurveyAttendData();
+    public List<SurveyAttendDTO> selectSurveyAttendData(long surveyNo) {
+        List<SurveyAttendDTO> surveyAttendDTOList =
+            surveyAttendMapper.selectSurveyAttendData(surveyNo);
+
+        if (surveyAttendDTOList.isEmpty()) {
+            throw new NotFoundElementException("해당 설문을 찾을 수 없습니다.");
+        }
+
+        return surveyAttendDTOList;
     }
 
     /**
@@ -162,12 +170,7 @@ public class SurveyAttendServiceImpl implements SurveyAttendService {
         return currentTime.isBefore(closingTime);
     }
 
-    /**
-     * 주어진 설문 번호에 대한 마감일을 반환합니다.
-     *
-     * @param surveyNo 설문 번호
-     * @return 설문의 마감일
-     */
+    @Override
     public LocalDateTime getSurveyClosingTime(long surveyNo) {
         return surveyAttendMapper.surveyForbidSubmit(surveyNo);
     }
