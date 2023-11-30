@@ -11,19 +11,19 @@
 
         INSERT INTO survey_question
         (
-            `survey_no`,
-            `question_type_no`,
-            `survey_question_title`,
-            `survey_question_description`,
-            `is_required`
+        `survey_no`,
+        `question_type_no`,
+        `survey_question_title`,
+        `survey_question_description`,
+        `is_required`
         )
         VALUES
         (
-           #{surveyNo},
-           #{questionTypeNo},
-           #{surveyQuestionTitle},
-           #{surveyQuestionDescription},
-           #{isRequired}
+        #{surveyNo},
+        #{questionTypeNo},
+        #{surveyQuestionTitle},
+        #{surveyQuestionDescription},
+        #{isRequired}
         )
 
         <selectKey resultType="long" keyColumn="survey_question_no" keyProperty="surveyQuestionNo" order="AFTER">
@@ -34,8 +34,7 @@
 
     <delete id="deleteAllSurveyQuestionsBySurveyNo" parameterType="long">
         DELETE
-        FROM
-            survey_question
+        FROM survey_question
         WHERE survey_no = #{surveyNo};
     </delete>
 

@@ -10,15 +10,18 @@ import com.douzone.surveymanagement.user.exception.DuplicateUsernameException;
 import com.douzone.surveymanagement.user.service.impl.UserServiceImpl;
 import com.douzone.surveymanagement.user.util.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 유저 API 컨트롤러 클래스입니다.
@@ -37,22 +40,22 @@ public class UserController {
     @PutMapping("/nickname")
     @Operation(summary = "사용자 닉네임 업데이트", description = "로그인한 사용자의 닉네임을 업데이트합니다.")
     public ResponseEntity<CommonResponse> userNickNameUpdate(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @Valid @RequestBody UserModifyDTO userModifyDTO) {
+        @AuthenticationPrincipal CustomUserDetails userDetails,
+        @Valid @RequestBody UserModifyDTO userModifyDTO) {
 
         try {
             userModifyDTO.setUserNo(userDetails.getUserNo());
             userServiceImpl.updateUserNickName(userModifyDTO);
             return ResponseEntity
-                    .ok()
-                    .body(CommonResponse.<String>successOf("NickName updated successfully"));
+                .ok()
+                .body(CommonResponse.<String>successOf("NickName updated successfully"));
         } catch (DuplicateUsernameException e) {
             String errorMessage = "Duplicate username: " + e.getMessage();
 
 
             return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(CommonResponse.<String>error(ErrorResponse.of(errorMessage)));
+                .status(HttpStatus.BAD_REQUEST)
+                .body(CommonResponse.<String>error(ErrorResponse.of(errorMessage)));
         }
     }
 
@@ -60,26 +63,29 @@ public class UserController {
     @PutMapping("/image")
     @Operation(summary = "사용자 이미지 업데이트", description = "로그인한 사용자의 프로필 이미지를 업데이트합니다.")
     public ResponseEntity<CommonResponse> updateUserImage(
-            @AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody ImageModifyDTO userImage) {
+        @AuthenticationPrincipal CustomUserDetails userDetails,
+        @RequestBody ImageModifyDTO userImage) {
 
-        boolean updated = userServiceImpl.updateUserImage(userDetails.getUserNo(), userImage.getUserImage());
+        boolean updated =
+            userServiceImpl.updateUserImage(userDetails.getUserNo(), userImage.getUserImage());
 
         if (updated) {
             return ResponseEntity
-                    .ok()
-                    .body(CommonResponse.<String>successOf("Image updated successfully"));
+                .ok()
+                .body(CommonResponse.<String>successOf("Image updated successfully"));
         } else {
             return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(CommonResponse.<String>error(ErrorResponse.of("Image update failed")));
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(CommonResponse.<String>error(ErrorResponse.of("Image update failed")));
         }
     }
 
     @GetMapping("/user-info")
     @Operation(summary = "현재 로그인한 사용자 정보 조회", description = "현재 로그인한 사용자의 상세 정보를 조회합니다.")
-    public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<UserDTO> getCurrentUser(
+        @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        if(userDetails == null) {
+        if (userDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
@@ -104,12 +110,29 @@ public class UserController {
     public ResponseEntity<String> getUserByUserNickname(@RequestBody UserModifyDTO userModifyDTO) {
         boolean isDuplicate = userServiceImpl.duplicateUsername(userModifyDTO);
 
-        if(isDuplicate) {
+        if (isDuplicate) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Nickname is not available");
         }
 
         return ResponseEntity.ok("Nickname is available");
     }
+
+    /**
+     * 유효한 사용자인지 검사하는 메서드 입니다.
+     *
+     * @return 유효한 사용자일 경우 CommonResponse.success 반환
+     * @author : 강명관
+     */
+    @Operation(
+        summary = "사용자가 유효한 사용지 검사",
+        description = "사용자가 유효한 상용자인지 확인합니다."
+    )
+    @GetMapping("/valid-check")
+    public ResponseEntity<CommonResponse> userValidCheck() {
+        return ResponseEntity.ok(CommonResponse.success());
+    }
+
+
 }
 
 

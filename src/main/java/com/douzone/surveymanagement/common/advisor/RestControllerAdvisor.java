@@ -2,7 +2,6 @@ package com.douzone.surveymanagement.common.advisor;
 
 
 import com.douzone.surveymanagement.common.exception.BadRequestException;
-import com.douzone.surveymanagement.common.exception.NotAcceptableFileException;
 import com.douzone.surveymanagement.common.exception.NotFoundElementException;
 import com.douzone.surveymanagement.common.response.CommonResponse;
 import com.douzone.surveymanagement.common.response.ErrorResponse;
@@ -41,7 +40,8 @@ public class RestControllerAdvisor {
 
         log.error("MethodArgumentNotValidException Error");
         log.error("message : {}", e.getMessage());
-        List<MethodArgumentValidError> methodArgumentValidErrors = e.getBindingResult().getFieldErrors()
+        List<MethodArgumentValidError> methodArgumentValidErrors = e.getBindingResult()
+            .getFieldErrors()
             .stream()
             .map(error -> new MethodArgumentValidError(
                 error.getField(),
@@ -52,7 +52,7 @@ public class RestControllerAdvisor {
 
         return ResponseEntity.badRequest()
             .body(CommonResponse.error(
-                ErrorResponse.ofMethodArgumentValidError(methodArgumentValidErrors)
+                    ErrorResponse.ofMethodArgumentValidError(methodArgumentValidErrors)
                 )
             );
     }
@@ -83,26 +83,10 @@ public class RestControllerAdvisor {
     }
 
     /**
-     * 업로드 불가능한 파일 형식에 대한 에러 핸드러 입니다.
-     *
-     * @param e Custom NotAcceptableFileException
-     * @return HttpStatus: NOT_ACCEPT, 공통 읍답객체에 ErrorResponse 객체를 담은 응답입니다.
-     * @author : 강명관
-     */
-    @ExceptionHandler(NotAcceptableFileException.class)
-    public ResponseEntity<CommonResponse<ErrorResponse>> notAcceptableFileExceptionHandler(
-        Exception e) {
-
-        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(CommonResponse.error(ErrorResponse.of(e.getMessage())));
-    }
-
-    /**
      * 처리하지 못한 전역 에러를 처리하기 위한 ExceptionHandler 입니다.
      *
      * @param e Exception
-     * @return  공통 응답객체에 ErrorResponse 객체를 담은 응답입니다.
+     * @return 공통 응답객체에 ErrorResponse 객체를 담은 응답입니다.
      * @author : 강명관
      */
     @ExceptionHandler({Exception.class, RuntimeException.class})

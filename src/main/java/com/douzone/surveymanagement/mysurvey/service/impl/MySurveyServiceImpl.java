@@ -3,12 +3,11 @@ package com.douzone.surveymanagement.mysurvey.service.impl;
 import com.douzone.surveymanagement.mysurvey.dto.request.MySurveyDTO;
 import com.douzone.surveymanagement.mysurvey.mapper.MySurveyMapper;
 import com.douzone.surveymanagement.mysurvey.service.MySurveyService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -31,6 +30,7 @@ public class MySurveyServiceImpl implements MySurveyService {
     @Override
     @Transactional
     public boolean deleteMySurveyInProgress(MySurveyDTO mySurveyDTO) {
-        return mySurveyDTO.getSurveyStatusNo() == 1 && mySurveyMapper.updateMySurveysInProgress(mySurveyDTO) == 1;
+        return mySurveyDTO.getSurveyStatusNo() == 1 &&
+            mySurveyMapper.updateMySurveysInProgress(mySurveyDTO) == 1;
     }
 }

@@ -7,14 +7,10 @@
 
     <insert id="insertSurveyTag"
             parameterType="com.douzone.surveymanagement.surveytag.dto.request.SurveyTagCreateDto">
-        INSERT INTO survey_tag (
-            `survey_no`,
-            `tag_no`
-        )
-        VALUES (
-           #{surveyNo},
-           #{tagNo}
-       );
+        INSERT INTO survey_tag (`survey_no`,
+                                `tag_no`)
+        VALUES (#{surveyNo},
+                #{tagNo});
     </insert>
 
     <delete id="deleteAllSurveyTagBySurveyNo" parameterType="long">

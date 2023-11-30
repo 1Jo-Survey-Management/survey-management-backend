@@ -2,7 +2,6 @@ package com.douzone.surveymanagement.surveyattend.service;
 
 import com.douzone.surveymanagement.surveyattend.dto.request.SurveyAttendDTO;
 import com.douzone.surveymanagement.surveyattend.dto.request.SurveyAttendSubmitDTO;
-
 import java.time.LocalDateTime;
 import java.util.List;
 

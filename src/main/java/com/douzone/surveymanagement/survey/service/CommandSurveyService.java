@@ -2,7 +2,6 @@ package com.douzone.surveymanagement.survey.service;
 
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoCreateDto;
 import com.douzone.surveymanagement.survey.dto.request.SurveyInfoUpdateDto;
-import com.douzone.surveymanagement.survey.dto.response.SurveyDetailInfoDto;
 import com.douzone.surveymanagement.surveyquestion.dto.request.SurveyQuestionCreateDto;
 import java.util.List;
 
@@ -27,7 +26,7 @@ public interface CommandSurveyService {
     /**
      * 전체 설문을 등록하는 메서드 입니다.
      *
-     * @param surveyInfoCreateDto 설문에 대한 정보를 갖고 있는 Dto
+     * @param surveyInfoCreateDto         설문에 대한 정보를 갖고 있는 Dto
      * @param surveyQuestionCreateDtoList 설문에 대한 문항들에 대한 정보를 담고 있는 Dto 리스트
      * @author : 강명관
      */
@@ -56,7 +55,7 @@ public interface CommandSurveyService {
      * 기존 설문에 등록되어 있던 문항, 선택지들을 삭제하고
      * 새롭게 새로운 문항들을 등록합니다.
      *
-     * @param surveyInfoUpdateDto 설문에 대한 정보를 담은 Dto
+     * @param surveyInfoUpdateDto         설문에 대한 정보를 담은 Dto
      * @param surveyQuestionCreateDtoList 설문의 문항과 선택지 리스트
      * @author : 강명관
      */

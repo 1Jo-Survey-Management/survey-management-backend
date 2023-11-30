@@ -1,14 +1,13 @@
 package com.douzone.surveymanagement.user.util;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.Optional;
 
 @AllArgsConstructor
 @Getter
@@ -32,7 +31,9 @@ public class CustomUserDetails implements UserDetails {
     @Schema(description = "사용자의 권한 목록")
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetails(Long userNo, String userEmail, String userNickName, String userGender, Date userBirth, String userImage, Collection<? extends GrantedAuthority> authorities) {
+    public CustomUserDetails(Long userNo, String userEmail, String userNickName, String userGender,
+                             Date userBirth, String userImage,
+                             Collection<? extends GrantedAuthority> authorities) {
         this.userNo = Optional.ofNullable(userNo).orElse(0L);
         this.userEmail = Optional.ofNullable(userEmail).orElse("");
         this.userNickName = Optional.ofNullable(userNickName).orElse("");

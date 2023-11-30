@@ -1,7 +1,10 @@
 package com.douzone.surveymanagement.user.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 이미지 정보 수정 DTO 클래스입니다.

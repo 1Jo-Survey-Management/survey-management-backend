@@ -1,11 +1,10 @@
 package com.douzone.surveymanagement.survey.dto.request;
 
 import com.douzone.surveymanagement.surveyquestion.dto.request.SurveyQuestionCreateDto;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;

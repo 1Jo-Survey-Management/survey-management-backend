@@ -37,8 +37,8 @@ public class SurveyQuestionServiceImpl implements SurveyQuestionService {
                                    List<SurveyQuestionCreateDto> surveyQuestionCreateDtoList) {
 
         surveyQuestionCreateDtoList.forEach(surveyQuestionCreateDto -> {
-            surveyQuestionCreateDto.setSurveyNo(surveyNo);
-            surveyQuestionMapper.insertSurveyQuestion(surveyQuestionCreateDto);
+                surveyQuestionCreateDto.setSurveyNo(surveyNo);
+                surveyQuestionMapper.insertSurveyQuestion(surveyQuestionCreateDto);
             }
         );
 
